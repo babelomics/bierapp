@@ -107,7 +107,6 @@ Bierapp.prototype = {
         this.variantIndexForm.draw({title: "Load VCF", tabpanel: this.panel});
 
 
-
         /*check login*/
         if ($.cookie('bioinfo_sid') != null) {
             this.sessionInitiated();
@@ -125,7 +124,7 @@ Bierapp.prototype = {
             description: this.description,
             version: this.version,
             //suiteId: this.suiteId,
-            suiteId: -1000,
+            suiteId: 85,
             accountData: this.accountData,
             handlers: {
                 'login': function (event) {
