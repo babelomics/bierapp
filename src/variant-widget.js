@@ -1,0 +1,1 @@
+../../variant/variant-web/src/variant-widget.js
