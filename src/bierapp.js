@@ -7,7 +7,7 @@ function Bierapp(args) {
     //set default args
     this.suiteId = 6;
     this.title = '<span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span> ';
-    this.description = 'beta';
+    this.description = '';
     this.version = '1.0.2';
     this.tools = ["variant"];
     this.border = true;
@@ -114,6 +114,12 @@ Bierapp.prototype = {
             this.sessionFinished();
         }
 
+        var myButton = Ext.get('loadFormA');
+        myButton.on('click', function () {
+            _this.showIndexForm();
+        });
+
+
     },
     _createHeaderWidget: function (targetId) {
         var _this = this;
@@ -189,6 +195,29 @@ Bierapp.prototype = {
     _createPanel: function (targetId) {
         var _this = this;
 
+        var homeP = '<div style=" width: 100%; height: 800px;">'
+            + '<div style="float:right; width: 400px">'
+            + '<h2>Supported by:</h2>'
+            + '<span align="justify">' +
+            '<img width="25%" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"> <br><br>' +
+            '<img width="70%" src="http://www.ciberer.es/templates/ja_pyrite/images/logo.jpg"><br><br>' +
+            '<img width="15%" src="http://bioinfo.cipf.es/babeltrac/chrome/site/babeltitle200.gif"/><br><br>' +
+            '<img width="21%" src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png">' +
+            '</span>'
+            + '</div>'
+            + '<div style="overflow: hidden">'
+            + '<h2>Overview</h2>'
+            + '<span>Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes  affected by deleterious variants that segregate along family pedigrees , case-controls or sporadic samples .</span>'
+            + '<h2><a href="https://github.com/babelomics/bierapp/wiki/1000-Genomes-example">Try an Example</a></h2>'
+            + '<span>Here you can try all the filtering options and discover the gene affected in a test family.</span>'
+            + '<h2><a href="#" id="loadFormA">Analyze your own families or case-control data</a></h2>'
+            + '<span>Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the segregation schema along the family.</span>'
+            + '<p align="justify"><h2>Note</h2>This web application makes an intensive use of new web technologies and standards like HTML5, so browsers that are fully supported for this site are: Chrome 14+, Firefox 7+, Safari 5+ and Opera 11+. Older browser like Chrome13-, Firefox 5- or Internet Explorer 9 may rise some errors. Internet Explorer 6 and 7 are no supported at all.</p>'
+            + '</div>'
+            + '</div>';
+
+//    +'</div>'+
+
         homePanel = Ext.create('Ext.panel.Panel', {
 //            padding: 30,
 //            margin: "10 0 0 0",
@@ -206,12 +235,13 @@ Bierapp.prototype = {
                     padding: 30,
                     border: false,
                     autoScroll: true,
-                    html: SUITE_INFO,
+                    html: homeP,
                     bodyPadding: 30,
                     flex: 1
                 }
             ]
         });
+
         var panel = Ext.create('Ext.tab.Panel', {
             renderTo: targetId,
             width: '100%',

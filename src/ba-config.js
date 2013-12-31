@@ -19,10 +19,25 @@ if (
 }
 
 
-SUITE_INFO = '<div style=" width: 1000px; height: 800px;">'
-    + '<h2>Overview</h2><span align="justify"><img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"> <img src="http://www.ciberer.es/templates/ja_pyrite/images/logo.jpg"></span>'
-    + '<br><br><br>'
+SUITE_INFO = '<div style=" width: 100%; height: 800px;">'
+    + '<div style="float:right; width: 600px">'
+    + '<h2>Supported by:</h2>'
+    + '<span align="justify">' +
+    '<img width="25%" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"> <br><br>' +
+    '<img width="80%" src="http://www.ciberer.es/templates/ja_pyrite/images/logo.jpg"><br><br>' +
+    '<img width="15%" src="http://bioinfo.cipf.es/babeltrac/chrome/site/babeltitle200.gif"/><br><br>' +
+    '<img src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png">' +
+    '</span>'
+    + '</div>'
+    + '<div style="overflow: hidden">'
+    + '<h2>Overview</h2>'
+    + '<span>Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes  affected by deleterious variants that segregate along family pedigrees , case-controls or sporadic samples .</span>'
+    + '<h2>Try an Example</h2>'
+    + '<span>Here you can try all the filtering options and discover the gene affected in a test family.</span>'
++ '<h2>Analyze your own families or case-control data</h2>'
+    + '<span>Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the segregation schema along the family.</span>'
     + '<p align="justify"><h2>Note</h2>This web application makes an intensive use of new web technologies and standards like HTML5, so browsers that are fully supported for this site are: Chrome 14+, Firefox 7+, Safari 5+ and Opera 11+. Older browser like Chrome13-, Firefox 5- or Internet Explorer 9 may rise some errors. Internet Explorer 6 and 7 are no supported at all.</p>'
+    + '</div>'
     + '</div>';
 //    +'</div>'+
 //    +'<br><br><h2>Sign in</h2><p style=" width: 800px;">You must be logged in to use this Web application, you can <b><i>register</i></b> or use a <b><i>anonymous user</i></b> as shown in the following image by clicking on the <b><i>"Sign in"</i></b> button on the top bar</p><br><div style="float:left;"><img src="http://jsapi.bioinfo.cipf.es/libs/resources/img/loginhelpbutton.png"></div><img src="http://jsapi.bioinfo.cipf.es/libs/resources/img/loginhelp.png">';
