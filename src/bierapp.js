@@ -114,11 +114,26 @@ Bierapp.prototype = {
             this.sessionFinished();
         }
 
-        var myButton = Ext.get('loadFormA');
-        myButton.on('click', function () {
+        var myButton1 = Ext.get('loadFormA1');
+        myButton1.on('click', function () {
             _this.showIndexForm();
+            _this.variantIndexForm.loadExample1();
+            
+        });
+        var myButton2 = Ext.get('loadFormA2');
+        myButton2.on('click', function () {
+            _this.showIndexForm();
+            Ext.getCmp("loadExample1Button").hide();
+            //_this.variantIndexForm.loadExample1();
+        });
+        var myButton3 = Ext.get('loadFormA3');
+        myButton3.on('click', function () {
+            _this.showIndexForm();
+            _this.variantIndexForm.loadExample1();
         });
 
+
+            _this.panel.add(_this.variantIndexForm.panel);
 
     },
     _createHeaderWidget: function (targetId) {
@@ -162,13 +177,21 @@ Bierapp.prototype = {
             width: '100%',
             border: false,
             items: [
-                {
-                    id: this.id + "btnIndex",
-                    text: 'Load VCF',
-                    handler: function () {
-                        _this.showIndexForm();
-                    }
-                },
+                //{
+                    //id: this.id + "btnIndex",
+                    //text: 'Load VCF',
+                    //handler: function () {
+                        //_this.showIndexForm();
+                    //}
+                //},
+                //{
+                    //id: this.id + "btnTry",
+                    //text: 'Try BierApp',
+                    //border: 1,
+                    //handler: function () {
+                        //_this.showIndexForm();
+                    //}
+                //},
 
                 '->'
                 ,
@@ -196,21 +219,22 @@ Bierapp.prototype = {
         var _this = this;
 
         var homeP = '<div style=" width: 100%; height: 800px;">'
-            + '<div style="float:right; width: 400px">'
+            + '<div style="float:right; width: 200px">'
             + '<h2>Supported by:</h2>'
             + '<span align="justify">' +
-            '<img width="25%" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"> <br><br>' +
-            '<img width="70%" src="http://www.ciberer.es/templates/ja_pyrite/images/logo.jpg"><br><br>' +
-            '<img width="15%" src="http://bioinfo.cipf.es/babeltrac/chrome/site/babeltitle200.gif"/><br><br>' +
-            '<img width="21%" src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png">' +
+            '<img width="45%" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"> <br><br>' +
+            '<img width="70%" src="http://www2.iib.uam.es/ivarela_lab/imagenes/logo_ciberer.jpg"><br><br>' +
+            '<img width="70%" src="http://img2.mailchimp.com/2009/03/25/1efbf9c6a8/LOGO_Micinn_Isciii.jpg"><br><br>' +
+            '<img width="40%" src="http://bioinfo.cipf.es/babeltrac/chrome/site/babeltitle200.gif"/><br><br>' +
+            '<img width="51%" src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png">' +
             '</span>'
             + '</div>'
             + '<div style="overflow: hidden">'
             + '<h2>Overview</h2>'
             + '<span>Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes  affected by deleterious variants that segregate along family pedigrees , case-controls or sporadic samples .</span>'
-            + '<h2><a href="https://github.com/babelomics/bierapp/wiki/1000-Genomes-example">Try an Example</a></h2>'
-            + '<span>Here you can try all the filtering options and discover the gene affected in a test family.</span>'
-            + '<h2><a href="#" id="loadFormA">Analyze your own families or case-control data</a></h2>'
+            + '<h2><a href="#" id="loadFormA1">Try an Example</a></h2>'
+            + '<span><a href="#" id="loadFormA3">Here</a> you can try all the filtering options and discover the gene affected in a test family.</span>'
+            + '<h2><a href="#" id="loadFormA2">Analyze your own families or case-control data</a></h2>'
             + '<span>Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the segregation schema along the family.</span>'
             + '<p align="justify"><h2>Note</h2>This web application makes an intensive use of new web technologies and standards like HTML5, so browsers that are fully supported for this site are: Chrome 14+, Firefox 7+, Safari 5+ and Opera 11+. Older browser like Chrome13-, Firefox 5- or Internet Explorer 9 may rise some errors. Internet Explorer 6 and 7 are no supported at all.</p>'
             + '</div>'

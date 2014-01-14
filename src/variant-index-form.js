@@ -61,6 +61,7 @@ VariantIndexForm.prototype._getExampleForm = function () {
     var _this = this;
 
     var example1 = Ext.create('Ext.Component', {
+        id: "loadExample1Button",
         width: 275,
         html: '<span class="u" title="Indexing time: 4 minutes"><span class="emph u">Load example 1.</span> <span class="info s110" >1000G (1K mut, 4 min)</span></span>',
         cls: 'dedo',
@@ -91,7 +92,7 @@ VariantIndexForm.prototype._getExampleForm = function () {
 
     var exampleForm = Ext.create('Ext.container.Container', {
         bodyPadding: 10,
-        items: [this.note1, example1, example2],
+        items: [this.note1, example1], //,  example2],
         defaults: {margin: '5 0 0 5'}
     });
 
@@ -102,7 +103,7 @@ VariantIndexForm.prototype._getBrowseForm = function () {
     var _this = this;
 
     var note1 = Ext.create('Ext.container.Container', {
-        html: '<p>Please select a VCF file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.</p>'
+        html: '<p>Please select a VCF file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button. You can also choose one of the above <span class="info">examples</span></p>'
     });
     var note2 = Ext.create('Ext.container.Container', {
         html: '<p>Please select a PED file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.</p>'
@@ -141,6 +142,8 @@ VariantIndexForm.prototype._getBrowseForm = function () {
 
 
 VariantIndexForm.prototype.loadExample1 = function () {
+
+    Ext.getCmp("loadExample1Button").show();
     Ext.getCmp(this.id + 'vcf-file').setText('<span class="emph">Example 1000G (Short Version)</span>', false);
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_file.vcf');
 
