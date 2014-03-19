@@ -19,12 +19,16 @@
  * along with JS Common Libs. If not, see <http://www.gnu.org/licenses/>.
  */
 
-VariantIndexForm.prototype = new GenericFormPanel("variant");
+VariantIndexForm.prototype = new GenericFormPanel();
 
-function VariantIndexForm(webapp) {
+function VariantIndexForm(args) {
+    args.analysis = "variant-mongo";
+    GenericFormPanel.prototype.constructor.call(this, args);
+
+    //debugger
     this.id = Utils.genId("VariantIndexForm");
-    this.headerWidget = webapp.headerWidget;
-    this.opencgaBrowserWidget = webapp.headerWidget.opencgaBrowserWidget;
+    this.headerWidget = this.webapp.headerWidget;
+    this.opencgaBrowserWidget = this.webapp.headerWidget.opencgaBrowserWidget;
 
 //    this.testing = true;
 }
@@ -63,7 +67,8 @@ VariantIndexForm.prototype._getExampleForm = function () {
     var example1 = Ext.create('Ext.Component', {
         id: "loadExample1Button",
         width: 275,
-        html: '<span class="u" title="Indexing time: 4 minutes"><span class="emph u">Load example 1.</span> <span class="info s110" >1000G (1K mut, 4 min)</span></span>',
+        //html: '<span class="u" title="Indexing time: 4 minutes"><span class="emph u">Load example 1.</span> <span class="info s110" >1000G (1K mut, 4 min)</span></span>',
+        html: '<span class="s120" title="Indexing time: ~1min"><span class="btn btn-default">Load</span> &nbsp; example 1000G <span class="info">(1K mut, ~1min)</span></span>',
         cls: 'dedo',
         listeners: {
             afterrender: function () {
@@ -75,24 +80,10 @@ VariantIndexForm.prototype._getExampleForm = function () {
             }
         }
     });
-    var example2 = Ext.create('Ext.Component', {
-        width: 275,
-        html: '<span class="u" title="It takes a long time"><span class="emph u">Load example 2.</span> <span class="info s110" >1000G (33K mut, 2 hours)',
-        cls: 'dedo',
-        listeners: {
-            afterrender: function () {
-                this.getEl().on("click", function () {
-                    _this.loadExample2();
-                    Ext.example.msg("Example loaded", "");
-                });
-
-            }
-        }
-    });
-
     var exampleForm = Ext.create('Ext.container.Container', {
         bodyPadding: 10,
-        items: [this.note1, example1], //,  example2],
+        cls: 'bootstrap',
+        items: [this.note1, example1],
         defaults: {margin: '5 0 0 5'}
     });
 
@@ -103,7 +94,7 @@ VariantIndexForm.prototype._getBrowseForm = function () {
     var _this = this;
 
     var note1 = Ext.create('Ext.container.Container', {
-        html: '<p>Please select a VCF file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button. You can also choose one of the above <span class="info">examples</span></p>'
+        html: '<p>Please select a VCF file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.<br/> You can also choose one of the above <span class="info">examples</span></p>'
     });
     var note2 = Ext.create('Ext.container.Container', {
         html: '<p>Please select a PED file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.</p>'
@@ -111,6 +102,7 @@ VariantIndexForm.prototype._getBrowseForm = function () {
 
     var formBrowser = Ext.create('Ext.panel.Panel', {
         title: "Select your data",
+        header: this.headerFormConfig,
         //cls:'panel-border-top',
         border: true,
         padding: "5 0 0 0",
@@ -125,16 +117,6 @@ VariantIndexForm.prototype._getBrowseForm = function () {
                 allowedTypes: ['vcf'],
                 allowBlank: false
             })
-            //,
-            //note2,
-            //this.createOpencgaBrowserCmp({
-                //fieldLabel: 'Input PED file:',
-                //dataParamName: 'ped-file',
-                //id: this.id + 'ped-file',
-                //mode: 'fileSelection',
-                //allowedTypes: ['ped'],
-                //allowBlank: false
-            //})
         ]
     });
     return formBrowser;
@@ -165,3 +147,10 @@ VariantIndexForm.prototype.loadExample2 = function () {
     Ext.getCmp(this.id + 'jobname').setValue("VCF 1000G (Long)");
     Ext.getCmp(this.id + 'jobdescription').setValue("VCF 1000G (Long Version)");
 };
+VariantIndexForm.prototype.clearForm = function () {
+    var _this = this;
+    _this.getForm().getForm().reset();
+    Ext.getCmp(this.id + 'vcf-file').setText('');
+    Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('');
+};
+

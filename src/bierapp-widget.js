@@ -60,28 +60,37 @@ BierappWidget.prototype._createPanel = function (targetId) {
                 pressed: false,
                 toggleGroup: 'options',
                 handler: function () {
-                        // TODO aaleman: Check this code
+                    // TODO aaleman: Check this code
 
-                        if (_this.grid.getStore().count() == 0) {
-                            Ext.example.msg('Genove Viewer', 'You must apply some filters first!!')
-                        }else{
-                            var row = _this.grid.getView().getSelectionModel().getSelection()[0].raw;
 
-                            _this.region = new Region({
-                                chromosome: row.chromosome,
-                                start: row.position - 200,
-                                end: row.position + 200
+                    if (_this.grid.getStore().count() == 0) {
+                        Ext.example.msg('Genove Viewer', 'You must apply some filters first!!')
+
+                    } else {
+                        _this.panel.removeAll(false);
+                        _this.panel.add(_this.genomeViewerPanel);
+
+                        var row = {};
+                        var selection = _this.grid.getView().getSelectionModel().getSelection();
+
+                        if (selection.length > 0) {
+
+                            row = selection[0];
+                            var region = new Region({
+                                chromosome: row.get("chromosome"),
+                                start: row.get("position"),
+                                end: row.get("position")
                             });
-
-                            _this.panel.removeAll(false);
-                            _this.panel.add(_this.genomeViewerPanel);
 
 
                             if (!_.isUndefined(_this.gv)) {
-                                _this.gv.setRegion(_this.region);
+                                _this.gv.setRegion(region);
                             }
-
+                        } else {
+                            Ext.example.msg('Genove Viewer', 'You must select one variant first!!')
                         }
+
+                    }
                 }
             }
         ]},
@@ -91,21 +100,21 @@ BierappWidget.prototype._createPanel = function (targetId) {
     targetId.setActiveTab(panel);
     return panel;
 };
-BierappWidget.prototype._createGrid = function() {
+BierappWidget.prototype._createGrid = function () {
 
     var _this = this;
 
     var xtmplPoly = new Ext.XTemplate(
         '{[this.parseEffect(values)]}',
         {
-            parseEffect: function(value){
+            parseEffect: function (value) {
 
-                if(value.polyphen_score == 0 && value.polyphen_effect == 0){
+                if (value.polyphen_score == 0 && value.polyphen_effect == 0) {
                     return ".";
                 }
 
                 var score = value.polyphen_score;
-                var effect="";
+                var effect = "";
                 switch (value.polyphen_effect) {
                     case 0:
                         effect = "probably damaging";
@@ -131,14 +140,14 @@ BierappWidget.prototype._createGrid = function() {
     var xtmplSift = new Ext.XTemplate(
         '{[this.parseEffect(values)]}',
         {
-            parseEffect: function(value){
+            parseEffect: function (value) {
 
-                if(value.sift_score == 0 && value.sift_effect == 0){
+                if (value.sift_score == 0 && value.sift_effect == 0) {
                     return ".";
                 }
 
                 var score = value.sift_score;
-                var effect="";
+                var effect = "";
                 switch (value.sift_effect) {
                     case 0:
                         effect = "tolerated";
@@ -156,7 +165,6 @@ BierappWidget.prototype._createGrid = function() {
     );
 
     _this.columnsGrid = [
-//            new Ext.grid.RowNumberer({width: 30}),
         {
             text: "Variant",
             dataIndex: 'chromosome',
@@ -168,16 +176,25 @@ BierappWidget.prototype._createGrid = function() {
             text: "Alleles",
             flex: 0.5,
             xtype: "templatecolumn",
-            tpl: "{ref}>{alt}"
+            tpl: "{ref}>{alt}",
+            sortable: false
+        },
+        {
+            text: "Gene",
+            dataIndex: 'genes',
+            //hidden: true,
+            flex: 1,
+            sortable: false
         },
         {
             text: 'Samples',
             flex: 1,
+            sortable: false,
             columns: []
         },
         {
             text: "SNP Id",
-            dataIndex: 'stats_id_snp',
+            dataIndex: 'snpid',
             flex: 1,
             sortable: true
         },
@@ -189,8 +206,9 @@ BierappWidget.prototype._createGrid = function() {
                     text: "1000G",
                     renderer: function (val, meta, record) {
                         if (record.data.controls["1000G"]) {
-
-                            return record.data.controls["1000G"].maf + " (" + record.data.controls["1000G"].allele + ")";
+                            var maf = record.data.controls["1000G"].maf;
+//                            console.log(maf);
+                            return maf.toFixed(3) + " (" + record.data.controls["1000G"].allele + ")";
                         } else {
                             return ".";
                         }
@@ -200,8 +218,9 @@ BierappWidget.prototype._createGrid = function() {
                     text: "EVS",
                     renderer: function (val, meta, record) {
                         if (record.data.controls["EVS"]) {
-
-                            return record.data.controls["EVS"].maf + " (" + record.data.controls["EVS"].allele + ")";
+                            var maf = record.data.controls["EVS"].maf;
+                            console.log(maf);
+                            return maf.toFixed(3) + " (" + record.data.controls["EVS"].allele + ")";
                         } else {
                             return ".";
                         }
@@ -209,99 +228,33 @@ BierappWidget.prototype._createGrid = function() {
                 }
             ]
         },
-        {
-            text: "Gene",
-            dataIndex: 'gene_name',
-            hidden: true,
-            flex: 1
-        },
+
         {
             text: "Consq. Type",
             dataIndex: "consequence_types",
             flex: 1,
-            sortable: true
+            sortable: false
         },
         {
             text: 'Polyphen',
             flex: 1,
-            data_index: 'polyphen_score',
+            dataIndex: 'polyphen_score',
             xtype: 'templatecolumn',
-            tpl: xtmplPoly
+            tpl: xtmplPoly,
+            sortable: false
         },
         {
             text: 'SIFT',
             flex: 1,
-            data_index: 'sift_score',
+            dataIndex: 'sift_score',
             xtype: "templatecolumn",
-            tpl: xtmplSift
-        },
-        // {text: 'Conservation', flex: 1},
-        {
-            text: "Alleles & Genotypes",
-            hidden: true,
-            columns: [
-                {
-
-                    text: "Allele Ref",
-                    dataIndex: 'ref',
-                    flex: 0.2,
-                    hidden: true,
-                    sortable: true
-                },
-                {
-                    text: "Allele Alt",
-                    dataIndex: 'alt',
-                    flex: 0.2,
-                    hidden: true,
-                    sortable: true
-                },
-
-                {
-                    text: "MAF",
-                    dataIndex: 'stats_maf',
-                    xtype: "templatecolumn",
-                    tpl: "{stats_maf} ({stats_allele_maf})",
-                    flex: 0.2,
-                    hidden: true,
-                    sortable: true
-                },
-                {
-                    text: "MGF",
-                    dataIndex: 'stats_mgf',
-                    xtype: "templatecolumn",
-                    tpl: "{stats_mgf} ({stats_genotype_maf})",
-                    flex: 0.2,
-                    hidden: true,
-                    sortable: true
-                }
-            ]
+            tpl: xtmplSift,
+            sortable: false
         },
         {
-            text: "Missing Alleles/Genotypes",
-            hidden: true,
-            columns: [
-                {
-                    text: "Miss. Alleles",
-                    dataIndex: 'stats_miss_allele',
-                    flex: 0.1,
-                    hidden: true,
-                    sortable: true
-                },
-                {
-                    text: "Miss. Genotypes",
-                    dataIndex: 'stats_miss_gt',
-                    flex: 0.1,
-                    hidden: true,
-                    sortable: true
-                }
-            ]
-        },
-        {
-            text: "Mendelian Errors",
-            flex: 1,
-            dataIndex: 'stats_mendel_err',
-            sortable: true,
-            hidden: true
+            text: 'Phenotype',
+            dataIndex: 'phenotype',
+            sortable: false
         },
         {
             text: "Is indel?",
@@ -312,49 +265,6 @@ BierappWidget.prototype._createGrid = function() {
             dataIndex: 'stats_is_indel',
             sortable: true,
             hidden: true
-        },
-        {
-            text: "Inheritance",
-            flex: 1,
-            hidden: true,
-            columns: [
-                {
-                    text: "% Cases dominant",
-                    dataIndex: 'stats_cases_percent_dominant',
-                    hidden: true,
-                    renderer: function (value) {
-                        return value.toFixed(2);
-                    },
-                    sortable: true
-                },
-                {
-                    text: "% Controls dominant",
-                    dataIndex: 'stats_controls_percent_dominant',
-                    hidden: true,
-                    renderer: function (value) {
-                        return value.toFixed(2) + "%";
-                    },
-                    sortable: true
-                },
-                {
-                    text: "% Cases recessive",
-                    dataIndex: 'stats_cases_percent_recessive',
-                    hidden: true,
-                    renderer: function (value) {
-                        return value.toFixed(2) + "%";
-                    },
-                    sortable: true
-                },
-                {
-                    text: "% Controls recessive",
-                    dataIndex: 'stats_controls_percent_recessive',
-                    hidden: true,
-                    renderer: function (value) {
-                        return value.toFixed(2) + "%";
-                    },
-                    sortable: true
-                }
-            ]
         }
     ];
     _this.attributes = [
@@ -365,50 +275,120 @@ BierappWidget.prototype._createGrid = function() {
         {name: 'stats_id_snp', type: 'string'},
         {name: 'stats_maf', type: 'float'},
         {name: 'stats_mgf', type: 'double'},
-        {name: 'stats_allele_maf', type: 'string'},
-        {name: 'stats_genotype_maf', type: 'string'},
-        {name: 'stats_miss_allele', type: 'int'},
         {name: 'stats_miss_gt', type: 'int'},
-        {name: 'stats_mendel_err', type: 'int'},
         {name: 'stats_is_indel', type: 'boolean'},
-        {name: 'stats_cases_percent_dominant', type: 'double'},
-        {name: 'stats_controls_percent_dominant', type: 'double'},
-        {name: 'stats_cases_percent_recessive', type: 'double'},
-        {name: 'stats_controls_percent_recessive', type: 'double'},
         {name: 'gene_name', type: 'string'},
         {name: 'consequence_types', type: 'string'},
-        {name: "genotypes", type: 'auto'},
-        {name: "effect", type: 'auto'},
         {name: "controls", type: 'auto'},
+        {name: "phenotype", type: "string"},
         {name: "polyphen_score", type: 'float'},
         {name: "polyphen_effect", type: 'int'},
         {name: "sift_score", type: 'float'},
-        {name: "sift_effect", type: 'int'},
-
+        {name: "sift_effect", type: 'int'}
     ];
     _this.model = Ext.define('Variant', {
         extend: 'Ext.data.Model',
         fields: _this.attributes
     });
+
+    var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
+
     _this.st = Ext.create('Ext.data.Store', {
+        pageSize: 25,
         model: _this.model,
-        groupField: 'gene_name',
+        //groupField: 'gene_name',
         data: [],
         autoLoad: false,
-        proxy: {type: 'memory'},
-        pageSize: 5
+        remoteSort: true,
+        storeId: 'gridStore',
+        proxy: {
+            model: _this.model,
+            type: 'ajax',
+            //callbackKey: 'callback',
+            //callback: 'callback',
+            //url: OPENCGA_HOST + "/variantsMongo",
+            url: url,
+            reader: {
+                root: "response.result",
+                totalProperty: "response.numResults"
+            },
+            listeners: {
+                exception: function (proxy, response, operation, eOpts) {
+                    //debugger
+                    Ext.MessageBox.show({
+                        title: 'REMOTE EXCEPTION',
+                        msg: operation.getError(),
+                        icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.Msg.OK
+                    });
+                },
+                success: function (response) {
+                    console.log("Spiffing, everything worked");
+                    // success property
+                    console.log(response.success);
+                    // result property
+                    console.log(response.result);
+                },
+                failure: function (response) {
+                    console.log(response);
+                    Ext.Msg.alert('Error', 'Please try again.', Ext.emptyFn);
+                }
+            }
+
+
+        },
+        method: 'get',
+        listeners: {
+            load: function (store, records, successful, operation, eOpts) {
+                console.log(records);
+
+                _this.st.suspendEvents();
+
+                var aux;
+
+                for (var i = 0; i < records.length; i++) {
+                    var v = records[i];
+                    for (var key in v.raw.sampleGenotypes) {
+
+                        aux = v.raw.sampleGenotypes[key];
+                        //aux = aux.replace
+                        aux = aux.replace(/-1/g, ".");
+                        aux = aux.replace("|", "/");
+                        v.set(key, aux);
+                    }
+                    //console.log(v.raw.idSNP);
+
+                    v.set("snpid", v.raw.snpid);
+                    v.set("genes", v.raw.genes.join(","));
+
+                    _this._getEffect(v);
+                    _this._getPolyphenSift(v);
+                    v.commit();
+
+                }
+
+                _this._getPhenotypes(records);
+
+                _this.st.resumeEvents();
+                _this.st.fireEvent('refresh');
+
+                _this._updateInfoVariantMini(records);
+
+
+            }
+        }
 
     });
 
-        var xtmplGroup = new Ext.XTemplate(
-            '{[this.parseGroupField(values.groupField)]}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
-            {
-                parseGroupField: function(value){
+    var xtmplGroup = new Ext.XTemplate(
+        '{[this.parseGroupField(values.groupField)]}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
+        {
+            parseGroupField: function (value) {
 
-                    return Utils.formatText(value, "_");
-                }
+                return Utils.formatText(value, "_");
             }
-        );
+        }
+    );
 
     var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
         //groupHeaderTpl: '{[this.parseGroupField(values.groupField)]}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
@@ -430,9 +410,17 @@ BierappWidget.prototype._createGrid = function() {
             plugins: 'bufferedrenderer',
             loadMask: true,
             features: [groupingFeature, {ftype: 'summary'}],
-            viewConfig:{
+            viewConfig: {
                 emptyText: 'No records to display'
             },
+            bbar: Ext.create('Ext.PagingToolbar', {
+                store: _this.st,
+                id: _this.id + "_pagingToolbar",
+                pageSize: 25,
+                displayInfo: true,
+                displayMsg: 'Variants {0} - {1} of {2}',
+                emptyMsg: "No variants to display",
+            }),
             dockedItems: [
                 {
                     xtype: 'toolbar',
@@ -443,18 +431,6 @@ BierappWidget.prototype._createGrid = function() {
                             id: this.id + "numRowsLabel"
                         },
                         '->',
-                        {
-                            text: 'Collapse All',
-                            handler: function () {
-                                if (this.text == "Collapse All") {
-                                    groupingFeature.collapseAll();
-                                    this.setText("Expand All");
-                                } else {
-                                    groupingFeature.expandAll();
-                                    this.setText("Collapse All");
-                                }
-                            }
-                        },
                         {
                             xtype: 'button',
                             text: 'Columns',
@@ -472,6 +448,8 @@ BierappWidget.prototype._createGrid = function() {
                             xtype: 'button',
                             text: 'Export data...',
                             handler: function () {
+                                alert("Under construction");
+                                return;
                                 if (!Ext.getCmp(_this.id + "exportWindow")) {
                                     var cbgItems = [];
                                     var attrList = _this._getColumnNames();
@@ -534,11 +512,17 @@ BierappWidget.prototype._createGrid = function() {
                                                         download: fileName + ".txt"
                                                     });
 
+
                                                     this.up(".window").hide();
+                                                    Ext.getCmp(_this.id + "fileName").reset();
+
                                                 }
                                             }
                                         ]
                                     }).show();
+                                } else {
+                                    Ext.getCmp(_this.id + "exportWindow").show();
+
                                 }
                             }
                         }
@@ -568,10 +552,7 @@ BierappWidget.prototype._createGrid = function() {
             var ref = row.ref;
             var alt = row.alt;
 
-
             _this._updateEffectGrid(chr, pos, ref, alt);
-
-
         }
     });
 
@@ -588,24 +569,24 @@ BierappWidget.prototype._getControls = function () {
         border: 0,
         items: [
             {
-            xtype: 'fieldcontainer',
-            layout: 'hbox',
-            border: false,
-            width: "100%",
-            items: [
-                {
-                xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">1000G MAF <</span>'
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                border: false,
+                width: "100%",
+                items: [
+                    {
+                        xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">1000G MAF <</span>'
+                    },
+                    {
+                        xtype: 'textfield',
+                        name: 'maf_1000g_controls',
+                        margin: '0 0 0 5',
+                        labelWidth: '50%',
+                        width: "50%"
+                    }
+                ]
             },
-            {
-                xtype: 'textfield',
-                name: 'maf_1000g_controls',
-                margin: '0 0 0 5',
-                labelWidth: '50%',
-                width: "50%"
-            }
-            ]
-        },
-        //{
+            //{
             //xtype: 'fieldcontainer',
             ////fieldLabel: '% Controls recessive',
             //layout: 'hbox',
@@ -614,37 +595,263 @@ BierappWidget.prototype._getControls = function () {
             //width: "100%",
             //items: [
 
-                //{
-                //xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">BIER MAF<</span>'
+            //{
+            //xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">BIER MAF<</span>'
             //},
             //{
-                //xtype: 'textfield',
-                //name: 'maf_bier_controls',
-                //margin: '0 0 0 5',
-                //labelWidth: '50%',
-                //width: "50%"
+            //xtype: 'textfield',
+            //name: 'maf_bier_controls',
+            //margin: '0 0 0 5',
+            //labelWidth: '50%',
+            //width: "50%"
             //}
             //]
-        //},
-        {
-            xtype: 'fieldcontainer',
-            layout: 'hbox',
-            border: false,
-            width: "100%",
-            items: [
-                {
-                xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">EVS MAF <</span>'
-            },
+            //},
             {
-                xtype: 'textfield',
-                name: 'maf_evs_controls',
-                margin: '0 0 0 5',
-                labelWidth: '50%',
-                width: "50%"
-                //value: '0.1'
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                border: false,
+                width: "100%",
+                items: [
+                    {
+                        xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">EVS MAF <</span>'
+                    },
+                    {
+                        xtype: 'textfield',
+                        name: 'maf_evs_controls',
+                        margin: '0 0 0 5',
+                        labelWidth: '50%',
+                        width: "50%"
+                        //value: '0.1'
+                    }
+                ]
             }
-            ]
-        }
         ]
     });
 };
+
+
+BierappWidget.prototype.draw = function () {
+    var _this = this;
+    OpencgaManager.variantInfoMongo({
+        accountId: $.cookie("bioinfo_account"),
+        sessionId: $.cookie("bioinfo_sid"),
+        filename: this.dbName,
+        jobId: this.job.id,
+        success: function (data, textStatus, jqXHR) {
+
+            _this.variantInfo = data.response.result[0];
+
+            _this._draw();
+        }
+    });
+};
+
+
+BierappWidget.prototype._getResult = function () {
+    var _this = this;
+
+    _this.st.removeAll();
+
+
+    // Clear store's extraParams
+    _this.st.getProxy().extraParams = {};
+
+    var values = this.form.getForm().getValues();
+
+    var formParams = {};
+    for (var param in values) {
+        if (formParams[param]) {
+            var aux = [];
+            aux.push(formParams[param]);
+            aux.push(values[param]);
+            formParams[param] = aux;
+        } else {
+            formParams[param] = values[param];
+        }
+    }
+
+
+    for (var param in formParams) {
+        _this.st.getProxy().setExtraParam(param, formParams[param]);
+    }
+    _this.st.load();
+
+
+    //_this.grid.setLoading(true);
+
+    //// Remove all elements from grids
+    //_this.grid.store.removeAll();
+    //_this.gridEffect.store.removeAll();
+
+    //OpencgaManager.variantsMongo({
+    //accountId: $.cookie("bioinfo_account"),
+    //sessionId: $.cookie("bioinfo_sid"),
+    //fileName: this.dbName,
+    //jobId: this.job.id,
+    //formData: formParams,
+    //success: function (response, textStatus, jqXHR) {
+    ////debugger
+    //if (response.response != null && response.response.numResults > 0) {
+    //var data = _this._prepareData(response.response.result);
+
+    //console.log(data);
+
+    //_this.st.loadData(data);
+
+    //_this.grid.getView().refresh();
+
+    //_this.grid.getSelectionModel().select(0);
+
+    //Ext.getCmp(_this.id + "numRowsLabel").setText(response.length + " variants");
+
+    //_this._updateInfoVariantMini(response);
+
+    //Ext.example.msg('Search', 'Sucessfully')
+
+    //}
+
+    //_this.grid.setLoading(false);
+
+    //},
+    //error: function (jqXHR, textStatus, errorThrown) {
+    //_this.grid.setLoading(false);
+    //}
+    //});
+
+
+};
+BierappWidget.prototype._getEffect = function (record) {
+    var _this = this;
+
+    //var variants = [];
+
+    //for (var i = 0; i < batch.length; i++) {
+    //var record = batch[i];
+    //variants.push(record.raw.chr + ":" + record.raw.pos + ":" + record.raw.studies[0].ref + ":" + record.raw.studies[0].alt[0]);
+    //}
+
+    var ct = [];
+    var genes = [];
+
+    //var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/genomic/variant/" + variants.join(",") + "/effect";
+    //console.log(url);
+    //return;
+
+    var req = record.raw.chromosome + ":" + record.raw.position + ":" + record.raw.ref + ":" + record.raw.alt[0];
+
+    $.ajax({
+        url: "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
+        dataType: 'json',
+        async: false,
+        success: function (response, textStatus, jqXHR) {
+            if (response) { // {&& response.response && response.response.length > 0) {
+                for (var j = 0; j < response.length; j++) {
+                    var elem = response[j];
+                    if (elem.aaPosition != -1 &&
+                        elem.transcriptId != "" &&
+                        elem.aminoacidChange.length >= 3
+                        && record.raw.transcriptId === undefined
+                        && record.raw.aaPos === undefined
+                        && record.raw.aaChange === undefined) {
+                        record.raw.transcript = elem.transcriptId;
+                        record.raw.aaPos = elem.aaPosition;
+                        record.raw.aaChange = elem.aminoacidChange;
+                    }
+                }
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('Error loading Effect');
+        }
+
+    });
+};
+BierappWidget.prototype._getPolyphenSift = function (variant) {
+
+    //console.log(variant);
+    if (variant.raw.aaPos != undefined && variant.raw.aaPos >= 0) {
+        var change = variant.raw.aaChange.split("/")[1];
+        var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/feature/transcript/" + variant.raw.transcript + "/function_prediction?aaPosition=" + variant.raw.aaPos + "&aaChange=" + change;
+        //console.log(url);
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            async: false,
+            success: function (response, textStatus, jqXHR) {
+                var res = response.response[0];
+                if (res.numResults > 0) {
+                    if (res.result[0].aaPositions[variant.raw.aaPos]) {
+
+                        res = res.result[0].aaPositions[variant.raw.aaPos][change];
+                        if (res !== undefined) {
+                            if (res.ps != null) {
+                                variant.set("polyphen_score", res.ps);
+                            }
+                            if (res.pe != null) {
+                                variant.set("polyphen_effect", res.pe)
+                            }
+                            if (res.ss != null) {
+                                variant.set("sift_score", res.ss);
+                            }
+                            if (res.se != null) {
+                                variant.set("sift_effect", res.se);
+                            }
+                        }
+                    }
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error loading PolyPhen/SIFT');
+            }
+        });
+    }
+};
+BierappWidget.prototype._getPhenotypes = function (records) {
+
+    var regs = [];
+    for (var i = 0; i < records.length; i++) {
+
+        var variant = records[i];
+
+        var chr = variant.raw.chromosome;
+        var pos = variant.raw.position;
+        regs.push(chr + ":" + pos + "-" + pos);
+
+    }
+    if (regs.length > 0) {
+        var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/genomic/region/" + regs.join(",") + "/phenotype?include=phenotype";
+
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            async: false,
+            success: function (response, textStatus, jqXHR) {
+
+                if (response != undefined && response.response.length > 0 && response.response.length == records.length) {
+                    for (var i = 0; i < response.response.length; i++) {
+                        var v = records[i];
+
+                        var elem = response.response[i];
+                        var phenotypes = [];
+
+                        for (var k = 0; k < elem.numResults; k++) {
+                            phenotypes.push(elem.result[k].phenotype);
+                        }
+
+                        v.set("phenotype", phenotypes.join(","));
+                        v.commit();
+                    }
+
+
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error loading Phenotypes');
+            }
+        });
+    }
+};
+
+

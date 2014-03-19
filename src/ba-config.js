@@ -1,6 +1,7 @@
 CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
 CELLBASE_VERSION = "v3";
 OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga/rest";
+OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging-aleman/rest";
 
 if (
     window.location.host.indexOf("localhost") != -1 ||
@@ -15,17 +16,18 @@ if (
     ) {
 
     CELLBASE_HOST = "http://ws-beta.bioinfo.cipf.es/cellbase-server-3.0.0/rest";
-//    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-server-0.2.0/rest";
-    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-server-aleman/rest";
+    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging-aleman/rest";
 }
 
+CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
 
 SUITE_INFO = '<div style=" width: 100%; height: 800px;">'
-    + '<div style="float:right; width: 600px">'
+    + '<div style="float:right; width: 400px">'
     + '<h2>Supported by:</h2>'
     + '<span align="justify">' +
     '<img width="25%" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"> <br><br>' +
-    '<img width="80%" src="http://www.ciberer.es/templates/ja_pyrite/images/logo.jpg"><br><br>' +
+    '<img width="50%" src="http://www2.iib.uam.es/ivarela_lab/imagenes/logo_ciberer.jpg"> <br/><br>' +
+    '<img width="50%" src="http://img2.mailchimp.com/2009/03/25/1efbf9c6a8/LOGO_Micinn_Isciii.jpg"><br><br>' +
     '<img width="15%" src="http://bioinfo.cipf.es/babeltrac/chrome/site/babeltitle200.gif"/><br><br>' +
     '<img src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png">' +
     '</span>'
@@ -35,7 +37,7 @@ SUITE_INFO = '<div style=" width: 100%; height: 800px;">'
     + '<span>Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes  affected by deleterious variants that segregate along family pedigrees , case-controls or sporadic samples .</span>'
     + '<h2>Try an Example</h2>'
     + '<span>Here you can try all the filtering options and discover the gene affected in a test family.</span>'
-+ '<h2>Analyze your own families or case-control data</h2>'
+    + '<h2>Analyze your own families or case-control data</h2>'
     + '<span>Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the segregation schema along the family.</span>'
     + '<p align="justify"><h2>Note</h2>This web application makes an intensive use of new web technologies and standards like HTML5, so browsers that are fully supported for this site are: Chrome 14+, Firefox 7+, Safari 5+ and Opera 11+. Older browser like Chrome13-, Firefox 5- or Internet Explorer 9 may rise some errors. Internet Explorer 6 and 7 are no supported at all.</p>'
     + '</div>'
