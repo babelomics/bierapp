@@ -83,7 +83,7 @@ VariantIndexForm.prototype._getExampleForm = function () {
     var exampleForm = Ext.create('Ext.container.Container', {
         bodyPadding: 10,
         cls: 'bootstrap',
-        items: [this.note1, example1],
+        //items: [this.note1, example1],
         defaults: {margin: '5 0 0 5'}
     });
 

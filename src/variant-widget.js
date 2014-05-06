@@ -26,11 +26,6 @@ VariantWidget.prototype = {
         var _this = this;
         this.targetId = (targetId) ? targetId : this.targetId;
 
-        this.dbName = this.job.command.data['vcf-file'];
-        this.dbName = this.dbName.substring(this.dbName.lastIndexOf('/') + 1);
-        this.dbName = this.dbName.substring(0, this.dbName.lastIndexOf('.')) + '.db';
-        this.statsName = this.dbName.substring(0, this.dbName.lastIndexOf('.')) + '.json';
-
         this.rendered = true;
 
     },
@@ -42,10 +37,7 @@ VariantWidget.prototype = {
             filename: this.dbName,
             jobId: this.job.id,
             success: function (data, textStatus, jqXHR) {
-                //debugger
-                //_this.variantInfo = JSON.parse(data);
                 _this.variantInfo = data.response
-
                 _this._draw();
             }
         });
@@ -146,7 +138,6 @@ VariantWidget.prototype = {
             items: []
         });
         targetId.add(panel);
-//        targetId.setActiveTab(panel);
         return panel;
     },
     _createVariantPanel: function () {
@@ -162,12 +153,14 @@ VariantWidget.prototype = {
             height: '100%',
             bodyPadding: 20,
             border: 0,
-            layout: {type: 'hbox', align: 'stretch'},
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
             cls: 'ocb-border-top-lightgrey',
             items: [
                 {
                     xtype: 'container',
-                    //flex: 1,
                     width: 220,
                     layout: 'fit',
                     margin: '0 20 20 0',
@@ -178,7 +171,10 @@ VariantWidget.prototype = {
                 {
                     xtype: 'container',
                     flex: 7,
-                    layout: {type: 'vbox', align: 'stretch'},
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
                     defaults: {
                         margin: '0 0 20 0',
                         flex: 1
@@ -489,7 +485,6 @@ VariantWidget.prototype = {
         });
 
         var itemTplSamples = new Ext.XTemplate(
-
             '<table cellspacing="0" style="max-width:400px;border-collapse: collapse;border:1px solid #ccc;"><thead>',
             '<th style="min-width:50px;border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">Samples</th>',
             '</thead><tbody>',
@@ -687,7 +682,8 @@ VariantWidget.prototype = {
                             drawNavigationBar: true,
                             drawKaryotypePanel: false,
                             drawChromosomePanel: false,
-                            drawRegionOverviewPanel: false
+                            drawRegionOverviewPanel: true,
+                            overviewZoomMultiplier: 50
                         }); //the div must exist
 
                         genomeViewer.draw();
@@ -774,11 +770,60 @@ VariantWidget.prototype = {
                         });
 
 
+                        var renderer = new FeatureRenderer(FEATURE_TYPES.gene);
+                        renderer.on({
+                            'feature:click': function (event) {
+                            }
+                        });
+
+
+                        var gene = new FeatureTrack({
+                            targetId: null,
+                            id: 2,
+//        title: 'Gene',
+                            minHistogramRegionSize: 20000000,
+                            maxLabelRegionSize: 10000000,
+                            height: 100,
+
+                            renderer: renderer,
+
+                            dataAdapter: new CellBaseAdapter({
+                                category: "genomic",
+                                subCategory: "region",
+                                resource: "gene",
+                                params: {
+                                    exclude: 'transcripts'
+                                },
+                                species: genomeViewer.species,
+                                cacheConfig: {
+                                    chunkSize: 100000
+                                }
+                            })
+                        });
+                        genomeViewer.addOverviewTrack(gene);
+
+
                         genomeViewer.addTrack(this.sequence);
                         genomeViewer.addTrack(this.gene);
                         genomeViewer.addTrack(this.snp);
 
                         _this.gv = genomeViewer;
+
+                        $(_this.gv.navigationBar.restoreDefaultRegionButton).hide();
+                        $(_this.gv.navigationBar.regionHistoryButton).hide();
+                        $(_this.gv.navigationBar.speciesButton).hide();
+                        $(_this.gv.navigationBar.chromosomesButton).hide();
+                        $(_this.gv.navigationBar.karyotypeButton).hide();
+                        $(_this.gv.navigationBar.chromosomeButton).hide();
+                        $(_this.gv.navigationBar.regionButton).hide();
+                        $(_this.gv.navigationBar.windowSizeField).parent().hide();
+                        //$(_this.gv.navigationBar.regionField).parent().hide();
+                        //$(_this.gv.navigationBar.goButton).parent().hide();
+                        //$(_this.gv.navigationBar.searchField).parent().hide();
+                        //$(_this.gv.navigationBar.quickSearchButton).parent().hide();
+                        $(_this.gv.navigationBar.autoheightButton).parent().hide();
+                        $(_this.gv.navigationBar.compactButton).parent().hide();
+
                     }
                 }
             }
@@ -873,7 +918,9 @@ VariantWidget.prototype = {
             width: "100%",
             layout: {
                 type: 'accordion',
-                fill: false
+                titleCollapse:true,
+                fill: false,
+                multi:true
             },
             tbar: {
                 width: '100%',
@@ -958,7 +1005,9 @@ VariantWidget.prototype = {
 
         var samples = Ext.create('Ext.panel.Panel', {
             width: '100%',
-            title: 'Segregation'
+            height: 300,
+            title: 'Segregation',
+            autoScroll: true
             //items: samplesInfo,
             //border:0
         });
@@ -1000,13 +1049,16 @@ VariantWidget.prototype = {
             items: effectItems
         });
 
-
         accordion.add(samples);
         accordion.add(controls);
         accordion.add(effect);
         accordion.add(region);
         accordion.add(genes);
-        //accordion.add(stats);
+
+        controls.collapsed=true;
+        effect.collapsed=true;
+        region.collapsed = true;
+        genes.collapsed = true;
 
         return accordion;
     },
@@ -1135,10 +1187,6 @@ VariantWidget.prototype = {
                     dataIndex: "snpId",
                     flex: 1
                 },
-                //{
-                //text: "Samples",
-                //flex: 1
-                //},
                 {
                     text: "Conseq. Type",
                     dataIndex: "consequenceTypeObo",
@@ -1647,6 +1695,7 @@ VariantWidget.prototype = {
                                             });
                                         }
 
+
                                         Ext.create('Ext.window.Window', {
                                             id: _this.id + "exportWindow",
                                             title: "Export attributes",
@@ -1675,6 +1724,7 @@ VariantWidget.prototype = {
                                                     text: 'Download',
                                                     href: "none",
                                                     handler: function () {
+
                                                         var fileName = Ext.getCmp(_this.id + "fileName").getValue();
                                                         if (fileName == "") {
                                                             fileName = "variants";
@@ -1698,18 +1748,7 @@ VariantWidget.prototype = {
                             }
                         ]
                     }
-                ],
-                listeners: {
-                    afterrender: function () {
-
-
-                        var btn = Ext.getCmp(_this.id + "gridColSelectorMenu");
-
-                        btn.add(_this.colSelector);
-
-
-                    }
-                }
+                ]
             }
         );
 
@@ -1726,7 +1765,6 @@ VariantWidget.prototype = {
 
                 _this._updateEffectGrid(chr, pos, ref, alt);
 
-
             }
         });
 
@@ -1735,25 +1773,20 @@ VariantWidget.prototype = {
     _updateEffectGrid: function (chr, pos, ref, alt) {
 
         var _this = this;
-
-        //var url =  CELLBASE_HOST_OLD + "/latest/hsa/genomic/variant/" + chr + ":" + pos + ":" + ref + ":"  + alt + "/consequence_type?of=json";
-//console.log(url);
-
         var req = chr + ":" + pos + ":" + ref + ":" + alt;
         _this.gridEffect.setLoading(true);
 
-
-        console.log(req);
         $.ajax({
-            //url: url,
             url: "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
-                console.log(response);
                 if (response.length > 0) {
-                    _this.gridEffect.getStore().loadData(response);
+
+                    var data = _this._filterEffectData(response);
+
+                    _this.gridEffect.getStore().loadData(data);
                     _this.gridEffect.setTitle('<span class="ssel">Effect</span> - <spap class="info">' + chr + ':' + pos + ' ' + ref + '>' + alt + '</spap>');
-                    Ext.getCmp(_this.id + "numRowsLabelEffect").setText(response.length + " effects");
+                    Ext.getCmp(_this.id + "numRowsLabelEffect").setText(data.length + " effects");
 
                 } else {
                     _this.gridEffect.getStore().removeAll();
@@ -1765,7 +1798,32 @@ VariantWidget.prototype = {
                 _this.gridEffect.setLoading(false);
             }
         });
-        //_this.gridEffect.setLoading(false);
+    },
+    _filterEffectData: function(data){
+        var _this = this;
+        var res = [];
+
+        var regulatory = {};
+
+        for(var i = 0; i< data.length; i++){
+            var elem = data[i];
+            if(elem.consequenceTypeObo == "coding_sequence_variant" || elem.consequenceTypeObo == "exon_variant" || elem.consequenceTypeObo == "intron_variant"){
+                continue;
+            }else if (elem.consequenceTypeObo == "regulatory_region_variant"){
+                if(!(elem.featureId in regulatory)){
+                    regulatory[elem.featureId] = elem;
+                }
+                continue;
+            }
+
+            res.push(elem);
+        }
+
+        for(var elem in regulatory){
+            res.push(regulatory[elem]);
+        }
+
+        return res;
     },
     _getSubColumn: function (colName) {
         var _this = this;
@@ -1812,16 +1870,79 @@ VariantWidget.prototype = {
         var output = "";
         output += "#" + headerLine + "\n";
 
-        var lines = _this.st.getRange();
+        var lines = _this._getDataToExport();
+        
+        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.6, "Preparing data");
+
+
+        for (var i = 0; i < lines.length; i++) {
+            var v = lines[i];
+            for (var key in v.sampleGenotypes) {
+
+                aux = v.sampleGenotypes[key];
+                aux = aux.replace(/-1/g, ".");
+                aux = aux.replace("|", "/");
+                v.key= aux;
+            }
+
+            v.genes = v.genes.join(",");
+        }
+        
+        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.9, "Creating File");
+
+       
         for (var j = 0; j < lines.length; j++) {
-            output += _this._processFileLine(lines[j].getData(), colNames);
+            output += _this._processFileLine(lines[j], colNames);
             output += "\n";
         }
 
         return output;
     },
-    _processFileLine: function (data, columns) {
+    _getDataToExport: function(){
+        
+        var _this = this;
+        var totalData = _this.st.totalCount;
+        
+        var values = this.form.getForm().getValues();
 
+        var formParams = {};
+        for (var param in values) {
+            if (formParams[param]) {
+                var aux = [];
+                aux.push(formParams[param]);
+                aux.push(values[param]);
+                formParams[param] = aux;
+            } else {
+                formParams[param] = values[param];
+            }
+        }
+        formParams.limit = totalData;
+
+        var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
+
+        var data = [];
+        $.ajax({
+            url:  url,
+            dataType: 'json',
+            data: formParams,
+            async: false,
+            success: function (response, textStatus, jqXHR) {
+                if(response.response && response.response.numResults > 0){
+                
+                    data = response.response.result;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error loading Effect');
+                Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Error");
+            }
+            });
+        
+
+        return data;
+        
+    },
+    _processFileLine: function (data, columns) {
         var line = "";
         for (var i = 0; i < columns.length; i++) {
             var col = columns[i];
@@ -1832,8 +1953,9 @@ VariantWidget.prototype = {
                 case "Alleles":
                     line += data.ref + ">" + data.alt;
                     break;
-                case "SNP id":
-                    line += data.stats_id_snp;
+                case "SNP Id":
+
+                    line += this._getValueLine(data.stats_id_snp);
                     break;
                 case "1000G":
                     if (data.controls["1000G"]) {
@@ -1851,72 +1973,50 @@ VariantWidget.prototype = {
                         line += ".";
                     }
                     break;
-                case "ESP":
-                    line += "-";
+                case "EVS":
+                    if (data.controls["EVS"]) {
+                        line += data.controls["EVS"].maf + "(" + data.controls["EVS"].allele + ")";
+                    } else {
+                        line += ".";
+                    }
                     break;
 
                 case "Gene":
-                    line += data.gene_name;
+                    line += this._getValueLine(data.genes)
                     break;
                 case "Consq. Type":
-                    line += data.ct;
+                    line += this._getValueLine(data.consequence_types);
                     break;
                 case "Polyphen":
-                    line += "-";
+                    //line += "-";
+                    line += this._getValueLine(data.polyphen_score);
                     break;
-                case "Sift":
-                    line += "-";
+                case "Phenotype":
+                    //line += "-";
+                    line += this._getValueLine(data.phenotype);
                     break;
-                case "Conservation":
-                    line += "-";
-                    break;
-
-                case "Allele Ref":
-                    line += data.ref;
-                    break;
-                case "Allele Alt":
-                    line += data.alt;
+                case "SIFT":
+                    line += this._getValueLine(data.sift_score);
                     break;
 
-                case "MAF":
-                    line += data.stats_maf;
-                    break;
-                case "MGF":
-                    line += data.stats_mgf;
-                    break;
-
-                case "Miss. Alleles":
-                    line += data.stats_miss_allele;
-                    break;
-                case "Miss. Genotypes":
-                    line += data.stats_miss_gt;
-                    break;
-                case "Mendelian Errors":
-                    line += data.stats_mendel_err;
-                    break;
                 case "Is indel?":
-                    line += data.stats_is_indel;
-                    break;
-
-                case "% Controls dominant":
-                    line += data.stats_cases_percent_dominant;
-                    break;
-
-                case "% Cases dominant":
-                    line += data.stats_controls_percent_dominant;
-                    break;
-                case "% Cases recessive":
-                    line += data.stats_cases_percent_recessive;
-                    break;
-                case "% Controls recessive":
-                    line += data.stats_controls_percent_recessive;
+                    line += this._getValueLine(data.stats_is_indel);
                     break;
                 default:
-                    line += data[col];
+                    line += this._getValueLine(data[col]);
             }
             line += "\t";
         }
         return line;
+    },
+    _getValueLine: function (value) {
+        if (value == undefined || value == null) {
+            return ".";
+        } else if (value == "") {
+            return ".";
+        } else {
+            return value;
+        }
     },
     _getColumnNames: function () {
         var _this = this;
@@ -1954,29 +2054,8 @@ VariantWidget.prototype = {
                 v.ct = ct;
             }
 
-            //if (v.genes.length < 1) {
-            //cont++;
-            //v.gene_name = "unknown";
-            //finalData.push(v);
-            //continue;
-            //} else {
-            //delete v.genes[''];
-            //}
             finalData.push(v);
 
-            //for (var j = 0; j < v.genes.length; j++) {
-            //var copy = {};
-            //_.extend(copy, v);
-            //if (v.genes[j] == "") {
-            //copy.gene_name = "unknown";
-            //} else {
-
-            //copy.gene_name = v.genes[j];
-            //}
-            //delete copy.genes;
-            //finalData.push(copy);
-            //cont++;
-            //}
 
         }
         return finalData;
@@ -2003,6 +2082,7 @@ VariantWidget.prototype = {
         // Remove all elements from grids
         _this.grid.store.removeAll();
         _this.gridEffect.store.removeAll();
+        _this.variantGridMini.getStore().removeAll();
 
         OpencgaManager.variantsMongo({
             accountId: $.cookie("bioinfo_account"),
@@ -2014,25 +2094,14 @@ VariantWidget.prototype = {
                 //debugger
                 if (response.response != null && response.response.numResults > 0) {
                     var data = _this._prepareData(response.response.result);
-
-                    console.log(data);
-
                     _this.st.loadData(data);
-
                     _this.grid.getView().refresh();
-
                     _this.grid.getSelectionModel().select(0);
-
                     Ext.getCmp(_this.id + "numRowsLabel").setText(response.length + " variants");
-
                     _this._updateInfoVariantMini(response);
-
                     Ext.example.msg('Search', 'Sucessfully')
-
                 }
-
                 _this.grid.setLoading(false);
-
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 _this.grid.setLoading(false);
@@ -2067,7 +2136,6 @@ VariantWidget.prototype = {
 
         for (var i = 0; i < data.length; i++) {
             var elem = data[i];
-//            console.log(elem);
             result.push({
                 chr: elem.get("chromosome"),
                 pos: elem.get("position"),
@@ -2698,11 +2766,6 @@ VariantWidget.prototype = {
     _checkForm: function () {
         var reg = Ext.getCmp(this.id + "region_list");
         var genes = Ext.getCmp(this.id + "genes");
-
-        //if(reg.getValue() == "" && genes.getValue() == ""){
-        //Ext.example.msg('Form Error', 'You must add a region or a gene first!!');
-        //return false;
-        //}
 
         return true;
 
