@@ -62,10 +62,8 @@ BierappWidget.prototype._createPanel = function (targetId) {
                 handler: function () {
                     // TODO aaleman: Check this code
 
-
                     if (_this.grid.getStore().count() == 0) {
                         Ext.example.msg('Genove Viewer', 'You must apply some filters first!!')
-
                     } else {
                         _this.panel.removeAll(false);
                         _this.panel.add(_this.genomeViewerPanel);
@@ -74,7 +72,6 @@ BierappWidget.prototype._createPanel = function (targetId) {
                         var selection = _this.grid.getView().getSelectionModel().getSelection();
 
                         if (selection.length > 0) {
-
                             row = selection[0];
                             var region = new Region({
                                 chromosome: row.get("chromosome"),
@@ -89,7 +86,6 @@ BierappWidget.prototype._createPanel = function (targetId) {
                         } else {
                             Ext.example.msg('Genove Viewer', 'You must select one variant first!!')
                         }
-
                     }
                 }
             }
@@ -128,10 +124,8 @@ BierappWidget.prototype._createGrid = function () {
                     case 3:
                         effect = "unknown";
                         break;
-
                     default:
                         return ".";
-
                 }
                 return(score + " - (" + effect + ")");
             }
@@ -141,7 +135,6 @@ BierappWidget.prototype._createGrid = function () {
         '{[this.parseEffect(values)]}',
         {
             parseEffect: function (value) {
-
                 if (value.sift_score == 0 && value.sift_effect == 0) {
                     return ".";
                 }
@@ -157,12 +150,20 @@ BierappWidget.prototype._createGrid = function () {
                         break;
                     default:
                         return ".";
-
                 }
                 return(score + " - (" + effect + ")");
             }
         }
     );
+
+    parseMafControl = function(control){
+        var maf = control.maf;
+        var res = maf.toFixed(3);
+        if(control.allele != ""){
+            res = res + " (" + control.allele + ")";
+        }
+        return res;
+    }
 
     _this.columnsGrid = [
         {
@@ -182,7 +183,6 @@ BierappWidget.prototype._createGrid = function () {
         {
             text: "Gene",
             dataIndex: 'genes',
-            //hidden: true,
             flex: 1,
             sortable: false
         },
@@ -201,14 +201,55 @@ BierappWidget.prototype._createGrid = function () {
         {
             flex: 1,
             text: "Controls (MAF)",
+            defaults:{
+                    width:70,
+            },
             columns: [
                 {
                     text: "1000G",
                     renderer: function (val, meta, record) {
                         if (record.data.controls["1000G"]) {
-                            var maf = record.data.controls["1000G"].maf;
-//                            console.log(maf);
-                            return maf.toFixed(3) + " (" + record.data.controls["1000G"].allele + ")";
+                            return parseMafControl(record.data.controls["1000G"]);
+                        } else {
+                            return ".";
+                        }
+                    }
+                },
+                {
+                    text: "1000G-AFR",
+                    renderer: function (val, meta, record) {
+                        if (record.data.controls["1000G-AFR"]) {
+                            return parseMafControl(record.data.controls["1000G-AFR"]);
+                        } else {
+                            return ".";
+                        }
+                    }
+                },
+                {
+                    text: "1000G-ASI",
+                    renderer: function (val, meta, record) {
+                        if (record.data.controls["1000G-ASI"]) {
+                            return parseMafControl(record.data.controls["1000G-ASI"]);
+                        } else {
+                            return ".";
+                        }
+                    }
+                },
+                {
+                    text: "1000G-AME",
+                    renderer: function (val, meta, record) {
+                        if (record.data.controls["1000G-AME"]) {
+                          return parseMafControl(record.data.controls["1000G-AME"]);
+                        } else {
+                            return ".";
+                        }
+                    }
+                },
+                {
+                    text: "1000G-EUR",
+                    renderer: function (val, meta, record) {
+                        if (record.data.controls["1000G-EUR"]) {
+                          return parseMafControl(record.data.controls["1000G-EUR"]);
                         } else {
                             return ".";
                         }
@@ -218,9 +259,9 @@ BierappWidget.prototype._createGrid = function () {
                     text: "EVS",
                     renderer: function (val, meta, record) {
                         if (record.data.controls["EVS"]) {
-                            var maf = record.data.controls["EVS"].maf;
-                            console.log(maf);
-                            return maf.toFixed(3) + " (" + record.data.controls["EVS"].allele + ")";
+                           return parseMafControl(record.data.controls["EVS"]);
+                            //var maf = record.data.controls["EVS"].maf;
+                            //return maf.toFixed(3) + " (" + record.data.controls["EVS"].allele + ")";
                         } else {
                             return ".";
                         }
@@ -292,6 +333,7 @@ BierappWidget.prototype._createGrid = function () {
     });
 
     var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
+    console.log(url);
 
     _this.st = Ext.create('Ext.data.Store', {
         pageSize: 25,
@@ -301,12 +343,13 @@ BierappWidget.prototype._createGrid = function () {
         autoLoad: false,
         remoteSort: true,
         storeId: 'gridStore',
+        sorters:[{
+            property:'chromosome',
+            direction: 'ASC'
+        }],
         proxy: {
             model: _this.model,
             type: 'ajax',
-            //callbackKey: 'callback',
-            //callback: 'callback',
-            //url: OPENCGA_HOST + "/variantsMongo",
             url: url,
             reader: {
                 root: "response.result",
@@ -314,7 +357,6 @@ BierappWidget.prototype._createGrid = function () {
             },
             listeners: {
                 exception: function (proxy, response, operation, eOpts) {
-                    //debugger
                     Ext.MessageBox.show({
                         title: 'REMOTE EXCEPTION',
                         msg: operation.getError(),
@@ -324,9 +366,7 @@ BierappWidget.prototype._createGrid = function () {
                 },
                 success: function (response) {
                     console.log("Spiffing, everything worked");
-                    // success property
                     console.log(response.success);
-                    // result property
                     console.log(response.result);
                 },
                 failure: function (response) {
@@ -334,16 +374,12 @@ BierappWidget.prototype._createGrid = function () {
                     Ext.Msg.alert('Error', 'Please try again.', Ext.emptyFn);
                 }
             }
-
-
         },
         method: 'get',
         listeners: {
             load: function (store, records, successful, operation, eOpts) {
-                console.log(records);
 
                 _this.st.suspendEvents();
-
                 var aux;
 
                 for (var i = 0; i < records.length; i++) {
@@ -351,20 +387,17 @@ BierappWidget.prototype._createGrid = function () {
                     for (var key in v.raw.sampleGenotypes) {
 
                         aux = v.raw.sampleGenotypes[key];
-                        //aux = aux.replace
                         aux = aux.replace(/-1/g, ".");
                         aux = aux.replace("|", "/");
                         v.set(key, aux);
                     }
-                    //console.log(v.raw.idSNP);
 
                     v.set("snpid", v.raw.snpid);
                     v.set("genes", v.raw.genes.join(","));
 
-                    _this._getEffect(v);
-                    _this._getPolyphenSift(v);
+                    //_this._getEffect(v);
+                    //_this._getPolyphenSift(v);
                     v.commit();
-
                 }
 
                 _this._getPhenotypes(records);
@@ -373,43 +406,98 @@ BierappWidget.prototype._createGrid = function () {
                 _this.st.fireEvent('refresh');
 
                 _this._updateInfoVariantMini(records);
+            }
+        }
 
+    });
+    _this.exportStore = Ext.create('Ext.data.Store', {
+        //pageSize: 25,
+        model: _this.model,
+        //groupField: 'gene_name',
+        data: [],
+        autoLoad: false,
+        remoteSort: true,
+        storeId: 'exportStore',
+        sorters:[{
+            property:'chromosome',
+            direction: 'ASC'
+        }],
+        proxy: {
+            model: _this.model,
+            type: 'ajax',
+            url: url,
+            reader: {
+                root: "response.result",
+                totalProperty: "response.numResults"
+            },
+            listeners: {
+                exception: function (proxy, response, operation, eOpts) {
+                    Ext.MessageBox.show({
+                        title: 'REMOTE EXCEPTION',
+                        msg: operation.getError(),
+                        icon: Ext.MessageBox.ERROR,
+                        buttons: Ext.Msg.OK
+                    });
+                },
+                success: function (response) {
+                    console.log("Spiffing, everything worked");
+                    console.log(response.success);
+                    console.log(response.result);
+                },
+                failure: function (response) {
+                    console.log(response);
+                    Ext.Msg.alert('Error', 'Please try again.', Ext.emptyFn);
+                }
+            }
+        },
+        method: 'get',
+        listeners: {
+            load: function (store, records, successful, operation, eOpts) {
+
+                _this.st.suspendEvents();
+                var aux;
+
+                for (var i = 0; i < records.length; i++) {
+                    var v = records[i];
+                    for (var key in v.raw.sampleGenotypes) {
+
+                        aux = v.raw.sampleGenotypes[key];
+                        aux = aux.replace(/-1/g, ".");
+                        aux = aux.replace("|", "/");
+                        v.set(key, aux);
+                    }
+
+                    v.set("snpid", v.raw.snpid);
+                    v.set("genes", v.raw.genes.join(","));
+
+                    //_this._getEffect(v);
+                    //_this._getPolyphenSift(v);
+                    v.commit();
+                }
+
+                //_this._getPhenotypes(records);
+
+                _this.st.resumeEvents();
+                _this.st.fireEvent('refresh');
 
             }
         }
 
     });
 
-    var xtmplGroup = new Ext.XTemplate(
-        '{[this.parseGroupField(values.groupField)]}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
-        {
-            parseGroupField: function (value) {
-
-                return Utils.formatText(value, "_");
-            }
-        }
-    );
-
-    var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-        //groupHeaderTpl: '{[this.parseGroupField(values.groupField)]}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
-        groupHeaderTpl: xtmplGroup,
-        enableGroupingMenu: false
-    });
     var grid = Ext.create('Ext.grid.Panel', {
             title: '<span class="ssel">Variant Info</span>',
             flex: 1,
             height: '100%',
-            //width: '100%',
             store: _this.st,
             loadMask: true,
             border: 1,
-            // titleCollapse: true,
-            // collapsible: true,
-            //            features: [groupingFeature],
             columns: this.columnsGrid,
             plugins: 'bufferedrenderer',
             loadMask: true,
-            features: [groupingFeature, {ftype: 'summary'}],
+            features: [
+                {ftype: 'summary'}
+            ],
             viewConfig: {
                 emptyText: 'No records to display'
             },
@@ -448,8 +536,12 @@ BierappWidget.prototype._createGrid = function () {
                             xtype: 'button',
                             text: 'Export data...',
                             handler: function () {
-                                alert("Under construction");
-                                return;
+
+                                if(_this.st.getCount() == 0){
+                                    Ext.example.msg('ERROR', 'You must apply some filters before or the result set is empty!!');
+                                    return;
+                                }
+
                                 if (!Ext.getCmp(_this.id + "exportWindow")) {
                                     var cbgItems = [];
                                     var attrList = _this._getColumnNames();
@@ -470,6 +562,13 @@ BierappWidget.prototype._createGrid = function () {
                                             checked: true
                                         });
                                     }
+                                    var progress = Ext.create('Ext.ProgressBar', {
+                                        text: 'Progress...',
+                                        border: 1,
+                                        flex: 1,
+                                        margin: '0 10 0 0',
+                                        id:_this.id + "_progressBarExport"
+                                    });
 
                                     Ext.create('Ext.window.Window', {
                                         id: _this.id + "exportWindow",
@@ -489,6 +588,7 @@ BierappWidget.prototype._createGrid = function () {
                                             }
                                         ],
                                         buttons: [
+                                            progress,
                                             {
                                                 xtype: 'textfield',
                                                 id: _this.id + "fileName",
@@ -498,7 +598,11 @@ BierappWidget.prototype._createGrid = function () {
                                             {
                                                 text: 'Download',
                                                 href: "none",
+                                                id: _this.id + "_downloadExport",
                                                 handler: function () {
+                                                    Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.1, "Requesting data");
+                                                    
+                                                    this.disable();
                                                     var fileName = Ext.getCmp(_this.id + "fileName").getValue();
                                                     if (fileName == "") {
                                                         fileName = "variants";
@@ -509,11 +613,12 @@ BierappWidget.prototype._createGrid = function () {
 
                                                     this.getEl().set({
                                                         href: 'data:text/csv,' + encodeURIComponent(content),
-                                                        download: fileName + ".txt"
+                                                        download: fileName + ".csv"
                                                     });
 
 
-                                                    this.up(".window").hide();
+                                                    Ext.getCmp(_this.id + "_progressBarExport").updateProgress(1, "Downloaded");
+                                                    //this.up(".window").hide();
                                                     Ext.getCmp(_this.id + "fileName").reset();
 
                                                 }
@@ -524,21 +629,13 @@ BierappWidget.prototype._createGrid = function () {
                                     Ext.getCmp(_this.id + "exportWindow").show();
 
                                 }
+                                Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Progress");
+                               Ext.getCmp(_this.id + "_downloadExport").enable();
                             }
                         }
                     ]
                 }
-            ],
-            listeners: {
-                afterrender: function () {
-
-                    var btn = Ext.getCmp(_this.id + "gridColSelectorMenu");
-
-                    btn.add(_this.colSelector);
-
-
-                }
-            }
+            ]
         }
     );
 
@@ -569,67 +666,66 @@ BierappWidget.prototype._getControls = function () {
         border: 0,
         items: [
             {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                border: false,
-                width: "100%",
-                items: [
-                    {
-                        xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">1000G MAF <</span>'
-                    },
-                    {
-                        xtype: 'textfield',
-                        name: 'maf_1000g_controls',
-                        margin: '0 0 0 5',
-                        labelWidth: '50%',
-                        width: "50%"
-                    }
-                ]
+                xtype: 'textfield',
+                fieldLabel: '<span class="emph">1000G MAF <</span>',
+                name: 'maf_1000g_controls',
+                labelWidth: 120,
+                width: 180,
+                labelAlign: 'right'
             },
-            //{
-            //xtype: 'fieldcontainer',
-            ////fieldLabel: '% Controls recessive',
-            //layout: 'hbox',
-            //margin: '10 0 0 0',
-            //border: false,
-            //width: "100%",
-            //items: [
-
-            //{
-            //xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">BIER MAF<</span>'
-            //},
-            //{
-            //xtype: 'textfield',
-            //name: 'maf_bier_controls',
-            //margin: '0 0 0 5',
-            //labelWidth: '50%',
-            //width: "50%"
-            //}
-            //]
-            //},
             {
-                xtype: 'fieldcontainer',
-                layout: 'hbox',
-                border: false,
-                width: "100%",
-                items: [
-                    {
-                        xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">EVS MAF <</span>'
-                    },
-                    {
-                        xtype: 'textfield',
-                        name: 'maf_evs_controls',
-                        margin: '0 0 0 5',
-                        labelWidth: '50%',
-                        width: "50%"
-                        //value: '0.1'
-                    }
-                ]
+                xtype: 'textfield',
+                fieldLabel: '<span class="emph">EVS MAF   <</span>',
+                name: 'maf_evs_controls',
+                labelWidth: 120,
+                width: 180,
+                labelAlign: 'right'
+            },
+            {
+                xtype: 'tbtext',
+                margin: '20 0 5 0 ',
+                border: '0 0 1 0',
+                style:{
+                    borderColor:'black',
+                    borderStyle:'solid'
+                },
+                text: '<span>1000G Populations</span>'
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: '<span class="emph">African MAF <</span>',
+                name: 'maf_1000g_afr_controls',
+                labelWidth: 120,
+                width: 180,
+                labelAlign: 'right'
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: '<span class="emph">American MAF <</span>',
+                name: 'maf_1000g_ame_controls',
+                labelWidth: 120,
+                width: 180,
+                labelAlign: 'right'
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: '<span class="emph">Asian MAF <</span>',
+                name: 'maf_1000g_asi_controls',
+                labelWidth: 120,
+                width: 180,
+                labelAlign: 'right'
+            },
+            {
+                xtype: 'textfield',
+                fieldLabel: '<span class="emph">European MAF <</span>',
+                name: 'maf_1000g_eur_controls',
+                labelWidth: 120,
+                width: 180,
+                labelAlign: 'right'
             }
         ]
     });
 };
-
 
 BierappWidget.prototype.draw = function () {
     var _this = this;
@@ -647,12 +743,8 @@ BierappWidget.prototype.draw = function () {
     });
 };
 
-
 BierappWidget.prototype._getResult = function () {
     var _this = this;
-
-    _this.st.removeAll();
-
 
     // Clear store's extraParams
     _this.st.getProxy().extraParams = {};
@@ -671,74 +763,16 @@ BierappWidget.prototype._getResult = function () {
         }
     }
 
-
     for (var param in formParams) {
         _this.st.getProxy().setExtraParam(param, formParams[param]);
     }
     _this.st.load();
 
-
-    //_this.grid.setLoading(true);
-
-    //// Remove all elements from grids
-    //_this.grid.store.removeAll();
-    //_this.gridEffect.store.removeAll();
-
-    //OpencgaManager.variantsMongo({
-    //accountId: $.cookie("bioinfo_account"),
-    //sessionId: $.cookie("bioinfo_sid"),
-    //fileName: this.dbName,
-    //jobId: this.job.id,
-    //formData: formParams,
-    //success: function (response, textStatus, jqXHR) {
-    ////debugger
-    //if (response.response != null && response.response.numResults > 0) {
-    //var data = _this._prepareData(response.response.result);
-
-    //console.log(data);
-
-    //_this.st.loadData(data);
-
-    //_this.grid.getView().refresh();
-
-    //_this.grid.getSelectionModel().select(0);
-
-    //Ext.getCmp(_this.id + "numRowsLabel").setText(response.length + " variants");
-
-    //_this._updateInfoVariantMini(response);
-
-    //Ext.example.msg('Search', 'Sucessfully')
-
-    //}
-
-    //_this.grid.setLoading(false);
-
-    //},
-    //error: function (jqXHR, textStatus, errorThrown) {
-    //_this.grid.setLoading(false);
-    //}
-    //});
-
-
 };
 BierappWidget.prototype._getEffect = function (record) {
     var _this = this;
 
-    //var variants = [];
-
-    //for (var i = 0; i < batch.length; i++) {
-    //var record = batch[i];
-    //variants.push(record.raw.chr + ":" + record.raw.pos + ":" + record.raw.studies[0].ref + ":" + record.raw.studies[0].alt[0]);
-    //}
-
-    var ct = [];
-    var genes = [];
-
-    //var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/genomic/variant/" + variants.join(",") + "/effect";
-    //console.log(url);
-    //return;
-
-    var req = record.raw.chromosome + ":" + record.raw.position + ":" + record.raw.ref + ":" + record.raw.alt[0];
+    var req = record.chromosome + ":" + record.position + ":" + record.ref + ":" + record.alt[0];
 
     $.ajax({
         url: "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
@@ -751,12 +785,12 @@ BierappWidget.prototype._getEffect = function (record) {
                     if (elem.aaPosition != -1 &&
                         elem.transcriptId != "" &&
                         elem.aminoacidChange.length >= 3
-                        && record.raw.transcriptId === undefined
-                        && record.raw.aaPos === undefined
-                        && record.raw.aaChange === undefined) {
-                        record.raw.transcript = elem.transcriptId;
-                        record.raw.aaPos = elem.aaPosition;
-                        record.raw.aaChange = elem.aminoacidChange;
+                        && record.transcriptId === undefined
+                        && record.aaPos === undefined
+                        && record.aaChange === undefined) {
+                        record.transcript = elem.transcriptId;
+                        record.aaPos = elem.aaPosition;
+                        record.aaChange = elem.aminoacidChange;
                     }
                 }
             }
@@ -769,11 +803,9 @@ BierappWidget.prototype._getEffect = function (record) {
 };
 BierappWidget.prototype._getPolyphenSift = function (variant) {
 
-    //console.log(variant);
-    if (variant.raw.aaPos != undefined && variant.raw.aaPos >= 0) {
-        var change = variant.raw.aaChange.split("/")[1];
-        var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/feature/transcript/" + variant.raw.transcript + "/function_prediction?aaPosition=" + variant.raw.aaPos + "&aaChange=" + change;
-        //console.log(url);
+    if (variant.aaPos != undefined && variant.aaPos >= 0) {
+        var change = variant.aaChange.split("/")[1];
+        var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/feature/transcript/" + variant.transcript + "/function_prediction?aaPosition=" + variant.aaPos + "&aaChange=" + change;
         $.ajax({
             url: url,
             dataType: 'json',
@@ -781,21 +813,21 @@ BierappWidget.prototype._getPolyphenSift = function (variant) {
             success: function (response, textStatus, jqXHR) {
                 var res = response.response[0];
                 if (res.numResults > 0) {
-                    if (res.result[0].aaPositions[variant.raw.aaPos]) {
+                    if (res.result[0].aaPositions[variant.aaPos]) {
 
-                        res = res.result[0].aaPositions[variant.raw.aaPos][change];
+                        res = res.result[0].aaPositions[variant.aaPos][change];
                         if (res !== undefined) {
                             if (res.ps != null) {
-                                variant.set("polyphen_score", res.ps);
+                                variant.polyphen_score=  res.ps;
                             }
                             if (res.pe != null) {
-                                variant.set("polyphen_effect", res.pe)
+                                variant.polyphen_effect = res.pe;
                             }
                             if (res.ss != null) {
-                                variant.set("sift_score", res.ss);
+                                variant.sift_score= res.ss;
                             }
                             if (res.se != null) {
-                                variant.set("sift_effect", res.se);
+                                variant.sift_effect= res.se;
                             }
                         }
                     }
@@ -854,4 +886,106 @@ BierappWidget.prototype._getPhenotypes = function (records) {
     }
 };
 
+BierappWidget.prototype._exportToTab =  function (columns) {
 
+        var _this = this;
+        var colNames = [];
+
+        var headerLine = "";
+        for (var i = 0; i < columns.length; i++) {
+            var col = columns[i];
+
+            var subCols = _this._getSubColumn(col["boxLabel"]);
+            if (subCols.length > 0) {
+                for (var j = 0; j < subCols.length; j++) {
+                    headerLine += subCols[j] + "\t";
+                    colNames.push(subCols[j]);
+
+                }
+            } else {
+                headerLine += col["boxLabel"] + "\t";
+                colNames.push(col["boxLabel"]);
+            }
+            subCols.splice(0, subCols.length);
+
+        }
+
+        var output = "";
+        output += "#" + headerLine + "\n";
+
+        var lines = _this._getDataToExport();
+        
+        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.6, "Preparing data");
+
+
+        for (var i = 0; i < lines.length; i++) {
+            var v = lines[i];
+            for (var key in v.sampleGenotypes) {
+
+                aux = v.sampleGenotypes[key];
+                aux = aux.replace(/-1/g, ".");
+                aux = aux.replace("|", "/");
+                v.key= aux;
+                _this._getEffect(v);
+                _this._getPolyphenSift(v);
+            }
+
+            v.genes = v.genes.join(",");
+        }
+        
+        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.9, "Creating File");
+
+       
+        for (var j = 0; j < lines.length; j++) {
+            output += _this._processFileLine(lines[j], colNames);
+            output += "\n";
+        }
+
+        return output;
+    };
+
+
+BierappWidget.prototype._getDataToExport = function(){
+        
+        var _this = this;
+        var totalData = _this.st.totalCount;
+        
+        var values = this.form.getForm().getValues();
+
+        var formParams = {};
+        for (var param in values) {
+            if (formParams[param]) {
+                var aux = [];
+                aux.push(formParams[param]);
+                aux.push(values[param]);
+                formParams[param] = aux;
+            } else {
+                formParams[param] = values[param];
+            }
+        }
+        formParams.limit = totalData;
+
+        var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
+
+        var data = [];
+        $.ajax({
+            url:  url,
+            dataType: 'json',
+            data: formParams,
+            async: false,
+            success: function (response, textStatus, jqXHR) {
+                if(response.response && response.response.numResults > 0){
+                
+                    data = response.response.result;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error loading Effect');
+                Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Error");
+            }
+            });
+        
+
+        return data;
+        
+    };
