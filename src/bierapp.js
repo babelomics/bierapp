@@ -8,7 +8,7 @@ function Bierapp(args) {
     this.suiteId = 6;
     this.title = '<span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span> ';
     this.description = '';
-    this.version = '1.0.2';
+    this.version = '1.1.0';
 //    this.tools = ["variant", "variant-mongo"];
     this.tools = ["variant-mongo"];
     this.border = true;
@@ -513,11 +513,11 @@ Bierapp.prototype.showIndexForm = function () {
         _this.container.add(_this.variantIndexForm.panel);
         //_this.variantIndexForm.draw();
         //if (!_this.panel.contains(_this.variantIndexForm.panel)) {
-            //_this.panel.add(_this.variantIndexForm.panel);
+        //_this.panel.add(_this.variantIndexForm.panel);
         //}
         //_this.panel.setActiveTab(_this.variantIndexForm.panel);
     };
-        //this.variantIndexForm.draw();
+    //this.variantIndexForm.draw();
     this._checkLogin(showForm);
 };
 
@@ -530,11 +530,11 @@ Bierapp.prototype.showIndexFormEx1 = function () {
         _this.variantIndexForm.loadExample1();
         //_this.variantIndexForm.draw();
         //if (!_this.panel.contains(_this.variantIndexForm.panel)) {
-            //_this.panel.add(_this.variantIndexForm.panel);
+        //_this.panel.add(_this.variantIndexForm.panel);
         //}
         //_this.panel.setActiveTab(_this.variantIndexForm.panel);
     };
-        //this.variantIndexForm.draw();
+    //this.variantIndexForm.draw();
     this._checkLogin(showForm);
 };
 
