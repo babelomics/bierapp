@@ -4,109 +4,91 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         // Metadata.
-        meta: {
-            version: '1.0.5',
-            jsorolla: {
-                dir: '/lib/jsorolla/',
-                //genome viewer contains cellbse and utils
-                'genomeviewer': {
-                    version: '1.0.3',
-                    dir: '<%= meta.jsorolla.dir %>build/genome-viewer/<%= meta.jsorolla.genomeviewer.version %>/'
-                },
-                //opencga does not contains utils
-                opencga: {
-                    version: '1.0.0',
-                    dir: '<%= meta.jsorolla.dir %>build/opencga/<%= meta.jsorolla.opencga.version %>/'
-                }
-            }
+        pkg: grunt.file.readJSON('package.json'),
+        jsopkg: grunt.file.readJSON('lib/jsorolla/package.json'),
+        def: {
+            name: 'bierapp',
+            build: 'build/<%= pkg.version %>',
+            jsorolla: 'lib/jsorolla'
         },
-        banner: '/*! PROJECT_NAME - v<%= meta.version %> - ' +
-            '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-            '* http://PROJECT_WEBSITE/\n' +
-            '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
-            'OpenCB; Licensed GPLv2 */\n',
+        // Task configuration.
+
         // Task configuration.
         concat: {
-            options: {
-                banner: '<%= banner %>',
-                stripBanners: true
-            },
-            build: {
+            dist: {
                 src: [
                     'src/variant-widget.js',
                     'src/variant-index-form.js',
                     'src/bierapp-widget.js',
                     'src/bierapp.js'
                 ],
-                dest: 'build/<%= meta.version %>/variant-<%= meta.version %>.js'
+                dest: '<%= def.build %>/<%= def.name %>.js'
             }
         },
         uglify: {
             options: {
-                banner: '<%= banner %>'
+                banner: '/*! <%= def.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
             },
-            build: {
-                src: '<%= concat.build.dest %>',
-                dest: 'build/<%= meta.version %>/variant-<%= meta.version %>.min.js'
+            dist: {
+                files: {
+                    '<%= def.build %>/<%= def.name %>.min.js': ['<%= concat.dist.dest %>']
+                }
             }
         },
         copy: {
             build: {
                 files: [
-                    {   expand: true, cwd: './src', src: ['ba-config.js'], dest: 'build/<%= meta.version %>/' },
-                    {   expand: true, cwd: './<%= meta.jsorolla.dir %>', src: ['vendor/**'], dest: 'build/<%= meta.version %>/' },
-                    {   expand: true, cwd: './<%= meta.jsorolla.dir %>', src: ['styles/**'], dest: 'build/<%= meta.version %>/' }, // includes files in path and its subdirs
-                    {   expand: true, cwd: './<%= meta.jsorolla.genomeviewer.dir %>', src: ['genome-viewer*.js', 'gv-config.js'], dest: 'build/<%= meta.version %>/' },
-                    {   expand: true, cwd: './<%= meta.jsorolla.opencga.dir %>', src: ['opencga*.js', 'worker*'], dest: 'build/<%= meta.version %>/' }
+                    {   expand: true, cwd: './src', src: ['ba-config.js'], dest: '<%= def.build %>' },
+                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['vendor/**'], dest: '<%= def.build %>' },
+                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>' }, // includes files in path and its subdirs
+                    {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' },
+                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['worker*'], dest: '<%= def.build %>/' }
                 ]
             }
         },
         clean: {
-            build: ["build/<%= meta.version %>/"]
+            build: ["<%= def.build %>/"]
         },
 
-        vendorPath: 'build/<%= meta.version %>/vendor',
-        stylesPath: 'build/<%= meta.version %>/styles',
         htmlbuild: {
-            build: {
-                src: 'src/bierapp.html',
-                dest: 'build/<%= meta.version %>/',
+            dist: {
+                src: 'src/<%= def.name %>.html',
+                dest: '<%= def.build %>',
                 options: {
                     beautify: true,
                     scripts: {
-                        'js': 'build/<%= meta.version %>/variant-<%= meta.version %>.min.js',
+                        'js': '<%= def.build %>/<%= def.name %>.min.js',
                         'vendor': [
-                            'build/<%= meta.version %>/vendor/jquery.min.js',
-                            'build/<%= meta.version %>/vendor/underscore*.js',
-                            'build/<%= meta.version %>/vendor/backbone*.js',
-                            'build/<%= meta.version %>/vendor/bootstrap-scoped-dist/js/bootstrap.min.js',
-                            'build/<%= meta.version %>/vendor/typeahead.min.js',
-                            'build/<%= meta.version %>/vendor/jquery.mousewheel*.js',
-                            'build/<%= meta.version %>/vendor/gl-matrix-min*.js',
-                            'build/<%= meta.version %>/vendor/ChemDoodleWeb*.js',
-                            'build/<%= meta.version %>/vendor/jquery.cookie*.js',
-                            'build/<%= meta.version %>/vendor/purl*.js',
-                            'build/<%= meta.version %>/vendor/jquery.sha1*.js',
-                            'build/<%= meta.version %>/vendor/jquery.qtip*.js',
-                            'build/<%= meta.version %>/vendor/rawdeflate*.js',
+                            '<%= def.build %>/vendor/jquery.min.js',
+                            '<%= def.build %>/vendor/underscore*.js',
+                            '<%= def.build %>/vendor/backbone*.js',
+                            '<%= def.build %>/vendor/bootstrap-scoped-dist/js/bootstrap.min.js',
+                            '<%= def.build %>/vendor/typeahead.min.js',
+                            '<%= def.build %>/vendor/jquery.mousewheel*.js',
+                            '<%= def.build %>/vendor/gl-matrix-min*.js',
+                            '<%= def.build %>/vendor/ChemDoodleWeb*.js',
+                            '<%= def.build %>/vendor/jquery.cookie*.js',
+                            '<%= def.build %>/vendor/purl*.js',
+                            '<%= def.build %>/vendor/jquery.sha1*.js',
+                            '<%= def.build %>/vendor/jquery.qtip*.js',
+                            '<%= def.build %>/vendor/rawdeflate*.js',
 
                         ],
                         gv: [
-                            'build/<%= meta.version %>/opencga*.min.js',
-                            'build/<%= meta.version %>/genome-viewer*.min.js'
+                            '<%= def.build %>/opencga*.min.js',
+                            '<%= def.build %>/genome-viewer*.min.js'
                         ],
                         gvconfig: [
-                            'build/<%= meta.version %>/gv-config.js'
+                            '<%= def.build %>/gv-config.js'
                         ]
                     },
                     styles: {
-                        'css': ['<%= stylesPath %>/css/style.css'],
+                        'css': ['<%= def.build %>/styles/css/style.css'],
                         'vendor': [
-                            'build/<%= meta.version %>/vendor/ChemDoodleWeb*.css',
-                            'build/<%= meta.version %>/vendor/jquery.qtip*.css',
-                            'build/<%= meta.version %>/vendor/bootstrap-scoped-dist/css/bootstrap.min.css',
-                            'build/<%= meta.version %>/vendor/typeahead.js-bootstrap.css'
-
+                            '<%= def.build %>/vendor/ChemDoodleWeb*.css',
+                            '<%= def.build %>/vendor/jquery.qtip*.css',
+                            '<%= def.build %>/vendor/bootstrap-scoped-dist/css/bootstrap.min.css',
+                            '<%= def.build %>/vendor/typeahead.js-bootstrap.css'
                         ]
                     }
                 }
@@ -115,14 +97,16 @@ module.exports = function (grunt) {
         rename: {
             html: {
                 files: [
-                    {src: ['build/<%= meta.version %>/bierapp.html'], dest: 'build/<%= meta.version %>/index.html'}
+                    {
+                        src: ['<%= def.build %>/bierapp.html'],
+                        dest: '<%= def.build %>/index.html'}
                 ]
             }
         },
         hub: {
-            all: {
+            'genome-viewer': {
                 src: ['lib/jsorolla/Gruntfile.js'],
-                tasks: ['opencga', 'gv']
+                tasks: ['gv']
             }
         }
 
@@ -140,10 +124,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-hub');
 
     grunt.registerTask('log-deploy', 'Deploy path info', function () {
-        grunt.log.writeln("DEPLOY COMMAND: scp -r build/" + grunt.config.data.meta.version + " cafetero@mem16:/httpd/bioinfo/www-apps/bierapp/");
+        grunt.log.writeln("DEPLOY COMMAND: scp -r build/" + grunt.config.data.pkg.version + " cafetero@mem16:/httpd/bioinfo/www-apps/bierapp/");
     });
 
     // Default task.
-    grunt.registerTask('default', ['clean', 'concat', 'uglify', 'hub:all', 'copy', 'htmlbuild', 'rename:html', 'log-deploy']);
-
+    grunt.registerTask('default', ['hub', 'clean', 'concat', 'uglify', 'copy', 'htmlbuild', 'rename:html', 'log-deploy']);
 };
