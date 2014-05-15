@@ -1,4 +1,5 @@
-CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
+//CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
+CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
 CELLBASE_VERSION = "v3";
 OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
 
@@ -11,7 +12,8 @@ if (
                         window.location.protocol === "file:"
 ) {
 
-    CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
+    //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
+    CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
     OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
 }
 

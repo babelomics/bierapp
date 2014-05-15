@@ -2777,7 +2777,7 @@ VariantWidget.prototype = {
 
         if (variant.aaPos != undefined && variant.aaPos >= 0) {
             var change = variant.aaChange.split("/")[1];
-            var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/feature/transcript/" + variant.transcript + "/function_prediction?aaPosition=" + variant.aaPos + "&aaChange=" + change;
+            var url = CELLBASE_HOST + "/v3/hsapiens/feature/transcript/" + variant.transcript + "/function_prediction?aaPosition=" + variant.aaPos + "&aaChange=" + change;
             $.ajax({
                 url: url,
                 dataType: 'json',
@@ -2825,7 +2825,7 @@ VariantWidget.prototype = {
 
         }
         if (regs.length > 0) {
-            var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/genomic/region/" + regs.join(",") + "/phenotype?include=phenotype";
+            var url = CELLBASE_HOST + "/v3/hsapiens/genomic/region/" + regs.join(",") + "/phenotype?include=phenotype";
 
             $.ajax({
                 url: url,
