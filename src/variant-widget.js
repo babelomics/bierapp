@@ -31,13 +31,13 @@ VariantWidget.prototype = {
     },
     draw: function () {
         var _this = this;
-        OpencgaManager.variantInfo({
+        OpencgaManager.variantInfoMongo({
             accountId: $.cookie("bioinfo_account"),
             sessionId: $.cookie("bioinfo_sid"),
             filename: this.dbName,
             jobId: this.job.id,
             success: function (data, textStatus, jqXHR) {
-                _this.variantInfo = data.response
+                _this.variantInfo = data.response.result[0];
                 _this._draw();
             }
         });
@@ -107,37 +107,40 @@ VariantWidget.prototype = {
                     pressed: false,
                     toggleGroup: 'options',
                     handler: function () {
-
                         // TODO aaleman: Check this code
 
                         if (_this.grid.getStore().count() == 0) {
                             Ext.example.msg('Genove Viewer', 'You must apply some filters first!!')
                         } else {
-                            var row = _this.grid.getView().getSelectionModel().getSelection()[0].raw;
-
-                            _this.region = new Region({
-                                chromosome: row.chromosome,
-                                start: row.position - 200,
-                                end: row.position + 200
-                            });
-
                             _this.panel.removeAll(false);
                             _this.panel.add(_this.genomeViewerPanel);
 
+                            var row = {};
+                            var selection = _this.grid.getView().getSelectionModel().getSelection();
 
-                            if (!_.isUndefined(_this.gv)) {
-                                _this.gv.setRegion(_this.region);
+                            if (selection.length > 0) {
+                                row = selection[0];
+                                var region = new Region({
+                                    chromosome: row.get("chromosome"),
+                                    start: row.get("position"),
+                                    end: row.get("position")
+                                });
+
+
+                                if (!_.isUndefined(_this.gv)) {
+                                    _this.gv.setRegion(region);
+                                }
+                            } else {
+                                Ext.example.msg('Genove Viewer', 'You must select one variant first!!')
                             }
-
                         }
-
-
                     }
                 }
             ]},
             items: []
         });
         targetId.add(panel);
+        targetId.setActiveTab(panel);
         return panel;
     },
     _createVariantPanel: function () {
@@ -255,16 +258,10 @@ VariantWidget.prototype = {
         ]);
 
         var biotypeForm = Ext.getCmp(this.id + "biotype_panel");
-        //biotypeForm.removeAll();
-        //biotypeForm.add(
-        //{
-        //xtype: 'tbtext', text: '<span class="info">Select one or multiple gene biotype</span>'
-        //},
-        //_this._createDynCombobox("biotype", "Gene Biotype", this.variantInfo.biotypes, null));
 
         var samples = Ext.getCmp(this.id + "samples_form_panel");
         samples.removeAll();
-        //samples.add(fcItems);
+
         samples.add(sampleTableElems);
 
         _this.panel.setLoading(false);
@@ -913,21 +910,19 @@ VariantWidget.prototype = {
             border: 1,
             flex: 1,
             height: "100%",
-//            height: 700,
             title: "Filters",
             width: "100%",
             layout: {
                 type: 'accordion',
-                titleCollapse:true,
+                titleCollapse: true,
                 fill: false,
-                multi:true
+                multi: true
             },
             tbar: {
                 width: '100%',
                 items: [
                     {
                         xtype: 'button',
-                        //width:'100%',
                         flex: 1,
                         text: '<span style="font-weight:bold">Reload</span>',
                         tooltip: 'Reload',
@@ -968,9 +963,7 @@ VariantWidget.prototype = {
         });
 
         var regionItems = [
-            //  this._getSelectDataPanel(),
-//            this._getChrStartEnd(),
-            this._getRegionList(),
+            this._getRegionList()
         ];
 
         var geneItems = [
@@ -1055,8 +1048,8 @@ VariantWidget.prototype = {
         accordion.add(region);
         accordion.add(genes);
 
-        controls.collapsed=true;
-        effect.collapsed=true;
+        controls.collapsed = true;
+        effect.collapsed = true;
         region.collapsed = true;
         genes.collapsed = true;
 
@@ -1349,7 +1342,6 @@ VariantWidget.prototype = {
         );
 
         _this.columnsGrid = [
-//            new Ext.grid.RowNumberer({width: 30}),
             {
                 text: "Variant",
                 dataIndex: 'chromosome',
@@ -1777,7 +1769,7 @@ VariantWidget.prototype = {
         _this.gridEffect.setLoading(true);
 
         $.ajax({
-            url: "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
+            url: "http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
             dataType: 'json',
             success: function (response, textStatus, jqXHR) {
                 if (response.length > 0) {
@@ -1799,18 +1791,18 @@ VariantWidget.prototype = {
             }
         });
     },
-    _filterEffectData: function(data){
+    _filterEffectData: function (data) {
         var _this = this;
         var res = [];
 
         var regulatory = {};
 
-        for(var i = 0; i< data.length; i++){
+        for (var i = 0; i < data.length; i++) {
             var elem = data[i];
-            if(elem.consequenceTypeObo == "coding_sequence_variant" || elem.consequenceTypeObo == "exon_variant" || elem.consequenceTypeObo == "intron_variant"){
+            if (elem.consequenceTypeObo == "coding_sequence_variant" || elem.consequenceTypeObo == "exon_variant" || elem.consequenceTypeObo == "intron_variant") {
                 continue;
-            }else if (elem.consequenceTypeObo == "regulatory_region_variant"){
-                if(!(elem.featureId in regulatory)){
+            } else if (elem.consequenceTypeObo == "regulatory_region_variant") {
+                if (!(elem.featureId in regulatory)) {
                     regulatory[elem.featureId] = elem;
                 }
                 continue;
@@ -1819,7 +1811,7 @@ VariantWidget.prototype = {
             res.push(elem);
         }
 
-        for(var elem in regulatory){
+        for (var elem in regulatory) {
             res.push(regulatory[elem]);
         }
 
@@ -1862,7 +1854,7 @@ VariantWidget.prototype = {
             } else {
                 headerLine += col["boxLabel"] + "\t";
                 colNames.push(col["boxLabel"]);
-            }
+            }b
             subCols.splice(0, subCols.length);
 
         }
@@ -1871,9 +1863,8 @@ VariantWidget.prototype = {
         output += "#" + headerLine + "\n";
 
         var lines = _this._getDataToExport();
-        
-        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.6, "Preparing data");
 
+        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.6, "Preparing data");
 
         for (var i = 0; i < lines.length; i++) {
             var v = lines[i];
@@ -1882,15 +1873,17 @@ VariantWidget.prototype = {
                 aux = v.sampleGenotypes[key];
                 aux = aux.replace(/-1/g, ".");
                 aux = aux.replace("|", "/");
-                v.key= aux;
+                v[key] = aux;
+                _this._getEffect(v);
+                _this._getPolyphenSift(v);
             }
 
             v.genes = v.genes.join(",");
         }
-        
+
         Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.9, "Creating File");
 
-       
+
         for (var j = 0; j < lines.length; j++) {
             output += _this._processFileLine(lines[j], colNames);
             output += "\n";
@@ -1898,11 +1891,12 @@ VariantWidget.prototype = {
 
         return output;
     },
-    _getDataToExport: function(){
-        
+    _getDataToExport: function () {
+
+
         var _this = this;
         var totalData = _this.st.totalCount;
-        
+
         var values = this.form.getForm().getValues();
 
         var formParams = {};
@@ -1922,13 +1916,13 @@ VariantWidget.prototype = {
 
         var data = [];
         $.ajax({
-            url:  url,
+            url: url,
             dataType: 'json',
             data: formParams,
             async: false,
             success: function (response, textStatus, jqXHR) {
-                if(response.response && response.response.numResults > 0){
-                
+                if (response.response && response.response.numResults > 0) {
+
                     data = response.response.result;
                 }
             },
@@ -1936,11 +1930,11 @@ VariantWidget.prototype = {
                 console.log('Error loading Effect');
                 Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Error");
             }
-            });
-        
+        });
+
 
         return data;
-        
+
     },
     _processFileLine: function (data, columns) {
         var line = "";
@@ -2063,6 +2057,9 @@ VariantWidget.prototype = {
     _getResult: function () {
         var _this = this;
 
+        // Clear store's extraParams
+        _this.st.getProxy().extraParams = {};
+
         var values = this.form.getForm().getValues();
 
         var formParams = {};
@@ -2077,36 +2074,10 @@ VariantWidget.prototype = {
             }
         }
 
-        _this.grid.setLoading(true);
-
-        // Remove all elements from grids
-        _this.grid.store.removeAll();
-        _this.gridEffect.store.removeAll();
-        _this.variantGridMini.getStore().removeAll();
-
-        OpencgaManager.variantsMongo({
-            accountId: $.cookie("bioinfo_account"),
-            sessionId: $.cookie("bioinfo_sid"),
-            fileName: this.dbName,
-            jobId: this.job.id,
-            formData: formParams,
-            success: function (response, textStatus, jqXHR) {
-                //debugger
-                if (response.response != null && response.response.numResults > 0) {
-                    var data = _this._prepareData(response.response.result);
-                    _this.st.loadData(data);
-                    _this.grid.getView().refresh();
-                    _this.grid.getSelectionModel().select(0);
-                    Ext.getCmp(_this.id + "numRowsLabel").setText(response.length + " variants");
-                    _this._updateInfoVariantMini(response);
-                    Ext.example.msg('Search', 'Sucessfully')
-                }
-                _this.grid.setLoading(false);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                _this.grid.setLoading(false);
-            }
-        });
+        for (var param in formParams) {
+            _this.st.getProxy().setExtraParam(param, formParams[param]);
+        }
+        _this.st.load();
 
 
     },
@@ -2769,6 +2740,122 @@ VariantWidget.prototype = {
 
         return true;
 
+    },
+    _getEffect: function (record) {
+        var _this = this;
+
+        var req = record.chromosome + ":" + record.position + ":" + record.ref + ":" + record.alt[0];
+
+        $.ajax({
+            url: "http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
+            dataType: 'json',
+            async: false,
+            success: function (response, textStatus, jqXHR) {
+                if (response) { // {&& response.response && response.response.length > 0) {
+                    for (var j = 0; j < response.length; j++) {
+                        var elem = response[j];
+                        if (elem.aaPosition != -1 &&
+                            elem.transcriptId != "" &&
+                            elem.aminoacidChange.length >= 3
+                            && record.transcriptId === undefined
+                            && record.aaPos === undefined
+                            && record.aaChange === undefined) {
+                            record.transcript = elem.transcriptId;
+                            record.aaPos = elem.aaPosition;
+                            record.aaChange = elem.aminoacidChange;
+                        }
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error loading Effect');
+            }
+
+        });
+    },
+    _getPolyphenSift: function (variant) {
+
+        if (variant.aaPos != undefined && variant.aaPos >= 0) {
+            var change = variant.aaChange.split("/")[1];
+            var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/feature/transcript/" + variant.transcript + "/function_prediction?aaPosition=" + variant.aaPos + "&aaChange=" + change;
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                async: false,
+                success: function (response, textStatus, jqXHR) {
+                    var res = response.response[0];
+                    if (res.numResults > 0) {
+                        if (res.result[0].aaPositions[variant.aaPos]) {
+
+                            res = res.result[0].aaPositions[variant.aaPos][change];
+                            if (res !== undefined) {
+                                if (res.ps != null) {
+                                    variant.polyphen_score = res.ps;
+                                }
+                                if (res.pe != null) {
+                                    variant.polyphen_effect = res.pe;
+                                }
+                                if (res.ss != null) {
+                                    variant.sift_score = res.ss;
+                                }
+                                if (res.se != null) {
+                                    variant.sift_effect = res.se;
+                                }
+                            }
+                        }
+                    }
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('Error loading PolyPhen/SIFT');
+                }
+            });
+        }
+    },
+    _getPhenotypes: function (records) {
+
+        var regs = [];
+        for (var i = 0; i < records.length; i++) {
+
+            var variant = records[i];
+
+            var chr = variant.raw.chromosome;
+            var pos = variant.raw.position;
+            regs.push(chr + ":" + pos + "-" + pos);
+
+        }
+        if (regs.length > 0) {
+            var url = "http://ws-beta.bioinfo.cipf.es/cellbase/rest/v3/hsapiens/genomic/region/" + regs.join(",") + "/phenotype?include=phenotype";
+
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                async: false,
+                success: function (response, textStatus, jqXHR) {
+
+                    if (response != undefined && response.response.length > 0 && response.response.length == records.length) {
+                        for (var i = 0; i < response.response.length; i++) {
+                            var v = records[i];
+
+                            var elem = response.response[i];
+                            var phenotypes = [];
+
+                            for (var k = 0; k < elem.numResults; k++) {
+                                phenotypes.push(elem.result[k].phenotype);
+                            }
+
+                            v.set("phenotype", phenotypes.join(","));
+                            v.commit();
+                        }
+
+
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('Error loading Phenotypes');
+                }
+            });
+        }
     }
 }
 ;
