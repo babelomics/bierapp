@@ -145,15 +145,18 @@ Bierapp.prototype = {
         this.variantIndexForm = new VariantIndexForm({
             webapp: this,
             closable: false,
-            width: '50%',
-            //testing: true,
-            title: 'Analyze',
-            bodyPadding: '15 0 0 40',
-            headerConfig: {
-                baseCls: 'visualization-header'
+            width: 600,
+            testing: false,
+            formBorder: false,
+            border: false,
+            style: {
+                borderTop: '1px solid #d1d9e3'
             },
+//            title: 'Stats',
+//            bodyPadding: '15 0 0 40',
+            bodyPadding: '20 0 0 200',
             headerFormConfig: {
-                baseCls: 'visualization-header-form'
+                baseCls: 'header-form'
             }
         });
 
@@ -208,7 +211,7 @@ Bierapp.prototype = {
                     _this.sessionInitiated();
                 },
                 'logout': function (event) {
-                    Ext.example.msg('Good bye', 'You logged out');
+                    Utils.msg('Good bye', 'You logged out');
                     _this.sessionFinished();
 
                 },
@@ -281,7 +284,7 @@ Bierapp.prototype = {
                                 box.addCls('active');
 
                             }
-                            var text = el.getHTML();
+                            var text = el.getHtml();
                             switch (text) {
                                 case "Home":
                                     _this.container.removeAll(false);
@@ -382,15 +385,13 @@ Bierapp.prototype = {
                 'pageSize': 7,
                 'targetId': targetId,
                 'order': 0,
-                'width': 280,
+                'width': 300,
                 'height': 625,
                 border: true,
-                'mode': 'view',
-                headerConfig: {
-                    baseCls: 'home-header-dark'
-                }
+                'mode': 'view'
             }
         });
+
 
         /**Atach events i listen**/
         jobListWidget.pagedListViewWidget.on('item:click', function (data) {
@@ -444,7 +445,7 @@ Bierapp.prototype.jobItemClick = function (record) {
     this.container.add(this.panel);
 
     this.variantMenu.items.each(function (item) {
-        if (item.getEl().getHTML() == 'Results') {
+        if (item.getEl().getHtml() == 'Results') {
             item.addCls('active');
         } else {
             item.removeCls('active');
@@ -457,17 +458,17 @@ Bierapp.prototype.jobItemClick = function (record) {
 
         Ext.getCmp(this.id + 'jobsButton').toggle(false);
 
-        var toolName = record.raw.toolName;
+        var toolName = record.data.toolName;
         console.log(toolName);
         if (toolName == 'variant-mongo') { // TODO aaleman: Cambiar esta línea cuando pasemos a variant
-            record.raw.command = Utils.parseJobCommand(record.raw);
-            var bierappWidget = new BierappWidget({
+            record.data.command = Utils.parseJobCommand(record.data);
+            var variantWidget = new VariantWidget({
                 targetId: this.panel,
-                title: record.raw.name,
-                job: record.raw,
+                title: record.data.name,
+                job: record.data,
                 autoRender: true
             });
-            bierappWidget.draw();
+            variantWidget.draw();
 
         } else {
             var resultWidget = new ResultWidget({

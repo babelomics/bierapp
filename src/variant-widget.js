@@ -10,7 +10,7 @@ function VariantWidget(args) {
     this.targetId;
     this.width;
     this.height = '100%';
-    this.closable = false;
+    this.closable = true;
 
     //set instantiation args, must be last
     _.extend(this, args);
@@ -294,7 +294,8 @@ VariantWidget.prototype = {
                 });
             }
         }
-        _this.model.setFields(_this.attributes);
+        //_this.model.setFields(_this.attributes);
+        _this.st.setFields(_this.attributes);
     },
     _removeSampleColumn: function (sampleName) {
 
@@ -384,102 +385,102 @@ VariantWidget.prototype = {
             data: ss
         });
 
-        var chartCT = Ext.create('Ext.chart.Chart', {
-            xtype: 'chart',
-            width: 700,
-            height: 700,
-            store: _this.ctStore,
-            animate: true,
-            shadow: true,
-            legend: {
-                position: 'right'
-            },
-            theme: 'Base:gradients',
-            insetPadding: 60,
-            series: [
-                {
-                    type: 'pie',
-                    field: 'count',
-                    showInLegend: true,
-                    tips: {
-                        trackMouse: true,
-                        width: 200,
-                        height: 28,
-                        renderer: function (storeItem, item) {
-                            //calculate percentage.
-                            var total = 0;
-                            _this.ctStore.each(function (rec) {
-                                total += rec.get('count');
-                            });
-                            var name = Utils.formatText(storeItem.get('name'), "_");
-                            this.setTitle(name + ': ' + Math.round(storeItem.get('count') / total * 100) + '%');
-                        }
-                    },
-                    highlight: {
-                        segment: {
-                            margin: 20
-                        }
-                    },
+        //var chartCT = Ext.create('Ext.chart.Chart', {
+        //xtype: 'chart',
+        //width: 700,
+        //height: 700,
+        //store: _this.ctStore,
+        //animate: true,
+        //shadow: true,
+        //legend: {
+        //position: 'right'
+        //},
+        //theme: 'Base:gradients',
+        //insetPadding: 60,
+        //series: [
+        //{
+        //type: 'pie',
+        //field: 'count',
+        //showInLegend: true,
+        //tips: {
+        //trackMouse: true,
+        //width: 200,
+        //height: 28,
+        //renderer: function (storeItem, item) {
+        ////calculate percentage.
+        //var total = 0;
+        //_this.ctStore.each(function (rec) {
+        //total += rec.get('count');
+        //});
+        //var name = Utils.formatText(storeItem.get('name'), "_");
+        //this.setTitle(name + ': ' + Math.round(storeItem.get('count') / total * 100) + '%');
+        //}
+        //},
+        //highlight: {
+        //segment: {
+        //margin: 20
+        //}
+        //},
 
-                    label: {
-                        field: 'name',
-                        display: 'rotate',
-                        contrast: true,
-                        font: '10px Arial'
-                    }
+        //label: {
+        //field: 'name',
+        //display: 'rotate',
+        //contrast: true,
+        //font: '10px Arial'
+        //}
 
-                }
-            ]
-        });
-        var chartSS = Ext.create('Ext.chart.Chart', {
-            xtype: 'chart',
-            width: 700,
-            height: 500,
-            animate: true,
-            shadow: true,
-            store: _this.ssStore,
-            legend: {
-                position: 'right'
-            },
-            axes: [
-                {
-                    type: 'Numeric',
-                    position: 'bottom',
-                    fields: ['homozygotesNumber', 'mendelianErrors', 'missingGenotypes'],
-                    title: false,
-                    grid: true,
-                    label: {
-                        renderer: function (v) {
-                            return String(v).replace(/000000$/, 'M');
-                        }
-                    },
-                    roundToDecimal: false
-                },
-                {
-                    type: 'Category',
-                    position: 'left',
-                    fields: ['sampleName'],
-                    title: false
-                }
-            ],
-            series: [
-                {
-                    type: 'bar',
-                    axis: 'bottom',
-                    gutter: 80,
-                    xField: 'sampleName',
-                    yField: ['homozygotesNumber', 'mendelianErrors', 'missingGenotypes'],
-                    tips: {
-                        trackMouse: true,
-                        width: 100,
-                        height: 28,
-                        renderer: function (storeItem, item) {
-                            this.setTitle(String(item.value[1]));
-                        }
-                    }
-                }
-            ]
-        });
+        //}
+        //]
+        //});
+        //var chartSS = Ext.create('Ext.chart.Chart', {
+        //xtype: 'chart',
+        //width: 700,
+        //height: 500,
+        //animate: true,
+        //shadow: true,
+        //store: _this.ssStore,
+        //legend: {
+        //position: 'right'
+        //},
+        //axes: [
+        //{
+        //type: 'Numeric',
+        //position: 'bottom',
+        //fields: ['homozygotesNumber', 'mendelianErrors', 'missingGenotypes'],
+        //title: false,
+        //grid: true,
+        //label: {
+        //renderer: function (v) {
+        //return String(v).replace(/000000$/, 'M');
+        //}
+        //},
+        //roundToDecimal: false
+        //},
+        //{
+        //type: 'Category',
+        //position: 'left',
+        //fields: ['sampleName'],
+        //title: false
+        //}
+        //],
+        //series: [
+        //{
+        //type: 'bar',
+        //axis: 'bottom',
+        //gutter: 80,
+        //xField: 'sampleName',
+        //yField: ['homozygotesNumber', 'mendelianErrors', 'missingGenotypes'],
+        //tips: {
+        //trackMouse: true,
+        //width: 100,
+        //height: 28,
+        //renderer: function (storeItem, item) {
+        //this.setTitle(String(item.value[1]));
+        //}
+        //}
+        //}
+        //]
+        //});
 
         var itemTplSamples = new Ext.XTemplate(
             '<table cellspacing="0" style="max-width:400px;border-collapse: collapse;border:1px solid #ccc;"><thead>',
@@ -604,7 +605,7 @@ VariantWidget.prototype = {
                         html: '<div style="border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;font-weight: bold;">Consequence type</div>'
 
                     },
-                    chartCT
+                    //chartCT
                 ]
             }
         ];
@@ -1123,31 +1124,31 @@ VariantWidget.prototype = {
         this.stEffect = Ext.create("Ext.data.Store", {
             groupField: 'featureId',
             fields: [
-                {name: "featureId", type: "String"},
-                {name: "featureName", type: "String"},
-                {name: "featureType", type: "String"},
-                {name: "featureBiotype", type: "String"},
-                {name: "featureChromosome", type: "String"},
+                {name: "featureId", type: "string"},
+                {name: "featureName", type: "string"},
+                {name: "featureType", type: "string"},
+                {name: "featureBiotype", type: "string"},
+                {name: "featureChromosome", type: "string"},
                 {name: "featureStart", type: "int"},
                 {name: "featureEnd", type: "int"},
-                {name: "featureStrand", type: "String"},
-                {name: "snpId", type: "String"},
-                {name: "ancestral", type: "String"},
-                {name: "alternative", type: "String"},
-                {name: "geneId", type: "String"},
-                {name: "transcriptId", type: "String"},
-                {name: "geneName", type: "String"},
-                {name: "consequenceType", type: "String"},
-                {name: "consequenceTypeObo", type: "String"},
-                {name: "consequenceTypeDesc", type: "String"},
-                {name: "consequenceTypeType", type: "String"},
+                {name: "featureStrand", type: "string"},
+                {name: "snpId", type: "string"},
+                {name: "ancestral", type: "string"},
+                {name: "alternative", type: "string"},
+                {name: "geneId", type: "string"},
+                {name: "transcriptId", type: "string"},
+                {name: "geneName", type: "string"},
+                {name: "consequenceType", type: "string"},
+                {name: "consequenceTypeObo", type: "string"},
+                {name: "consequenceTypeDesc", type: "string"},
+                {name: "consequenceTypeType", type: "string"},
                 {name: "aaPosition", type: "int"},
-                {name: "aminoacidChange", type: "String"},
-                {name: "codonChange", type: "String"},
-                {name: "polyphenScore", type: "float"},
-                {name: "polyphenEffect", type: "float"},
-                {name: "siftScore", type: "float"},
-                {name: "siftEffect", type: "float"},
+                {name: "aminoacidChange", type: "string"},
+                {name: "codonChange", type: "string"},
+                {name: "polyphenScore", type: "number"},
+                {name: "polyphenEffect", type: "number"},
+                {name: "siftScore", type: "number"},
+                {name: "siftEffect", type: "number"},
 
 
             ],
@@ -1280,7 +1281,7 @@ VariantWidget.prototype = {
     _createGrid: function () {
 
         var _this = this;
-
+        4
         var xtmplPoly = new Ext.XTemplate(
             '{[this.parseEffect(values)]}',
             {
@@ -1305,10 +1306,8 @@ VariantWidget.prototype = {
                         case 3:
                             effect = "unknown";
                             break;
-
                         default:
                             return ".";
-
                     }
                     return(score + " - (" + effect + ")");
                 }
@@ -1318,7 +1317,6 @@ VariantWidget.prototype = {
             '{[this.parseEffect(values)]}',
             {
                 parseEffect: function (value) {
-
                     if (value.sift_score == 0 && value.sift_effect == 0) {
                         return ".";
                     }
@@ -1334,12 +1332,20 @@ VariantWidget.prototype = {
                             break;
                         default:
                             return ".";
-
                     }
                     return(score + " - (" + effect + ")");
                 }
             }
         );
+
+        parseMafControl = function (control) {
+            var maf = control.maf;
+            var res = maf.toFixed(3);
+            if (control.allele != "") {
+                res = res + " (" + control.allele + ")";
+            }
+            return res;
+        }
 
         _this.columnsGrid = [
             {
@@ -1353,46 +1359,80 @@ VariantWidget.prototype = {
                 text: "Alleles",
                 flex: 0.5,
                 xtype: "templatecolumn",
-                tpl: "{ref}>{alt}"
+                tpl: "{ref}>{alt}",
+                sortable: false
             },
             {
                 text: "Gene",
-                dataIndex: 'gene_name',
-                hidden: true,
-                flex: 1
+                dataIndex: 'genes',
+                flex: 1,
+                sortable: false
             },
             {
                 text: 'Samples',
                 flex: 1,
+                sortable: false,
                 columns: []
             },
             {
-                text: "SNP id",
-                dataIndex: 'stats_id_snp',
+                text: "SNP Id",
+                dataIndex: 'snpid',
                 flex: 1,
                 sortable: true
             },
             {
                 flex: 1,
                 text: "Controls (MAF)",
+                defaults: {
+                    width: 70,
+                },
                 columns: [
                     {
                         text: "1000G",
                         renderer: function (val, meta, record) {
                             if (record.data.controls["1000G"]) {
-                                var maf = record.data.controls["1000G"].maf;
-                                return maf.toFixed(3) + " (" + record.data.controls["1000G"].allele + ")";
+                                return parseMafControl(record.data.controls["1000G"]);
                             } else {
                                 return ".";
                             }
                         }
                     },
                     {
-                        text: "BIER",
+                        text: "1000G-AFR",
                         renderer: function (val, meta, record) {
-                            if (record.data.controls["BIER"]) {
+                            if (record.data.controls["1000G-AFR"]) {
+                                return parseMafControl(record.data.controls["1000G-AFR"]);
+                            } else {
+                                return ".";
+                            }
+                        }
+                    },
+                    {
+                        text: "1000G-ASI",
+                        renderer: function (val, meta, record) {
+                            if (record.data.controls["1000G-ASI"]) {
+                                return parseMafControl(record.data.controls["1000G-ASI"]);
 
-                                return record.data.controls["BIER"].maf + " (" + record.data.controls["BIER"].allele + ")";
+                            } else {
+                                return ".";
+                            }
+                        }
+                    },
+                    {
+                        text: "1000G-AME",
+                        renderer: function (val, meta, record) {
+                            if (record.data.controls["1000G-AME"]) {
+                                return parseMafControl(record.data.controls["1000G-AME"]);
+                            } else {
+                                return ".";
+                            }
+                        }
+                    },
+                    {
+                        text: "1000G-EUR",
+                        renderer: function (val, meta, record) {
+                            if (record.data.controls["1000G-EUR"]) {
+                                return parseMafControl(record.data.controls["1000G-EUR"]);
                             } else {
                                 return ".";
                             }
@@ -1402,8 +1442,9 @@ VariantWidget.prototype = {
                         text: "EVS",
                         renderer: function (val, meta, record) {
                             if (record.data.controls["EVS"]) {
-
-                                return record.data.controls["EVS"].maf + " (" + record.data.controls["EVS"].allele + ")";
+                                return parseMafControl(record.data.controls["EVS"]);
+                                //var maf = record.data.controls["EVS"].maf;
+                                //return maf.toFixed(3) + " (" + record.data.controls["EVS"].allele + ")";
                             } else {
                                 return ".";
                             }
@@ -1411,93 +1452,33 @@ VariantWidget.prototype = {
                     }
                 ]
             },
+
             {
                 text: "Consq. Type",
                 dataIndex: "consequence_types",
                 flex: 1,
-                sortable: true
+                sortable: false
             },
             {
                 text: 'Polyphen',
                 flex: 1,
-                data_index: 'polyphen_score',
+                dataIndex: 'polyphen_score',
                 xtype: 'templatecolumn',
-                tpl: xtmplPoly
+                tpl: xtmplPoly,
+                sortable: false
             },
             {
-                text: 'Sift',
+                text: 'SIFT',
                 flex: 1,
-                data_index: 'sift_score',
+                dataIndex: 'sift_score',
                 xtype: "templatecolumn",
-                tpl: xtmplSift
-            },
-            {text: 'Conservation', flex: 1},
-            {
-                text: "Alleles & Genotypes",
-                hidden: true,
-                columns: [
-                    {
-
-                        text: "Allele Ref",
-                        dataIndex: 'ref',
-                        flex: 0.2,
-                        hidden: true,
-                        sortable: true
-                    },
-                    {
-                        text: "Allele Alt",
-                        dataIndex: 'alt',
-                        flex: 0.2,
-                        hidden: true,
-                        sortable: true
-                    },
-
-                    {
-                        text: "MAF",
-                        dataIndex: 'stats_maf',
-                        xtype: "templatecolumn",
-                        tpl: "{stats_maf} ({stats_allele_maf})",
-                        flex: 0.2,
-                        hidden: true,
-                        sortable: true
-                    },
-                    {
-                        text: "MGF",
-                        dataIndex: 'stats_mgf',
-                        xtype: "templatecolumn",
-                        tpl: "{stats_mgf} ({stats_genotype_maf})",
-                        flex: 0.2,
-                        hidden: true,
-                        sortable: true
-                    }
-                ]
+                tpl: xtmplSift,
+                sortable: false
             },
             {
-                text: "Missing Alleles/Genotypes",
-                hidden: true,
-                columns: [
-                    {
-                        text: "Miss. Alleles",
-                        dataIndex: 'stats_miss_allele',
-                        flex: 0.1,
-                        hidden: true,
-                        sortable: true
-                    },
-                    {
-                        text: "Miss. Genotypes",
-                        dataIndex: 'stats_miss_gt',
-                        flex: 0.1,
-                        hidden: true,
-                        sortable: true
-                    }
-                ]
-            },
-            {
-                text: "Mendelian Errors",
-                flex: 1,
-                dataIndex: 'stats_mendel_err',
-                sortable: true,
-                hidden: true
+                text: 'Phenotype',
+                dataIndex: 'phenotype',
+                sortable: false
             },
             {
                 text: "Is indel?",
@@ -1508,125 +1489,199 @@ VariantWidget.prototype = {
                 dataIndex: 'stats_is_indel',
                 sortable: true,
                 hidden: true
-            },
-            {
-                text: "Inheritance",
-                flex: 1,
-                hidden: true,
-                columns: [
-                    {
-                        text: "% Cases dominant",
-                        dataIndex: 'stats_cases_percent_dominant',
-                        hidden: true,
-                        renderer: function (value) {
-                            return value.toFixed(2);
-                        },
-                        sortable: true
-                    },
-                    {
-                        text: "% Controls dominant",
-                        dataIndex: 'stats_controls_percent_dominant',
-                        hidden: true,
-                        renderer: function (value) {
-                            return value.toFixed(2) + "%";
-                        },
-                        sortable: true
-                    },
-                    {
-                        text: "% Cases recessive",
-                        dataIndex: 'stats_cases_percent_recessive',
-                        hidden: true,
-                        renderer: function (value) {
-                            return value.toFixed(2) + "%";
-                        },
-                        sortable: true
-                    },
-                    {
-                        text: "% Controls recessive",
-                        dataIndex: 'stats_controls_percent_recessive',
-                        hidden: true,
-                        renderer: function (value) {
-                            return value.toFixed(2) + "%";
-                        },
-                        sortable: true
-                    }
-                ]
             }
         ];
         _this.attributes = [
-            {name: "chromosome", type: "String"},
+            {name: "chromosome", type: "string"},
             {name: "position", type: "int"},
-            {name: "alt", type: "String"},
-            {name: "ref", type: "String"},
+            {name: "alt", type: "string"},
+            {name: "ref", type: "string"},
             {name: 'stats_id_snp', type: 'string'},
-            {name: 'stats_maf', type: 'float'},
-            {name: 'stats_mgf', type: 'double'},
-            {name: 'stats_allele_maf', type: 'string'},
-            {name: 'stats_genotype_maf', type: 'string'},
-            {name: 'stats_miss_allele', type: 'int'},
+            {name: 'stats_maf', type: 'number'},
+            {name: 'stats_mgf', type: 'number'},
             {name: 'stats_miss_gt', type: 'int'},
-            {name: 'stats_mendel_err', type: 'int'},
             {name: 'stats_is_indel', type: 'boolean'},
-            {name: 'stats_cases_percent_dominant', type: 'double'},
-            {name: 'stats_controls_percent_dominant', type: 'double'},
-            {name: 'stats_cases_percent_recessive', type: 'double'},
-            {name: 'stats_controls_percent_recessive', type: 'double'},
             {name: 'gene_name', type: 'string'},
             {name: 'consequence_types', type: 'string'},
-            {name: "genotypes", type: 'auto'},
-            {name: "effect", type: 'auto'},
             {name: "controls", type: 'auto'},
-            {name: "polyphen_score", type: 'float'},
+            {name: "phenotype", type: "string"},
+            {name: "polyphen_score", type: 'number'},
             {name: "polyphen_effect", type: 'int'},
-            {name: "sift_score", type: 'float'},
-            {name: "sift_effect", type: 'int'},
-
+            {name: "sift_score", type: 'number'},
+            {name: "sift_effect", type: 'int'}
         ];
         _this.model = Ext.define('Variant', {
             extend: 'Ext.data.Model',
             fields: _this.attributes
         });
+
+        var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
+        console.log(url);
+
         _this.st = Ext.create('Ext.data.Store', {
+            pageSize: 25,
             model: _this.model,
-            groupField: 'gene_name',
+            //groupField: 'gene_name',
             data: [],
-            autoLoad: false,
-            proxy: {type: 'memory'},
-            pageSize: 5
+            //autoLoad: true,
+            remoteSort: true,
+            storeId: 'gridStore',
+            sorters: [
+                {
+                    property: 'chromosome',
+                    direction: 'ASC'
+                }
+            ],
+            proxy: {
+                //model: _this.model,
+                url: url,
+                type: 'ajax',
+                reader: {
+                    root: "response.result",
+                    totalProperty: "response.numResults"
+                },
+                extraParams: {
+                    myParam: "hola"
+                },
+                actionMethods: {create: 'GET', read: 'GET', update: 'GET', destroy: 'GET'},
+            },
+            listeners: {
+                load: function (store, records, successful, operation, eOpts) {
 
-        });
-        var xtmplGroup = new Ext.XTemplate(
-            '{[this.parseGroupField(values.groupField)]}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
-            {
-                parseGroupField: function (value) {
+                    _this.st.suspendEvents();
+                    var aux;
 
-                    return Utils.formatText(value, "_");
+                    for (var i = 0; i < records.length; i++) {
+                        var v = records[i];
+                        for (var key in v.data.sampleGenotypes) {
+
+                            aux = v.data.sampleGenotypes[key];
+                            aux = aux.replace(/-1/g, ".");
+                            aux = aux.replace("|", "/");
+                            v.set(key, aux);
+                        }
+
+                        v.set("snpid", v.data.snpid);
+                        v.set("genes", v.data.genes.join(","));
+
+                        //_this._getEffect(v);
+                        //_this._getPolyphenSift(v);
+                        v.commit();
+                    }
+
+                    _this._getPhenotypes(records);
+
+                    _this.st.resumeEvents();
+                    _this.st.fireEvent('refresh');
+
+                    console.log(records);
+                    _this._updateInfoVariantMini(records);
                 }
             }
-        );
-        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            //groupHeaderTpl: '{groupField}: {groupValue} ({rows.length} Variant{[values.rows.length > 1 ? "s" : ""]})',
-            groupHeaderTpl: xtmplGroup,
-            enableGroupingMenu: false
+
         });
+        _this.exportStore = Ext.create('Ext.data.Store', {
+            //pageSize: 25,
+            model: _this.model,
+            //groupField: 'gene_name',
+            data: [],
+            autoLoad: false,
+            remoteSort: true,
+            storeId: 'exportStore',
+            sorters: [
+                {
+                    property: 'chromosome',
+                    direction: 'ASC'
+                }
+            ],
+            proxy: {
+                model: _this.model,
+                type: 'ajax',
+                url: url,
+                reader: {
+                    root: "response.result",
+                    totalProperty: "response.numResults"
+                },
+                listeners: {
+                    exception: function (proxy, response, operation, eOpts) {
+                        Ext.MessageBox.show({
+                            title: 'REMOTE EXCEPTION',
+                            msg: operation.getError(),
+                            icon: Ext.MessageBox.ERROR,
+                            buttons: Ext.Msg.OK
+                        });
+                    },
+                    success: function (response) {
+                        console.log("Spiffing, everything worked");
+                        console.log(response.success);
+                        console.log(response.result);
+                    },
+                    failure: function (response) {
+                        console.log(response);
+                        Ext.Msg.alert('Error', 'Please try again.', Ext.emptyFn);
+                    }
+                }
+            },
+            method: 'get',
+            listeners: {
+                load: function (store, records, successful, operation, eOpts) {
+
+                    _this.st.suspendEvents();
+                    var aux;
+
+                    for (var i = 0; i < records.length; i++) {
+                        var v = records[i];
+                        for (var key in v.data.sampleGenotypes) {
+
+                            aux = v.data.sampleGenotypes[key];
+                            aux = aux.replace(/-1/g, ".");
+                            aux = aux.replace("|", "/");
+                            v.set(key, aux);
+                        }
+
+                        v.set("snpid", v.data.snpid);
+                        v.set("genes", v.data.genes.join(","));
+
+                        //_this._getEffect(v);
+                        //_this._getPolyphenSift(v);
+                        v.commit();
+                    }
+
+                    //_this._getPhenotypes(records);
+
+                    _this.st.resumeEvents();
+                    _this.st.fireEvent('refresh');
+
+                }
+            }
+
+        });
+
         var grid = Ext.create('Ext.grid.Panel', {
                 title: '<span class="ssel">Variant Info</span>',
                 flex: 1,
                 height: '100%',
-                //width: '100%',
                 store: _this.st,
                 loadMask: true,
                 border: 1,
-                // titleCollapse: true,
-                // collapsible: true,
-                //            features: [groupingFeature],
                 columns: this.columnsGrid,
                 plugins: 'bufferedrenderer',
                 loadMask: true,
-                features: [groupingFeature, {ftype: 'summary'}],
+                features: [
+                    {ftype: 'summary'}
+                ],
                 viewConfig: {
-                    emptyText: 'No records to display'
+                    emptyText: 'No records to display',
+                    enableTextSelection: true
                 },
+                bbar: Ext.create('Ext.PagingToolbar', {
+                    store: _this.st,
+                    id: _this.id + "_pagingToolbar",
+                    pageSize: 25,
+                    displayInfo: true,
+                    displayMsg: 'Variants {0} - {1} of {2}',
+                    emptyMsg: "No variants to display",
+                }),
                 dockedItems: [
                     {
                         xtype: 'toolbar',
@@ -1637,18 +1692,6 @@ VariantWidget.prototype = {
                                 id: this.id + "numRowsLabel"
                             },
                             '->',
-                            {
-                                text: 'Collapse All',
-                                handler: function () {
-                                    if (this.text == "Collapse All") {
-                                        groupingFeature.collapseAll();
-                                        this.setText("Expand All");
-                                    } else {
-                                        groupingFeature.expandAll();
-                                        this.setText("Collapse All");
-                                    }
-                                }
-                            },
                             {
                                 xtype: 'button',
                                 text: 'Columns',
@@ -1666,6 +1709,12 @@ VariantWidget.prototype = {
                                 xtype: 'button',
                                 text: 'Export data...',
                                 handler: function () {
+
+                                    if (_this.st.getCount() == 0) {
+                                        Ext.example.msg('ERROR', 'You must apply some filters before or the result set is empty!!');
+                                        return;
+                                    }
+
                                     if (!Ext.getCmp(_this.id + "exportWindow")) {
                                         var cbgItems = [];
                                         var attrList = _this._getColumnNames();
@@ -1686,7 +1735,13 @@ VariantWidget.prototype = {
                                                 checked: true
                                             });
                                         }
-
+                                        var progress = Ext.create('Ext.ProgressBar', {
+                                            text: 'Progress...',
+                                            border: 1,
+                                            flex: 1,
+                                            margin: '0 10 0 0',
+                                            id: _this.id + "_progressBarExport"
+                                        });
 
                                         Ext.create('Ext.window.Window', {
                                             id: _this.id + "exportWindow",
@@ -1706,6 +1761,7 @@ VariantWidget.prototype = {
                                                 }
                                             ],
                                             buttons: [
+                                                progress,
                                                 {
                                                     xtype: 'textfield',
                                                     id: _this.id + "fileName",
@@ -1715,8 +1771,11 @@ VariantWidget.prototype = {
                                                 {
                                                     text: 'Download',
                                                     href: "none",
+                                                    id: _this.id + "_downloadExport",
                                                     handler: function () {
+                                                        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.1, "Requesting data");
 
+                                                        this.disable();
                                                         var fileName = Ext.getCmp(_this.id + "fileName").getValue();
                                                         if (fileName == "") {
                                                             fileName = "variants";
@@ -1727,15 +1786,24 @@ VariantWidget.prototype = {
 
                                                         this.getEl().set({
                                                             href: 'data:text/csv,' + encodeURIComponent(content),
-                                                            download: fileName + ".txt"
+                                                            download: fileName + ".csv"
                                                         });
 
-                                                        this.up(".window").hide();
+
+                                                        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(1, "Downloaded");
+                                                        //this.up(".window").hide();
+                                                        Ext.getCmp(_this.id + "fileName").reset();
+
                                                     }
                                                 }
                                             ]
                                         }).show();
+                                    } else {
+                                        Ext.getCmp(_this.id + "exportWindow").show();
+
                                     }
+                                    Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Progress");
+                                    Ext.getCmp(_this.id + "_downloadExport").enable();
                                 }
                             }
                         ]
@@ -1754,14 +1822,13 @@ VariantWidget.prototype = {
                 var ref = row.ref;
                 var alt = row.alt;
 
-
                 _this._updateEffectGrid(chr, pos, ref, alt);
-
             }
         });
 
         return grid;
     },
+
     _updateEffectGrid: function (chr, pos, ref, alt) {
 
         var _this = this;
@@ -1854,7 +1921,8 @@ VariantWidget.prototype = {
             } else {
                 headerLine += col["boxLabel"] + "\t";
                 colNames.push(col["boxLabel"]);
-            }b
+            }
+            b
             subCols.splice(0, subCols.length);
 
         }
@@ -2591,65 +2659,66 @@ VariantWidget.prototype = {
             border: 0,
             items: [
                 {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    width: "100%",
-                    items: [
-                        {
-                            xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">1000G MAF <</span>'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'maf_1000g_controls',
-                            margin: '0 0 0 5',
-                            labelWidth: '50%',
-                            width: "50%"
-                        }
-                    ]
+                    xtype: 'textfield',
+                    fieldLabel: '<span class="emph">1000G MAF <</span>',
+                    name: 'maf_1000g_controls',
+                    labelWidth: 120,
+                    width: 180,
+                    labelAlign: 'right'
                 },
                 {
-                    xtype: 'fieldcontainer',
-                    //fieldLabel: '% Controls recessive',
-                    layout: 'hbox',
-                    margin: '10 0 0 0',
-                    border: false,
-                    width: "100%",
-                    items: [
-
-                        {
-                            xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">BIER MAF<</span>'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'maf_bier_controls',
-                            margin: '0 0 0 5',
-                            labelWidth: '50%',
-                            width: "50%"
-                        }
-                    ]
+                    xtype: 'textfield',
+                    fieldLabel: '<span class="emph">EVS MAF   <</span>',
+                    name: 'maf_evs_controls',
+                    labelWidth: 120,
+                    width: 180,
+                    labelAlign: 'right'
                 },
                 {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    width: "100%",
-                    items: [
-                        {
-                            xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">EVS MAF <</span>'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'maf_evs_controls',
-                            margin: '0 0 0 5',
-                            labelWidth: '50%',
-                            width: "50%"
-                            //value: '0.1'
-                        }
-                    ]
+                    xtype: 'tbtext',
+                    margin: '20 0 5 0 ',
+                    border: '0 0 1 0',
+                    style: {
+                        borderColor: 'black',
+                        borderStyle: 'solid'
+                    },
+                    text: '<span>1000G Populations</span>'
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: '<span class="emph">African MAF <</span>',
+                    name: 'maf_1000g_afr_controls',
+                    labelWidth: 120,
+                    width: 180,
+                    labelAlign: 'right'
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: '<span class="emph">American MAF <</span>',
+                    name: 'maf_1000g_ame_controls',
+                    labelWidth: 120,
+                    width: 180,
+                    labelAlign: 'right'
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: '<span class="emph">Asian MAF <</span>',
+                    name: 'maf_1000g_asi_controls',
+                    labelWidth: 120,
+                    width: 180,
+                    labelAlign: 'right'
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: '<span class="emph">European MAF <</span>',
+                    name: 'maf_1000g_eur_controls',
+                    labelWidth: 120,
+                    width: 180,
+                    labelAlign: 'right'
                 }
             ]
         });
+
     },
     _createCombobox: function (name, label, data, defaultValue, labelWidth, margin) {
         var _this = this;
@@ -2819,8 +2888,8 @@ VariantWidget.prototype = {
 
             var variant = records[i];
 
-            var chr = variant.raw.chromosome;
-            var pos = variant.raw.position;
+            var chr = variant.data.chromosome;
+            var pos = variant.data.position;
             regs.push(chr + ":" + pos + "-" + pos);
 
         }
