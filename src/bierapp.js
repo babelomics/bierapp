@@ -10,7 +10,9 @@ function Bierapp(args) {
     this.description = '';
     this.version = '1.1.0';
 //    this.tools = ["variant", "variant-mongo"];
-    this.tools = ["variant-mongo"];
+    this.tools = {
+        "variant-mongo": true
+    };
     this.border = true;
     this.targetId;
     this.width;
