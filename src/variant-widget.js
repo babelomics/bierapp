@@ -26,6 +26,14 @@ VariantWidget.prototype = {
         var _this = this;
         this.targetId = (targetId) ? targetId : this.targetId;
 
+        this.variantEffectWidget = new VariantEffectPanelWidget({
+            autoRender:true,
+            gridConfig:{
+                collabsible:true,
+                titleCollapse:true
+            }
+        });
+        
         this.rendered = true;
 
     },
@@ -66,6 +74,7 @@ VariantWidget.prototype = {
         //this.panel.add(this.variantPanel);
 
         this.genomeViewerPanel = this._createGenomeViewerPanel();
+
 
         this._updateInfo();
         /* form */
@@ -147,8 +156,6 @@ VariantWidget.prototype = {
 
         this.form = this._createForm();
         this.grid = this._createGrid();
-        this.colSelector = this._createColumnSelector();
-        this.gridEffect = this._createEffectGrid();
 
         var panel = Ext.create('Ext.panel.Panel', {
             // title: 'variants',
@@ -172,19 +179,19 @@ VariantWidget.prototype = {
                     ]
                 },
                 {
-                    xtype: 'container',
+                    xtype: 'panel',
                     flex: 7,
                     layout: {
                         type: 'vbox',
                         align: 'stretch'
                     },
                     defaults: {
-                        margin: '0 0 20 0',
+                        //margin: '0 0 20 0',
                         flex: 1
                     },
                     items: [
                         this.grid,
-                        this.gridEffect
+                        this.variantEffectWidget.getPanel()
                     ]
                 }
             ]
@@ -199,7 +206,7 @@ VariantWidget.prototype = {
         if (_this.sampleNames != null) {
 
             _this.grid.getStore().removeAll();
-            _this.gridEffect.getStore().removeAll();
+
 
             for (var i = 0; i < _this.sampleNames.length; i++) {
                 _this._removeSampleColumn(_this.sampleNames[i]);
@@ -625,21 +632,6 @@ VariantWidget.prototype = {
 
         return panel;
     },
-    _createEffectPanel: function () {
-
-        var _this = this;
-
-        var panel = Ext.create('Ext.panel.Panel', {
-            // title: 'Effect',
-            width: '100%',
-            height: '100%',
-            border: 0,
-            layout: 'hbox',
-            cls: 'ocb-border-top-lightgrey',
-            items: []
-        });
-        return panel;
-    },
     _createGenomeViewer: function () {
         var _this = this;
 
@@ -1056,228 +1048,6 @@ VariantWidget.prototype = {
 
         return accordion;
     },
-    _createEffectGrid: function () {
-
-        var groupingFeature = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: '{groupField}: {groupValue} ({rows.length} Effect{[values.rows.length > 1 ? "s" : ""]})'
-        });
-
-        var xtmplPoly = new Ext.XTemplate(
-            '<tpl if="aminoacidChange">{[this.parseEffect(values)]}<tpl else>.</tpl>  ',
-            {
-                parseEffect: function (value) {
-
-                    if (value.polyphenScore == 0 && value.polyphenEffect == 0) {
-                        return ".";
-                    }
-
-                    var score = value.polyphenScore;
-                    var effect = "";
-                    switch (value.polyphenEffect) {
-                        case 0:
-                            effect = "probably damaging";
-                            break;
-                        case 1:
-                            effect = "possibly damaging";
-                            break;
-                        case 2:
-                            effect = "benign";
-                            break;
-                        case 3:
-                            effect = "unknown";
-                            break;
-
-                        default:
-                            return ".";
-
-                    }
-                    return(score + " - (" + effect + ")");
-                }
-            }
-        );
-        var xtmplSift = new Ext.XTemplate(
-            '<tpl if="aminoacidChange">{[this.parseEffect(values)]}<tpl else>.</tpl>  ',
-            {
-                parseEffect: function (value) {
-
-                    if (value.siftScore == 0 && value.siftEffect == 0) {
-                        return ".";
-                    }
-
-                    var score = value.siftScore;
-                    var effect = "";
-                    switch (value.siftEffect) {
-                        case 0:
-                            effect = "tolerated";
-                            break;
-                        case 1:
-                            effect = "deleterious";
-                            break;
-                        default:
-                            return ".";
-
-                    }
-                    return(score + " - (" + effect + ")");
-                }
-            }
-        );
-        this.stEffect = Ext.create("Ext.data.Store", {
-            groupField: 'featureId',
-            fields: [
-                {name: "featureId", type: "string"},
-                {name: "featureName", type: "string"},
-                {name: "featureType", type: "string"},
-                {name: "featureBiotype", type: "string"},
-                {name: "featureChromosome", type: "string"},
-                {name: "featureStart", type: "int"},
-                {name: "featureEnd", type: "int"},
-                {name: "featureStrand", type: "string"},
-                {name: "snpId", type: "string"},
-                {name: "ancestral", type: "string"},
-                {name: "alternative", type: "string"},
-                {name: "geneId", type: "string"},
-                {name: "transcriptId", type: "string"},
-                {name: "geneName", type: "string"},
-                {name: "consequenceType", type: "string"},
-                {name: "consequenceTypeObo", type: "string"},
-                {name: "consequenceTypeDesc", type: "string"},
-                {name: "consequenceTypeType", type: "string"},
-                {name: "aaPosition", type: "int"},
-                {name: "aminoacidChange", type: "string"},
-                {name: "codonChange", type: "string"},
-                {name: "polyphenScore", type: "number"},
-                {name: "polyphenEffect", type: "number"},
-                {name: "siftScore", type: "number"},
-                {name: "siftEffect", type: "number"},
-
-
-            ],
-            data: [],
-            autoLoad: false,
-            proxy: {type: 'memory'},
-            pageSize: 5
-        });
-
-        var gridEffect = Ext.create('Ext.grid.Panel', {
-            title: '<span class="ssel">Variant Effect</span>',
-            flex: 1,
-            height: '100%',
-            store: this.stEffect,
-            loadMask: true,
-            border: 1,
-            titleCollapse: true,
-            collapsible: true,
-            columns: [
-                {xtype: 'rownumberer'},
-                {
-                    text: "Position chr:start:end (strand)",
-                    dataIndex: "featureChromosome",
-                    xtype: "templatecolumn",
-                    tpl: '{featureChromosome}:{featureStart}-{featureEnd} <tpl if="featureStrand == 1">(+)<tpl elseif="featureStrand == -1">(-)</tpl>',
-                    flex: 1
-                },
-                {
-                    text: "SNP Id",
-                    dataIndex: "snpId",
-                    flex: 1
-                },
-                {
-                    text: "Conseq. Type",
-                    dataIndex: "consequenceTypeObo",
-                    xtype: "templatecolumn",
-                    tpl: '{consequenceTypeObo} (<a href="http://www.sequenceontology.org/browser/current_svn/term/{consequenceType}" target="_blank">{consequenceType}</a>)',
-                    flex: 1
-                },
-                {
-                    text: "Aminoacid Change",
-                    xtype: "templatecolumn",
-                    tpl: '<tpl if="aminoacidChange">{aminoacidChange} - {codonChange} ({aaPosition}) <tpl else>.</tpl>  ',
-                    flex: 1
-                },
-//                {
-//                    text: "Polyphen",
-//                    xtype: "templatecolumn",
-//                    dataIndex: "polyphenScore",
-//                    tpl: xtmplPoly,
-//                    flex: 1
-//                },
-//                {
-//                    text: "SIFT",
-//                    xtype: "templatecolumn",
-//                    dataIndex: "siftScore",
-//                    tpl: xtmplSift,
-//                    flex: 1
-//                },
-                {
-                    text: "Gene (EnsemblId)",
-                    dataIndex: "geneName",
-                    xtype: 'templatecolumn',
-                    tpl: '<tpl if="geneName">{geneName} (<a href="http://www.ensembl.org/Homo_sapiens/Location/View?g={geneId}" target="_blank">{geneId}</a>)<tpl else>.</tpl>',
-                    flex: 1
-                },
-                {
-                    text: "Transcript Id",
-                    dataIndex: "transcriptId",
-                    xtype: 'templatecolumn',
-                    tpl: '<a href="http://www.ensembl.org/Homo_sapiens/Location/View?t={transcriptId}" target="_blank">{transcriptId}</a>',
-                    flex: 1
-                },
-                {
-                    text: "Feature Id",
-                    dataIndex: "featureId",
-                    flex: 1
-
-                },
-                {
-                    text: "Feature Name",
-                    dataIndex: "featureName",
-                    flex: 1
-
-                },
-                {
-                    text: "Feature Type",
-                    dataIndex: "featureType",
-                    flex: 1
-
-                },
-                {
-                    text: "Feature Biotype",
-                    dataIndex: "featureBiotype",
-                    flex: 1
-
-                },
-                {
-                    text: "Ancestral",
-                    dataIndex: "ancestral",
-                    hidden: true,
-                    flex: 1
-                },
-                {
-                    text: "Alternative",
-                    dataIndex: "alternative",
-                    hidden: true,
-                    flex: 1
-                }
-            ],
-            ////features: [groupingFeature, {ftype: 'summary'}],
-            viewConfig: {
-                emptyText: 'No records to display'
-            },
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    dock: 'bottom',
-                    items: [
-                        {
-                            xtype: 'tbtext',
-                            id: this.id + "numRowsLabelEffect"
-                        }
-                    ]
-                }
-            ]
-        });
-        return gridEffect
-    },
     _createGrid: function () {
 
         var _this = this;
@@ -1384,7 +1154,7 @@ VariantWidget.prototype = {
                 flex: 1,
                 text: "Controls (MAF)",
                 defaults: {
-                    width: 70,
+                    width: 70
                 },
                 columns: [
                     {
@@ -1543,7 +1313,7 @@ VariantWidget.prototype = {
                 extraParams: {
                     myParam: "hola"
                 },
-                actionMethods: {create: 'GET', read: 'GET', update: 'GET', destroy: 'GET'},
+                actionMethods: {create: 'GET', read: 'GET', update: 'GET', destroy: 'GET'}
             },
             listeners: {
                 load: function (store, records, successful, operation, eOpts) {
@@ -1564,8 +1334,6 @@ VariantWidget.prototype = {
                         v.set("snpid", v.data.snpid);
                         v.set("genes", v.data.genes.join(","));
 
-                        //_this._getEffect(v);
-                        //_this._getPolyphenSift(v);
                         v.commit();
                     }
 
@@ -1642,16 +1410,11 @@ VariantWidget.prototype = {
                         v.set("snpid", v.data.snpid);
                         v.set("genes", v.data.genes.join(","));
 
-                        //_this._getEffect(v);
-                        //_this._getPolyphenSift(v);
                         v.commit();
                     }
 
-                    //_this._getPhenotypes(records);
-
                     _this.st.resumeEvents();
                     _this.st.fireEvent('refresh');
-
                 }
             }
 
@@ -1659,14 +1422,16 @@ VariantWidget.prototype = {
 
         var grid = Ext.create('Ext.grid.Panel', {
                 title: '<span class="ssel">Variant Info</span>',
-                flex: 1,
-                height: '100%',
+                //flex: 1,
+                //height: '100%',
                 store: _this.st,
                 loadMask: true,
                 border: 1,
                 columns: this.columnsGrid,
                 plugins: 'bufferedrenderer',
                 loadMask: true,
+                collapsible:true,
+                titleCollapse:true,
                 features: [
                     {ftype: 'summary'}
                 ],
@@ -1680,7 +1445,7 @@ VariantWidget.prototype = {
                     pageSize: 25,
                     displayInfo: true,
                     displayMsg: 'Variants {0} - {1} of {2}',
-                    emptyMsg: "No variants to display",
+                    emptyMsg: "No variants to display"
                 }),
                 dockedItems: [
                     {
@@ -1822,67 +1587,11 @@ VariantWidget.prototype = {
                 var ref = row.ref;
                 var alt = row.alt;
 
-                _this._updateEffectGrid(chr, pos, ref, alt);
+                _this.variantEffectWidget.load(chr,pos,ref,alt);
             }
         });
 
         return grid;
-    },
-
-    _updateEffectGrid: function (chr, pos, ref, alt) {
-
-        var _this = this;
-        var req = chr + ":" + pos + ":" + ref + ":" + alt;
-        _this.gridEffect.setLoading(true);
-
-        $.ajax({
-            url: "http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/variant/" + req + "/consequence_type?of=json",
-            dataType: 'json',
-            success: function (response, textStatus, jqXHR) {
-                if (response.length > 0) {
-
-                    var data = _this._filterEffectData(response);
-
-                    _this.gridEffect.getStore().loadData(data);
-                    _this.gridEffect.setTitle('<span class="ssel">Effect</span> - <spap class="info">' + chr + ':' + pos + ' ' + ref + '>' + alt + '</spap>');
-                    Ext.getCmp(_this.id + "numRowsLabelEffect").setText(data.length + " effects");
-
-                } else {
-                    _this.gridEffect.getStore().removeAll();
-                }
-                _this.gridEffect.setLoading(false);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log('Error loading Effect');
-                _this.gridEffect.setLoading(false);
-            }
-        });
-    },
-    _filterEffectData: function (data) {
-        var _this = this;
-        var res = [];
-
-        var regulatory = {};
-
-        for (var i = 0; i < data.length; i++) {
-            var elem = data[i];
-            if (elem.consequenceTypeObo == "coding_sequence_variant" || elem.consequenceTypeObo == "exon_variant" || elem.consequenceTypeObo == "intron_variant") {
-                continue;
-            } else if (elem.consequenceTypeObo == "regulatory_region_variant") {
-                if (!(elem.featureId in regulatory)) {
-                    regulatory[elem.featureId] = elem;
-                }
-                continue;
-            }
-
-            res.push(elem);
-        }
-
-        for (var elem in regulatory) {
-            res.push(regulatory[elem]);
-        }
-
-        return res;
     },
     _getSubColumn: function (colName) {
         var _this = this;

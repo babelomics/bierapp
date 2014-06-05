@@ -19,7 +19,6 @@ module.exports = function (grunt) {
                 src: [
                     'src/variant-widget.js',
                     'src/variant-index-form.js',
-                    'src/bierapp-widget.js',
                     'src/bierapp.js'
                 ],
                 dest: '<%= def.build %>/<%= def.name %>.js'

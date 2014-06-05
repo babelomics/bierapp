@@ -201,13 +201,16 @@ Bierapp.prototype = {
             appname: this.title,
             description: this.description,
             version: this.version,
-            //suiteId: this.suiteId,
-            suiteId: 85,
+            suiteId: this.suiteId,
             accountData: this.accountData,
-            enableTextModeUW: false,
+            homeLink: "http://bierapp.babelomics.org",
+            helpLink: "http://bierapp.babelomics.org",
+            tutorialLink: "http://bierapp.babelomics.org",
+            aboutText: '',
+            applicationMenuEl: this.variantMenuEl,
             handlers: {
                 'login': function (event) {
-                    Ext.example.msg('Welcome', 'You logged in');
+                    Utils.msg('Welcome', 'You logged in');
                     _this.sessionInitiated();
                 },
                 'logout': function (event) {
@@ -218,7 +221,15 @@ Bierapp.prototype = {
                 'account:change': function (event) {
                     _this.setAccountData(event.response);
 
+                },
+                'jobs:click': function () {
+                    _this.jobListWidget.toggle();
+                },
+                'about:click': function () {
+                    _this.jobListWidget.toggle(false);
+//                    _this.headerWidget.
                 }
+
             }
         });
         headerWidget.draw();
@@ -460,7 +471,21 @@ Bierapp.prototype.jobItemClick = function (record) {
 
         var toolName = record.data.toolName;
         console.log(toolName);
-        if (toolName == 'variant-mongo') { // TODO aaleman: Cambiar esta línea cuando pasemos a variant
+
+        if( record.data.status == "execution_error" || record.data.status == "queue_error"){
+            var resultWidget = new ResultWidget({
+                targetId: this.panel.getId(),
+                application: 'variant',
+                app: this,
+                //layoutName: record.raw.toolName
+                layoutName: 'variant' // TODO aaleman: Quitar esta línea cuando cambiemos el toolName a "variant"
+            });
+            resultWidget.draw($.cookie('bioinfo_sid'), record);
+
+            /* result widget parses the commandLine on record and adds the command key */
+            var command = resultWidget.job.command.data;
+        }
+        else if (toolName == 'variant-mongo') { // TODO aaleman: Cambiar esta línea cuando pasemos a variant
             record.data.command = Utils.parseJobCommand(record.data);
             var variantWidget = new VariantWidget({
                 targetId: this.panel,
