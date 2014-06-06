@@ -11,6 +11,8 @@ function VariantWidget(args) {
     this.width;
     this.height = '100%';
     this.closable = true;
+    this.url = "";
+    this.effectWidgetConfig = {};
 
     //set instantiation args, must be last
     _.extend(this, args);
@@ -19,6 +21,7 @@ function VariantWidget(args) {
     if (this.autoRender) {
         this.render();
     }
+
 }
 
 VariantWidget.prototype = {
@@ -26,14 +29,26 @@ VariantWidget.prototype = {
         var _this = this;
         this.targetId = (targetId) ? targetId : this.targetId;
 
+        /* main panel */
+        this.panel = this._createPanel(this.targetId);
+
+        this.genomeViewerPanel = this._createGenomeViewer();
+
         this.variantEffectWidget = new VariantEffectPanelWidget({
-            autoRender:true,
-            gridConfig:{
-                collabsible:true,
-                titleCollapse:true
+            gridConfig: {
+                flex: 1,
+                layout: {
+                    align: 'stretch'
+                }
             }
         });
-        
+
+        this.toolsPanel = Ext.create("Ext.tab.Panel", {
+            xtype: 'basic-tabs',
+            border: 0,
+            layout: 'fit',
+        });
+
         this.rendered = true;
 
     },
@@ -64,23 +79,22 @@ VariantWidget.prototype = {
             pageSize: 20
         });
 
-        /* main panel */
-        this.panel = this._createPanel(this.targetId);
 
-        this.summaryPanel = this._createSummaryPanel(this.variantInfo);
-        this.panel.add(this.summaryPanel);
+//        this.summaryPanel = this._createSummaryPanel(this.variantInfo);
+        //this.panel.add(this.summaryPanel);
 
         this.variantPanel = this._createVariantPanel();
-        //this.panel.add(this.variantPanel);
-
-        this.genomeViewerPanel = this._createGenomeViewerPanel();
+        this.panel.add(this.variantPanel);
 
 
+        //this.toolsPanel.removeAll(false);
+        this.toolsPanel.add(this.variantEffectWidget.getPanel());
+        this.toolsPanel.add(this.genomeViewerPanel);
+
+        this.toolsPanel.setActiveTab(this.variantEffectWidget.getPanel());
         this._updateInfo();
-        /* form */
     },
     _createPanel: function (targetId) {
-        var _this = this;
         var panel = Ext.create('Ext.panel.Panel', {
             title: this.title,
             width: '100%',
@@ -89,67 +103,9 @@ VariantWidget.prototype = {
             layout: 'hbox',
             closable: this.closable,
             cls: 'ocb-border-top-lightgrey',
-            tbar: {items: [
-                {
-                    text: 'Summary',
-                    enableToggle: true,
-                    pressed: true,
-                    toggleGroup: 'options',
-                    handler: function () {
-                        _this.panel.removeAll(false);
-                        _this.panel.add(_this.summaryPanel);
-                    }
-                },
-                {
-                    text: 'Variants and effect',
-                    enableToggle: true,
-                    pressed: false,
-                    toggleGroup: 'options',
-                    handler: function () {
-                        _this.panel.removeAll(false);
-                        _this.panel.add(_this.variantPanel);
-                    }
-                },
-                {
-                    text: 'Genome Viewer',
-                    enableToggle: true,
-                    pressed: false,
-                    toggleGroup: 'options',
-                    handler: function () {
-                        // TODO aaleman: Check this code
-
-                        if (_this.grid.getStore().count() == 0) {
-                            Ext.example.msg('Genove Viewer', 'You must apply some filters first!!')
-                        } else {
-                            _this.panel.removeAll(false);
-                            _this.panel.add(_this.genomeViewerPanel);
-
-                            var row = {};
-                            var selection = _this.grid.getView().getSelectionModel().getSelection();
-
-                            if (selection.length > 0) {
-                                row = selection[0];
-                                var region = new Region({
-                                    chromosome: row.get("chromosome"),
-                                    start: row.get("position"),
-                                    end: row.get("position")
-                                });
-
-
-                                if (!_.isUndefined(_this.gv)) {
-                                    _this.gv.setRegion(region);
-                                }
-                            } else {
-                                Ext.example.msg('Genove Viewer', 'You must select one variant first!!')
-                            }
-                        }
-                    }
-                }
-            ]},
             items: []
         });
         targetId.add(panel);
-        targetId.setActiveTab(panel);
         return panel;
     },
     _createVariantPanel: function () {
@@ -158,11 +114,10 @@ VariantWidget.prototype = {
         this.grid = this._createGrid();
 
         var panel = Ext.create('Ext.panel.Panel', {
-            // title: 'variants',
             width: '100%',
             height: '100%',
             bodyPadding: 20,
-            border: 0,
+            //margin:'0 5 0 5',
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -179,19 +134,19 @@ VariantWidget.prototype = {
                     ]
                 },
                 {
-                    xtype: 'panel',
-                    flex: 7,
+                    xtype: 'container',
+                    flex: 1,
                     layout: {
                         type: 'vbox',
-                        align: 'stretch'
+                        align: 'stretch',
                     },
                     defaults: {
-                        //margin: '0 0 20 0',
-                        flex: 1
+                        flex: 1,
+                        border: false
                     },
                     items: [
                         this.grid,
-                        this.variantEffectWidget.getPanel()
+                        this.toolsPanel
                     ]
                 }
             ]
@@ -223,7 +178,7 @@ VariantWidget.prototype = {
         sampleTableElems.push({html: '0/1'});
         sampleTableElems.push({html: '1/1'});
 
-        var fcItems = [];
+
         for (var i in this.variantInfo.samples) {
             var sName = this.variantInfo.samples[i];
             _this.sampleNames.push(sName);
@@ -235,19 +190,16 @@ VariantWidget.prototype = {
 
             sampleTableElems.push({
                 xtype: 'checkbox',
-                //boxLabel: '0/0',
                 name: "sampleGT_" + sName,
                 inputValue: '0/0,0|0'
             });
             sampleTableElems.push({
                 xtype: 'checkbox',
-                //boxLabel: '0/1',
                 name: "sampleGT_" + sName,
                 inputValue: '0/1,1/0, 0|1,1|0'
             });
             sampleTableElems.push({
                 xtype: 'checkbox',
-                //boxLabel: '1/1',
                 name: "sampleGT_" + sName,
                 inputValue: '1/1,1|1'
             });
@@ -264,15 +216,11 @@ VariantWidget.prototype = {
             _this._createDynCombobox("conseq_type", "Consequence Type", this.variantInfo.consequenceTypes, "non_synonymous_codon")
         ]);
 
-        var biotypeForm = Ext.getCmp(this.id + "biotype_panel");
-
         var samples = Ext.getCmp(this.id + "samples_form_panel");
         samples.removeAll();
-
         samples.add(sampleTableElems);
 
         _this.panel.setLoading(false);
-
     },
     _addSampleColumn: function (sampleName) {
 
@@ -301,7 +249,6 @@ VariantWidget.prototype = {
                 });
             }
         }
-        //_this.model.setFields(_this.attributes);
         _this.st.setFields(_this.attributes);
     },
     _removeSampleColumn: function (sampleName) {
@@ -325,39 +272,6 @@ VariantWidget.prototype = {
                 }
             }
         }
-    },
-    _createColumnSelector: function () {
-        var _this = this;
-        var items = [];
-
-        for (var i = 0; i < this.columnsGrid.length; i++) {
-            var col = this.columnsGrid[i];
-            var elem = {
-                xtype: 'checkbox',
-                fieldLabel: col["text"],
-                inputValue: col["text"],
-                checked: !col["hidden"],
-                cls: "checkbox",
-
-                handler: function (field, value) {
-                    var colName = field.inputValue;
-                    for (var i = 0; i < _this.grid.headerCt.items.items.length; i++) {
-                        if (_this.grid.headerCt.items.items[i].text == colName) {
-                            _this.grid.headerCt.items.items[i].setVisible(value);
-                        }
-                    }
-                }
-            };
-            items.push(elem);
-
-        }
-        var panel = Ext.create('Ext.container.Container', {
-                cls: "bootstrap",
-                items: items
-            }
-        );
-
-        return panel;
     },
     _createSummaryPanel: function (data) {
         var _this = this;
@@ -678,7 +592,6 @@ VariantWidget.prototype = {
 
                         genomeViewer.draw();
 
-
                         this.sequence = new SequenceTrack({
                             targetId: null,
                             id: 1,
@@ -698,7 +611,6 @@ VariantWidget.prototype = {
                                 species: genomeViewer.species
                             })
                         });
-
 
                         this.gene = new GeneTrack({
                             targetId: null,
@@ -798,102 +710,11 @@ VariantWidget.prototype = {
                         genomeViewer.addTrack(this.snp);
 
                         _this.gv = genomeViewer;
-
-                        $(_this.gv.navigationBar.restoreDefaultRegionButton).hide();
-                        $(_this.gv.navigationBar.regionHistoryButton).hide();
-                        $(_this.gv.navigationBar.speciesButton).hide();
-                        $(_this.gv.navigationBar.chromosomesButton).hide();
-                        $(_this.gv.navigationBar.karyotypeButton).hide();
-                        $(_this.gv.navigationBar.chromosomeButton).hide();
-                        $(_this.gv.navigationBar.regionButton).hide();
-                        $(_this.gv.navigationBar.windowSizeField).parent().hide();
-                        //$(_this.gv.navigationBar.regionField).parent().hide();
-                        //$(_this.gv.navigationBar.goButton).parent().hide();
-                        //$(_this.gv.navigationBar.searchField).parent().hide();
-                        //$(_this.gv.navigationBar.quickSearchButton).parent().hide();
-                        $(_this.gv.navigationBar.autoheightButton).parent().hide();
-                        $(_this.gv.navigationBar.compactButton).parent().hide();
-
                     }
                 }
             }
         });
         return gvpanel;
-    },
-    _createGenomeViewerPanel: function () {
-        var _this = this;
-        this.genomeViewer = this._createGenomeViewer();
-        this.variantGridMini = this._createVariantGridAux();
-
-        var panel = Ext.create('Ext.panel.Panel', {
-            // title: 'Effect',
-            width: '100%',
-            height: '100%',
-            border: 0,
-            layout: 'hbox',
-            bodyPadding: 20,
-            cls: 'ocb-border-top-lightgrey',
-            items: [
-                this.variantGridMini,
-                this.genomeViewer
-            ]
-        });
-        return panel;
-    },
-    _createVariantGridAux: function () {
-        var _this = this;
-        _this.stMini = Ext.create('Ext.data.Store', {
-            //model: _this.model,
-            fields: ['chr', 'pos', 'ref', 'alt'],
-            data: [],
-            autoLoad: false,
-            proxy: {type: 'memory'},
-            pageSize: 5
-
-        });
-
-        var grid = Ext.create('Ext.grid.Panel', {
-                title: 'Variant',
-                flex: 1,
-                height: '100%',
-                store: _this.stMini,
-                loadMask: true,
-                border: 0,
-                margin: '0 20 0 0',
-                hideHeaders: true,
-                border: 1,
-                columns: [
-                    {
-                        text: 'Variant',
-                        flex: 1,
-                        xtype: "templatecolumn",
-                        tpl: '{chr}:{pos} {ref}>{alt}'
-                    }
-                ]}
-        );
-
-        grid.getSelectionModel().on('selectionchange', function (sm, selectedRecord) {
-
-            if (selectedRecord.length) {
-
-                var row = selectedRecord[0].data;
-                var chr = row.chr;
-                var pos = row.pos;
-
-                var region = new Region({
-                    chromosome: chr,
-                    start: pos,
-                    end: pos
-                });
-
-                if (!_.isUndefined(_this.gv)) {
-                    _this.gv.setRegion(region);
-                }
-
-            }
-        });
-
-        return grid;
     },
     _createForm: function () {
 
@@ -926,7 +747,6 @@ VariantWidget.prototype = {
                     } ,
                     {
                         xtype: 'button',
-                        //width:'100%',
                         flex: 1,
                         text: '<span style="font-weight:bold">Clear</span>',
                         tooltip: 'Clear',
@@ -940,7 +760,6 @@ VariantWidget.prototype = {
                     '->',
                     {
                         xtype: 'button',
-                        //width:'100%',
                         flex: 1,
                         text: '<span style="font-weight:bold">Search</span>',
                         tooltip: 'Search',
@@ -961,7 +780,6 @@ VariantWidget.prototype = {
 
         var geneItems = [
             this._getGenes()
-            //this._getBioTypes()
         ];
 
         var region = Ext.create('Ext.panel.Panel', {
@@ -978,24 +796,14 @@ VariantWidget.prototype = {
             this._getMAF(),
             this._getMissing(),
             this._getMendelError(),
-//            this._getIsIndel(),
             this._getInheritance()
         ];
-
-        var stats = Ext.create('Ext.panel.Panel', {
-            title: "Stats",
-            items: statsItems
-        });
-
-        var samplesInfo = [];
 
         var samples = Ext.create('Ext.panel.Panel', {
             width: '100%',
             height: 300,
             title: 'Segregation',
             autoScroll: true
-            //items: samplesInfo,
-            //border:0
         });
 
         var sampleContainer = Ext.create('Ext.container.Container', {
@@ -1013,9 +821,6 @@ VariantWidget.prototype = {
         samples.add(sampleContainer);
         samples.add(this._getMissing());
 
-
-        //samples.add(this._getMissing());
-
         var controlsItems = [
             this._getControls()
         ];
@@ -1027,7 +832,6 @@ VariantWidget.prototype = {
 
         var effectItems = [
             this._getConsequenceType()
-//            this._getIsIndel(),
         ];
 
         var effect = Ext.create('Ext.panel.Panel', {
@@ -1051,7 +855,7 @@ VariantWidget.prototype = {
     _createGrid: function () {
 
         var _this = this;
-        4
+
         var xtmplPoly = new Ext.XTemplate(
             '{[this.parseEffect(values)]}',
             {
@@ -1115,7 +919,7 @@ VariantWidget.prototype = {
                 res = res + " (" + control.allele + ")";
             }
             return res;
-        }
+        };
 
         _this.columnsGrid = [
             {
@@ -1285,9 +1089,6 @@ VariantWidget.prototype = {
             fields: _this.attributes
         });
 
-        var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
-        console.log(url);
-
         _this.st = Ext.create('Ext.data.Store', {
             pageSize: 25,
             model: _this.model,
@@ -1304,7 +1105,7 @@ VariantWidget.prototype = {
             ],
             proxy: {
                 //model: _this.model,
-                url: url,
+                url: _this.url,
                 type: 'ajax',
                 reader: {
                     root: "response.result",
@@ -1342,16 +1143,12 @@ VariantWidget.prototype = {
                     _this.st.resumeEvents();
                     _this.st.fireEvent('refresh');
 
-                    console.log(records);
-                    _this._updateInfoVariantMini(records);
                 }
             }
 
         });
         _this.exportStore = Ext.create('Ext.data.Store', {
-            //pageSize: 25,
             model: _this.model,
-            //groupField: 'gene_name',
             data: [],
             autoLoad: false,
             remoteSort: true,
@@ -1365,7 +1162,7 @@ VariantWidget.prototype = {
             proxy: {
                 model: _this.model,
                 type: 'ajax',
-                url: url,
+                url: _this.url,
                 reader: {
                     root: "response.result",
                     totalProperty: "response.numResults"
@@ -1390,7 +1187,6 @@ VariantWidget.prototype = {
                     }
                 }
             },
-            method: 'get',
             listeners: {
                 load: function (store, records, successful, operation, eOpts) {
 
@@ -1420,63 +1216,37 @@ VariantWidget.prototype = {
 
         });
 
-        var grid = Ext.create('Ext.grid.Panel', {
-                title: '<span class="ssel">Variant Info</span>',
-                //flex: 1,
-                //height: '100%',
-                store: _this.st,
-                loadMask: true,
-                border: 1,
-                columns: this.columnsGrid,
-                plugins: 'bufferedrenderer',
-                loadMask: true,
-                collapsible:true,
-                titleCollapse:true,
-                features: [
-                    {ftype: 'summary'}
-                ],
-                viewConfig: {
-                    emptyText: 'No records to display',
-                    enableTextSelection: true
-                },
-                bbar: Ext.create('Ext.PagingToolbar', {
-                    store: _this.st,
-                    id: _this.id + "_pagingToolbar",
-                    pageSize: 25,
-                    displayInfo: true,
-                    displayMsg: 'Variants {0} - {1} of {2}',
-                    emptyMsg: "No variants to display"
-                }),
-                dockedItems: [
-                    {
-                        xtype: 'toolbar',
-                        dock: 'bottom',
-                        items: [
-                            {
-                                xtype: 'tbtext',
-                                id: this.id + "numRowsLabel"
-                            },
-                            '->',
-                            {
-                                xtype: 'button',
-                                text: 'Columns',
-                                id: this.id + "gridColSelectorBtn",
-                                menu: {
-                                    width: 150,
-                                    margin: '0 0 10 0',
-                                    id: this.id + "gridColSelectorMenu",
-                                    plain: true,
-                                    items: []
-                                }
+        var paging = Ext.create('Ext.PagingToolbar', {
+            store: _this.st,
+            id: _this.id + "_pagingToolbar",
+            pageSize: 25,
+            displayInfo: true,
+            displayMsg: 'Variants {0} - {1} of {2}',
+            emptyMsg: "No variants to display"
+        });
 
-                            },
-                            {
+        paging.add({
+                xtype: 'button',
+                text: 'Columns',
+                id: this.id + "gridColSelectorBtn",
+                menu: {
+                    width: 150,
+                    margin: '0 0 10 0',
+                    id: this.id + "gridColSelectorMenu",
+                    plain: true,
+                    items: []
+                }
+
+            }
+        );
+
+        paging.add(                   {
                                 xtype: 'button',
                                 text: 'Export data...',
                                 handler: function () {
 
                                     if (_this.st.getCount() == 0) {
-                                        Ext.example.msg('ERROR', 'You must apply some filters before or the result set is empty!!');
+                                        Utils.msg('ERROR', 'You must apply some filters before or the result set is empty!!');
                                         return;
                                     }
 
@@ -1570,10 +1340,28 @@ VariantWidget.prototype = {
                                     Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Progress");
                                     Ext.getCmp(_this.id + "_downloadExport").enable();
                                 }
-                            }
-                        ]
-                    }
-                ]
+
+                   }
+                  )
+
+
+        var grid = Ext.create('Ext.grid.Panel', {
+                title: 'Variant Info',
+                store: _this.st,
+                loadMask: true,
+                columns: this.columnsGrid,
+                plugins: 'bufferedrenderer',
+                loadMask: true,
+                collapsible: true,
+                titleCollapse: true,
+                features: [
+                    {ftype: 'summary'}
+                ],
+                viewConfig: {
+                    emptyText: 'No records to display',
+                    enableTextSelection: true
+                },
+                bbar: paging
             }
         );
 
@@ -1587,7 +1375,17 @@ VariantWidget.prototype = {
                 var ref = row.ref;
                 var alt = row.alt;
 
-                _this.variantEffectWidget.load(chr,pos,ref,alt);
+                var region = new Region({
+                    chromosome: chr,
+                    start: pos,
+                    end: pos
+                });
+
+                _this.variantEffectWidget.load(chr, pos, ref, alt);
+
+                if (!_.isUndefined(_this.gv)) {
+                    _this.gv.setRegion(region);
+                }
             }
         });
 
@@ -1689,11 +1487,9 @@ VariantWidget.prototype = {
         }
         formParams.limit = totalData;
 
-        var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), _this.job.id) + '/variantsMongo';
-
         var data = [];
         $.ajax({
-            url: url,
+            url: _this.url,
             dataType: 'json',
             data: formParams,
             async: false,
@@ -1708,8 +1504,6 @@ VariantWidget.prototype = {
                 Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Error");
             }
         });
-
-
         return data;
 
     },
@@ -1799,38 +1593,6 @@ VariantWidget.prototype = {
         }
         return colNames;
     },
-    _prepareData: function (data) {
-
-        var finalData = [];
-        var cont = 0;
-        var aux;
-
-        for (var i = 0; i < data.length; i++) {
-            var v = data[i];
-
-            for (var key in v.sampleGenotypes) {
-                aux = v.sampleGenotypes[key];
-                aux = aux.replace(/-1/g, ".");
-                v[key] = aux;
-            }
-
-            delete v.sampleGenotypes;
-
-            var ct = "";
-            if (v.consequenceTypes != null) {
-                for (var key in v.consequenceTypes) {
-                    ct += v.consequenceTypes[key];
-                    ct += ",";
-                }
-                v.ct = ct;
-            }
-
-            finalData.push(v);
-
-
-        }
-        return finalData;
-    },
     _getResult: function () {
         var _this = this;
 
@@ -1856,115 +1618,6 @@ VariantWidget.prototype = {
         }
         _this.st.load();
 
-
-    },
-    _addColorPicker: function () {
-
-        var _this = this;
-
-        var menu = _this.grid.headerCt.getMenu();
-        menu.add([
-            {
-                text: 'Choose color',
-                menu: {
-                    xtype: 'colormenu',
-                    value: '000000',
-                    handler: function (obj, rgb) {
-                        Ext.Msg.alert('background-color: ' + rgb.toString());
-                    } // handler
-                } // menu
-            }
-        ]);
-
-    },
-    _updateInfoVariantMini: function (data) {
-
-        var _this = this;
-        var result = [];
-
-        for (var i = 0; i < data.length; i++) {
-            var elem = data[i];
-            result.push({
-                chr: elem.get("chromosome"),
-                pos: elem.get("position"),
-                ref: elem.get("ref"),
-                alt: elem.get("alt")[0]
-            });
-        }
-
-        _this.stMini.loadData(result);
-
-    },
-
-////
-////
-    /*FORM COMPONENTS*/
-////
-////
-
-    _getSelectDataPanel: function () {
-
-        var dataBases = Ext.create('Ext.data.Store', {
-            fields: ['value', 'name'],
-            data: [
-                {"value": "pruebas.db", "name": "pruebas"},
-                {"value": "s4.db", "name": "s4"},
-                {"value": "s5500.db", "name": "s5500"},
-                {"value": "fpoletta.db", "name": "fpoletta"}
-            ]
-        });
-
-        var data_opt = this._createComboboxDB("db_name", "Data Base", dataBases, 0, 100, '5 0 5 5');
-
-        return Ext.create('Ext.form.Panel', {
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "100%",
-            buttonAlign: 'center',
-            layout: 'vbox',
-            items: [data_opt]
-        });
-    },
-    _getChrStartEnd: function () {
-
-        var chr_pos = Ext.create('Ext.form.field.Text', {
-            fieldLabel: "Chromosome",
-            id: this.id + "chr_pos",
-            name: "chr_pos",
-            margin: '5 0 0 5',
-            width: "20%",
-            value: 22,
-            allowBlank: false
-        });
-
-        var start_pos = Ext.create('Ext.form.field.Text', {
-            fieldLabel: 'Start',
-            id: this.id + 'start_pos',
-            name: 'start_pos',
-            margin: '5 0 0 5',
-            width: '20%',
-            allowBlank: false
-        });
-        var end_pos = Ext.create('Ext.form.field.Text', {
-            fieldLabel: 'End',
-            id: this.id + "end_pos",
-            name: "end_pos",
-            margin: '5 0 0 5',
-            width: "20%",
-            allowBlank: false,
-            value: 20000000
-        });
-
-        return Ext.create('Ext.form.Panel', {
-            //            title: 'Inheritance',
-            border: true,
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "100%",
-            buttonAlign: 'center',
-            type: 'vbox',
-            items: [chr_pos, start_pos, end_pos]
-        });
     },
     _getRegionList: function () {
         var regionList = Ext.create('Ext.form.field.TextArea', {
@@ -1972,7 +1625,6 @@ VariantWidget.prototype = {
             name: "region_list",
             emptyText: '1:1-1000000,2:1-1000000',
             margin: '0 0 0 5',
-            //value: "1:1-10000000",
             allowBlank: false,
             width: '100%'
         });
@@ -1981,7 +1633,6 @@ VariantWidget.prototype = {
             border: true,
             bodyPadding: "5",
             margin: "0 0 5 0",
-            //width: "100%",
             flex: 1,
             border: 0,
             buttonAlign: 'center',
@@ -2018,19 +1669,6 @@ VariantWidget.prototype = {
                 },
                 geneList
             ]
-        });
-    },
-    _getBioTypes: function () {
-        return Ext.create('Ext.form.Panel', {
-            border: true,
-            bodyPadding: "5",
-            margin: "0 0 5 8",
-            width: '100%',
-            border: 0,
-            buttonAlign: 'center',
-            layout: 'vbox',
-            id: this.id + 'biotype_panel',
-            items: []
         });
     },
     _getConsequenceType: function () {
@@ -2079,20 +1717,9 @@ VariantWidget.prototype = {
             type: 'vbox',
             border: 0,
             items: [
-//                {
-//                    xtype: 'tbtext', text: '<span class="emph">Missing Alleles</span>'
-//                },
-//                {
-//                    xtype: 'fieldcontainer',
-//                    margin: "0 0 5 0",
-//
-//                    layout: 'hbox',
-//                    border: false,
-//                    items: [alleles_opt, alleles_text] },
                 {
                     xtype: 'tbtext', text: '<span class="emph">Missings</span>'
                 },
-
                 {
                     xtype: 'fieldcontainer',
                     margin: "0 0 5 0",
@@ -2187,28 +1814,6 @@ VariantWidget.prototype = {
                 }
             ]
 
-        });
-    },
-    _getIsIndel: function () {
-        return Ext.create('Ext.form.Panel', {
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "99%",
-            buttonAlign: 'center',
-            layout: 'hbox',
-            border: 0,
-            items: [
-                {
-                    xtype: 'tbtext',
-                    text: '<span class="emph">Is indel?</span>',
-                    margin: '5 0 0 5'
-                },
-                {
-                    xtype: 'checkboxfield',
-                    name: 'is_indel'
-
-                }
-            ]
         });
     },
     _getInheritance: function () {
@@ -2306,57 +1911,6 @@ VariantWidget.prototype = {
         });
 
 
-    },
-    _getPolySIFT: function () {
-        return Ext.create('Ext.form.Panel', {
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "100%",
-            buttonAlign: 'center',
-            layout: 'vbox',
-            border: 0,
-            items: [
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    width: "100%",
-                    items: [
-                        {
-                            xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">Polyphen <</span>'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'polyphen',
-                            margin: '0 0 0 5',
-                            labelWidth: '50%',
-                            width: "50%"
-                        }
-                    ]
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    //fieldLabel: '% Controls recessive',
-                    layout: 'hbox',
-                    margin: '10 0 0 0',
-                    border: false,
-                    width: "100%",
-                    items: [
-
-                        {
-                            xtype: 'tbtext', margin: '5 0 0 0', text: '<span class="emph">SIFT <</span>'
-                        },
-                        {
-                            xtype: 'textfield',
-                            name: 'sift',
-                            margin: '0 0 0 5',
-                            labelWidth: '50%',
-                            width: "50%"
-                        }
-                    ]
-                }
-            ]
-        });
     },
     _getControls: function () {
         return Ext.create('Ext.form.Panel', {
@@ -2477,29 +2031,6 @@ VariantWidget.prototype = {
             allowBlank: false,
             value: defaultValue,
             width: '100%'
-        });
-    },
-    _createComboboxDB: function (name, label, data, defaultValue, labelWidth, margin) {
-        var _this = this;
-
-        return Ext.create('Ext.form.field.ComboBox', {
-            id: this.id + name,
-            name: name,
-            fieldLabel: label,
-            store: data,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'value',
-            value: data.getAt(defaultValue).get('value'),
-            labelWidth: labelWidth,
-            margin: margin,
-            editable: false,
-            allowBlank: false,
-            listeners: {
-                change: function (field, newValue, oldValue) {
-                    _this._updateInfo(newValue);
-                }
-            }
         });
     },
     _clearForm: function () {

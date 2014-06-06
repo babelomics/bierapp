@@ -472,7 +472,7 @@ Bierapp.prototype.jobItemClick = function (record) {
         var toolName = record.data.toolName;
         console.log(toolName);
 
-        if( record.data.status == "execution_error" || record.data.status == "queue_error"){
+        if (record.data.status == "execution_error" || record.data.status == "queue_error") {
             var resultWidget = new ResultWidget({
                 targetId: this.panel.getId(),
                 application: 'variant',
@@ -487,10 +487,14 @@ Bierapp.prototype.jobItemClick = function (record) {
         }
         else if (toolName == 'variant-mongo') { // TODO aaleman: Cambiar esta línea cuando pasemos a variant
             record.data.command = Utils.parseJobCommand(record.data);
+
+            var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), record.data.id) + '/variantsMongo';
+
             var variantWidget = new VariantWidget({
                 targetId: this.panel,
                 title: record.data.name,
                 job: record.data,
+                url: url,
                 autoRender: true
             });
             variantWidget.draw();
