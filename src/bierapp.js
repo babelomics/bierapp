@@ -130,7 +130,7 @@ Bierapp.prototype = {
             border: 0,
             width: '100%',
             height: '100%',
-            layout: 'fit',
+            layout: 'fit'
         });
 
         /* Wrap Panel */
@@ -152,8 +152,6 @@ Bierapp.prototype = {
             style: {
                 borderTop: '1px solid #d1d9e3'
             },
-//            title: 'Stats',
-//            bodyPadding: '15 0 0 40',
             bodyPadding: '20 0 0 200',
             headerFormConfig: {
                 baseCls: 'header-form'
@@ -161,7 +159,6 @@ Bierapp.prototype = {
         });
 
         this.variantIndexForm.draw();
-        //this.showIndexForm();
 
 
         /*check login*/
@@ -170,27 +167,6 @@ Bierapp.prototype = {
         } else {
             this.sessionFinished();
         }
-
-        //var myButton1 = Ext.get('loadFormA1');
-        //myButton1.on('click', function () {
-        //_this.showIndexForm();
-        //_this.variantIndexForm.loadExample1();
-
-        //});
-        //var myButton2 = Ext.get('loadFormA2');
-        //myButton2.on('click', function () {
-        //_this.showIndexForm();
-        //Ext.getCmp("loadExample1Button").hide();
-        ////_this.variantIndexForm.loadExample1();
-        //});
-        //var myButton3 = Ext.get('loadFormA3');
-        //myButton3.on('click', function () {
-        //_this.showIndexForm();
-        //_this.variantIndexForm.loadExample1();
-        //});
-
-
-        //_this.panel.add(_this.variantIndexForm.panel);
 
     },
     _createHeaderWidget: function (targetId) {
@@ -242,7 +218,6 @@ Bierapp.prototype = {
             id: this.id + "navToolbar",
             renderTo: targetId,
             cls: 'jso-white-background whiteborder bootstrap',
-            //cls: 'gm-navigation-bar',
             region: "north",
             width: '100%',
             border: false,
@@ -268,7 +243,6 @@ Bierapp.prototype = {
         });
         return toolbar;
     },
-
 
     _createVariantMenu: function (targetId) {
         var _this = this;
@@ -333,7 +307,7 @@ Bierapp.prototype = {
 
                 {html: "Data", cls: 'header'},
                 {html: "Upload", cls: 'data'},
-//
+
                 {html: "Analysis", cls: 'header'},
                 {html: "Analyze", cls: 'visualization'},
                 {html: "Results", cls: 'visualization'},
@@ -345,8 +319,6 @@ Bierapp.prototype = {
         return toolbar;
     },
     _createHomePanel: function () {
-        var _this = this;
-
         var homePanel = Ext.create('Ext.panel.Panel', {
             border: 0,
             header: {
@@ -368,7 +340,6 @@ Bierapp.prototype = {
     _createPanel: function (targetId) {
 
         var panel = Ext.create('Ext.tab.Panel', {
-//            renderTo: targetId,
             width: '100%',
             height: '100%',
             tabBar: {
@@ -376,7 +347,6 @@ Bierapp.prototype = {
                 height: 33,
                 padding: '12 0 0 5'
             },
-//            plain:true,
             border: 0,
             activeTab: 0,
             items: []
@@ -616,7 +586,7 @@ Bierapp.prototype.showVCFviewer = function () {
 
         //Once actived, the div element is visible, and genomeMaps can be rendered
         Ext.getCmp(this.centerPanelId).setActiveTab(this.vcfViewer);
-//				
+//
 //		console.log(this.vcfViewer.getWidth());
 //		console.log(this.vcfViewer.getHeight());
 

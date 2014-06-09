@@ -1,5 +1,5 @@
 function VariantWidget(args) {
-    var _this = this;
+
     _.extend(this, Backbone.Events);
 
     this.id = Utils.genId("VariantWidget");
@@ -12,7 +12,6 @@ function VariantWidget(args) {
     this.height = '100%';
     this.closable = true;
     this.url = "";
-    this.effectWidgetConfig = {};
 
     //set instantiation args, must be last
     _.extend(this, args);
@@ -40,13 +39,18 @@ VariantWidget.prototype = {
                 layout: {
                     align: 'stretch'
                 }
+            },
+            handlers: {
+                "load:finish": function (e) {
+                    _this.grid.setLoading(false);
+                }
             }
         });
 
         this.toolsPanel = Ext.create("Ext.tab.Panel", {
             xtype: 'basic-tabs',
             border: 0,
-            layout: 'fit',
+            layout: 'fit'
         });
 
         this.rendered = true;
@@ -86,8 +90,6 @@ VariantWidget.prototype = {
         this.variantPanel = this._createVariantPanel();
         this.panel.add(this.variantPanel);
 
-
-        //this.toolsPanel.removeAll(false);
         this.toolsPanel.add(this.variantEffectWidget.getPanel());
         this.toolsPanel.add(this.genomeViewerPanel);
 
@@ -117,7 +119,6 @@ VariantWidget.prototype = {
             width: '100%',
             height: '100%',
             bodyPadding: 20,
-            //margin:'0 5 0 5',
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -134,11 +135,11 @@ VariantWidget.prototype = {
                     ]
                 },
                 {
-                    xtype: 'container',
+                    xtype: '',
                     flex: 1,
                     layout: {
                         type: 'vbox',
-                        align: 'stretch',
+                        align: 'stretch'
                     },
                     defaults: {
                         flex: 1,
@@ -161,7 +162,6 @@ VariantWidget.prototype = {
         if (_this.sampleNames != null) {
 
             _this.grid.getStore().removeAll();
-
 
             for (var i = 0; i < _this.sampleNames.length; i++) {
                 _this._removeSampleColumn(_this.sampleNames[i]);
@@ -525,7 +525,7 @@ VariantWidget.prototype = {
                         width: 700,
                         html: '<div style="border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;font-weight: bold;">Consequence type</div>'
 
-                    },
+                    }
                     //chartCT
                 ]
             }
@@ -533,7 +533,6 @@ VariantWidget.prototype = {
 
 
         var panel = Ext.create('Ext.panel.Panel', {
-//            title: 'summary',
             width: '100%',
             height: '100%',
             border: 0,
@@ -556,7 +555,7 @@ VariantWidget.prototype = {
             flex: 8,
             height: '100%',
             border: 1,
-            html: '<div id="' + this.id + 'genomeViewer" style="width:1200px;height:1500;position:relative;"></div>',
+            html: '<div id="' + this.id + 'genomeViewer" style="width:1200px;height:300px;position:relative;"></div>',
             listeners: {
                 afterlayout: {
                     fn: function () {
@@ -566,6 +565,7 @@ VariantWidget.prototype = {
                         }
                         rendered = false;
                         var w = this.getWidth();
+                        console.log(w);
                         $('#' + _this.id + 'genomeViewer').width(w);
 
                         var region = new Region({
@@ -574,6 +574,16 @@ VariantWidget.prototype = {
                             end: 32889611
                         });
 
+                        var selection = _this.grid.getView().getSelectionModel().getSelection();
+                        if (selection.length > 0) {
+                            row = selection[0];
+                            region = new Region({
+                                chromosome: row.get("chromosome"),
+                                start: row.get("position"),
+                                end: row.get("position")
+                            });
+
+                        }
 
                         var genomeViewer = new GenomeViewer({
                             sidePanel: false,
@@ -682,7 +692,6 @@ VariantWidget.prototype = {
                         var gene = new FeatureTrack({
                             targetId: null,
                             id: 2,
-//        title: 'Gene',
                             minHistogramRegionSize: 20000000,
                             maxLabelRegionSize: 10000000,
                             height: 100,
@@ -732,12 +741,13 @@ VariantWidget.prototype = {
                 fill: false,
                 multi: true
             },
+            autoScroll: true,
             tbar: {
                 width: '100%',
                 items: [
                     {
                         xtype: 'button',
-                        flex: 1,
+                        width: 55,
                         text: '<span style="font-weight:bold">Reload</span>',
                         tooltip: 'Reload',
                         handler: function () {
@@ -747,7 +757,7 @@ VariantWidget.prototype = {
                     } ,
                     {
                         xtype: 'button',
-                        flex: 1,
+                        flex: 46,
                         text: '<span style="font-weight:bold">Clear</span>',
                         tooltip: 'Clear',
                         handler: function () {
@@ -760,7 +770,7 @@ VariantWidget.prototype = {
                     '->',
                     {
                         xtype: 'button',
-                        flex: 1,
+                        flex: 54,
                         text: '<span style="font-weight:bold">Search</span>',
                         tooltip: 'Search',
                         handler: function () {
@@ -784,20 +794,15 @@ VariantWidget.prototype = {
 
         var region = Ext.create('Ext.panel.Panel', {
             title: "Region",
-            items: regionItems
+            items: regionItems,
+            collapsed: true
         });
 
         var genes = Ext.create('Ext.panel.Panel', {
             title: "Gene",
-            items: geneItems
+            items: geneItems,
+            collapsed: true
         });
-
-        var statsItems = [
-            this._getMAF(),
-            this._getMissing(),
-            this._getMendelError(),
-            this._getInheritance()
-        ];
 
         var samples = Ext.create('Ext.panel.Panel', {
             width: '100%',
@@ -827,7 +832,8 @@ VariantWidget.prototype = {
 
         var controls = Ext.create('Ext.panel.Panel', {
             title: "MAF",
-            items: controlsItems
+            items: controlsItems,
+            collapsed: true
         });
 
         var effectItems = [
@@ -836,7 +842,8 @@ VariantWidget.prototype = {
 
         var effect = Ext.create('Ext.panel.Panel', {
             title: "Effect",
-            items: effectItems
+            items: effectItems,
+            collapsed: true
         });
 
         accordion.add(samples);
@@ -845,10 +852,10 @@ VariantWidget.prototype = {
         accordion.add(region);
         accordion.add(genes);
 
-        controls.collapsed = true;
-        effect.collapsed = true;
-        region.collapsed = true;
-        genes.collapsed = true;
+//        controls.collapsed = true;
+//        effect.collapsed = true;
+//        region.collapsed = true;
+//        genes.collapsed = true;
 
         return accordion;
     },
@@ -1092,9 +1099,7 @@ VariantWidget.prototype = {
         _this.st = Ext.create('Ext.data.Store', {
             pageSize: 25,
             model: _this.model,
-            //groupField: 'gene_name',
             data: [],
-            //autoLoad: true,
             remoteSort: true,
             storeId: 'gridStore',
             sorters: [
@@ -1104,7 +1109,6 @@ VariantWidget.prototype = {
                 }
             ],
             proxy: {
-                //model: _this.model,
                 url: _this.url,
                 type: 'ajax',
                 reader: {
@@ -1139,10 +1143,11 @@ VariantWidget.prototype = {
                     }
 
                     _this._getPhenotypes(records);
-
                     _this.st.resumeEvents();
                     _this.st.fireEvent('refresh');
-
+                },
+                beforeload: function (store, operation, eOpts) {
+                    _this.variantEffectWidget.clear(true);
                 }
             }
 
@@ -1227,122 +1232,107 @@ VariantWidget.prototype = {
 
         paging.add({
                 xtype: 'button',
-                text: 'Columns',
-                id: this.id + "gridColSelectorBtn",
-                menu: {
-                    width: 150,
-                    margin: '0 0 10 0',
-                    id: this.id + "gridColSelectorMenu",
-                    plain: true,
-                    items: []
+                text: 'Export data...',
+                handler: function () {
+
+                    if (_this.st.getCount() == 0) {
+                        Utils.msg('ERROR', 'You must apply some filters before or the result set is empty!!');
+                        return;
+                    }
+
+                    if (!Ext.getCmp(_this.id + "exportWindow")) {
+                        var cbgItems = [];
+                        var attrList = _this._getColumnNames();
+
+                        cbgItems.push({
+                            boxLabel: attrList[0],
+                            name: 'attr',
+                            inputValue: attrList[0],
+                            checked: true,
+                            disabled: true
+                        });
+
+                        for (var i = 1; i < attrList.length; i++) {
+                            cbgItems.push({
+                                boxLabel: attrList[i],
+                                name: 'attr',
+                                inputValue: attrList[i],
+                                checked: true
+                            });
+                        }
+                        var progress = Ext.create('Ext.ProgressBar', {
+                            text: 'Progress...',
+                            border: 1,
+                            flex: 1,
+                            margin: '0 10 0 0',
+                            id: _this.id + "_progressBarExport"
+                        });
+
+                        Ext.create('Ext.window.Window', {
+                            id: _this.id + "exportWindow",
+                            title: "Export attributes",
+                            height: 250,
+                            maxHeight: 250,
+                            width: 400,
+                            autoScroll: true,
+                            layout: "vbox",
+                            modal: true,
+                            items: [
+                                {
+                                    xtype: 'checkboxgroup',
+                                    id: _this.id + "cbgAttributes",
+                                    layout: 'vbox',
+                                    items: cbgItems
+                                }
+                            ],
+                            buttons: [
+                                progress,
+                                {
+                                    xtype: 'textfield',
+                                    id: _this.id + "fileName",
+                                    emptyText: "enter file name",
+                                    flex: 1
+                                },
+                                {
+                                    text: 'Download',
+                                    href: "none",
+                                    id: _this.id + "_downloadExport",
+                                    handler: function () {
+                                        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.1, "Requesting data");
+
+                                        this.disable();
+                                        var fileName = Ext.getCmp(_this.id + "fileName").getValue();
+                                        if (fileName == "") {
+                                            fileName = "variants";
+                                        }
+                                        var columns = Ext.getCmp(_this.id + "cbgAttributes").getChecked();
+
+                                        var content = _this._exportToTab(columns);
+
+                                        this.getEl().set({
+                                            href: 'data:text/csv,' + encodeURIComponent(content),
+                                            download: fileName + ".csv"
+                                        });
+
+
+                                        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(1, "Downloaded");
+                                        //this.up(".window").hide();
+                                        Ext.getCmp(_this.id + "fileName").reset();
+
+                                    }
+                                }
+                            ]
+                        }).show();
+                    } else {
+                        Ext.getCmp(_this.id + "exportWindow").show();
+
+                    }
+                    Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Progress");
+                    Ext.getCmp(_this.id + "_downloadExport").enable();
                 }
 
             }
-        );
-
-        paging.add(                   {
-                                xtype: 'button',
-                                text: 'Export data...',
-                                handler: function () {
-
-                                    if (_this.st.getCount() == 0) {
-                                        Utils.msg('ERROR', 'You must apply some filters before or the result set is empty!!');
-                                        return;
-                                    }
-
-                                    if (!Ext.getCmp(_this.id + "exportWindow")) {
-                                        var cbgItems = [];
-                                        var attrList = _this._getColumnNames();
-
-                                        cbgItems.push({
-                                            boxLabel: attrList[0],
-                                            name: 'attr',
-                                            inputValue: attrList[0],
-                                            checked: true,
-                                            disabled: true
-                                        });
-
-                                        for (var i = 1; i < attrList.length; i++) {
-                                            cbgItems.push({
-                                                boxLabel: attrList[i],
-                                                name: 'attr',
-                                                inputValue: attrList[i],
-                                                checked: true
-                                            });
-                                        }
-                                        var progress = Ext.create('Ext.ProgressBar', {
-                                            text: 'Progress...',
-                                            border: 1,
-                                            flex: 1,
-                                            margin: '0 10 0 0',
-                                            id: _this.id + "_progressBarExport"
-                                        });
-
-                                        Ext.create('Ext.window.Window', {
-                                            id: _this.id + "exportWindow",
-                                            title: "Export attributes",
-                                            height: 250,
-                                            maxHeight: 250,
-                                            width: 400,
-                                            autoScroll: true,
-                                            layout: "vbox",
-                                            modal: true,
-                                            items: [
-                                                {
-                                                    xtype: 'checkboxgroup',
-                                                    id: _this.id + "cbgAttributes",
-                                                    layout: 'vbox',
-                                                    items: cbgItems
-                                                }
-                                            ],
-                                            buttons: [
-                                                progress,
-                                                {
-                                                    xtype: 'textfield',
-                                                    id: _this.id + "fileName",
-                                                    emptyText: "enter file name",
-                                                    flex: 1
-                                                },
-                                                {
-                                                    text: 'Download',
-                                                    href: "none",
-                                                    id: _this.id + "_downloadExport",
-                                                    handler: function () {
-                                                        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0.1, "Requesting data");
-
-                                                        this.disable();
-                                                        var fileName = Ext.getCmp(_this.id + "fileName").getValue();
-                                                        if (fileName == "") {
-                                                            fileName = "variants";
-                                                        }
-                                                        var columns = Ext.getCmp(_this.id + "cbgAttributes").getChecked();
-
-                                                        var content = _this._exportToTab(columns);
-
-                                                        this.getEl().set({
-                                                            href: 'data:text/csv,' + encodeURIComponent(content),
-                                                            download: fileName + ".csv"
-                                                        });
-
-
-                                                        Ext.getCmp(_this.id + "_progressBarExport").updateProgress(1, "Downloaded");
-                                                        //this.up(".window").hide();
-                                                        Ext.getCmp(_this.id + "fileName").reset();
-
-                                                    }
-                                                }
-                                            ]
-                                        }).show();
-                                    } else {
-                                        Ext.getCmp(_this.id + "exportWindow").show();
-
-                                    }
-                                    Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Progress");
-                                    Ext.getCmp(_this.id + "_downloadExport").enable();
-                                }
-
-                   }
-                  )
+        )
 
 
         var grid = Ext.create('Ext.grid.Panel', {
@@ -1352,8 +1342,8 @@ VariantWidget.prototype = {
                 columns: this.columnsGrid,
                 plugins: 'bufferedrenderer',
                 loadMask: true,
-                collapsible: true,
-                titleCollapse: true,
+                //collapsible: true,
+                //titleCollapse: true,
                 features: [
                     {ftype: 'summary'}
                 ],
@@ -1381,11 +1371,14 @@ VariantWidget.prototype = {
                     end: pos
                 });
 
-                _this.variantEffectWidget.load(chr, pos, ref, alt);
+
+                _this.grid.setLoading(true);
 
                 if (!_.isUndefined(_this.gv)) {
                     _this.gv.setRegion(region);
                 }
+
+                _this.variantEffectWidget.load(chr, pos, ref, alt);
             }
         });
 
@@ -1596,6 +1589,8 @@ VariantWidget.prototype = {
     _getResult: function () {
         var _this = this;
 
+
+        _this.variantEffectWidget.clear(true);
         // Clear store's extraParams
         _this.st.getProxy().extraParams = {};
 
@@ -1694,8 +1689,8 @@ VariantWidget.prototype = {
             allowBlank: false
         });
 
-        var alleles_opt = this._createCombobox("option_miss_alleles", "", this.optValues, 0, 10, '0 0 0 5');
-        alleles_opt.width = "20%";
+        var alleles_opt = this._createCombobox("option_miss_alleles", "", this.optValues, 0, 10, '0 0 0 5', 100);
+        //alleles_opt.width = "20%";
 
         var gt_text = Ext.create('Ext.form.field.Text', {
             id: this.id + "miss_gt",
@@ -1728,189 +1723,6 @@ VariantWidget.prototype = {
                     items: [gt_opt, gt_text]}
             ]
         });
-    },
-    _getMAF: function () {
-        var maf_text = Ext.create('Ext.form.field.Text', {
-            id: this.id + "maf",
-            name: "maf",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var maf_opt = this._createCombobox("option_maf", "", this.optValues, 0, 10, '0 0 0 5');
-        maf_opt.width = "20%";
-
-        var mgf_text = Ext.create('Ext.form.field.Text', {
-            id: this.id + "mgf",
-            name: "mgf",
-            margin: '0 0 0 5',
-            allowBlank: false,
-            width: "20%"
-        });
-
-        var mgf_opt = this._createCombobox("option_mgf", "", this.optValues, 0, 10, '0 0 0 5');
-        mgf_opt.width = "20%";
-
-        return Ext.create('Ext.form.Panel', {
-            border: true,
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "100%",
-            type: 'vbox',
-            border: 0,
-            items: [
-                {
-                    xtype: 'tbtext', text: '<span class="emph">Allele freq.</span>'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [
-                        maf_opt,
-                        maf_text]
-                },
-                {
-                    xtype: 'tbtext', text: '<span class="emph">Genotype freq.</span>'
-                },
-
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [ mgf_opt, mgf_text]}
-            ]
-        });
-    },
-    _getMendelError: function () {
-        var mendel_text = Ext.create('Ext.form.field.Text', {
-            id: this.id + "mend_error",
-            name: "mend_error",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var mendel_opt = this._createCombobox("option_mend_error", "", this.optValues, 0, 10, '0 0 0 5');
-        mendel_opt.width = "20%";
-
-        return Ext.create('Ext.form.Panel', {
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "100%",
-            buttonAlign: 'center',
-            type: 'vbox',
-            border: 0,
-            items: [
-                {
-                    xtype: 'tbtext', text: '<span class="emph">Mendelian Errors</span>'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [mendel_opt, mendel_text]
-                }
-            ]
-
-        });
-    },
-    _getInheritance: function () {
-
-        var cases_d = Ext.create('Ext.form.field.Text', {
-            id: this.id + "cases_percent_dominant",
-            name: "cases_percent_dominant",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var cases_d_opt = this._createCombobox("option_cases_dom", "", this.optValues, 0, 10, '0 0 0 5');
-        cases_d_opt.width = "20%";
-
-        var controls_d = Ext.create('Ext.form.field.Text', {
-            id: this.id + "controls_percent_dominant",
-            name: "controls_percent_dominant",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var controls_d_opt = this._createCombobox("option_controls_dom", "", this.optValues, 0, 10, '0 0 0 5');
-        controls_d_opt.width = "20%";
-
-        var cases_r = Ext.create('Ext.form.field.Text', {
-            id: this.id + "cases_percent_recessive",
-            name: "cases_percent_recessive",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var cases_r_opt = this._createCombobox("option_cases_rec", "", this.optValues, 0, 10, '0 0 0 5');
-        cases_r_opt.width = "20%";
-
-        var controls_r = Ext.create('Ext.form.field.Text', {
-            id: this.id + "controls_percent_recessive",
-            name: "controls_percent_recessive",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var controls_r_opt = this._createCombobox("option_controls_rec", "", this.optValues, 0, 10, '0 0 0 5');
-        controls_r_opt.width = "20%";
-
-        return Ext.create('Ext.form.Panel', {
-            border: true,
-            bodyPadding: "5",
-            margin: "0 0 5 0",
-            width: "100%",
-            buttonAlign: 'center',
-            type: 'vbox',
-            border: 0,
-            items: [
-                {
-                    xtype: 'tbtext', text: '<span class="emph">% Cases Dominant</span>'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [cases_d_opt, cases_d]
-                },
-                {
-                    xtype: 'tbtext', text: '<span class="emph">% Controls Dominant</span>'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [controls_d_opt, controls_d]
-                },
-                {
-                    xtype: 'tbtext', text: '<span class="emph">% Cases Recessive</span>'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [cases_r_opt, cases_r]
-                },
-                {
-                    xtype: 'tbtext', text: '<span class="emph">% Controls Recessive</span>'
-                },
-                {
-                    xtype: 'fieldcontainer',
-                    layout: 'hbox',
-                    border: false,
-                    items: [controls_r_opt, controls_r]
-                }
-            ]
-        });
-
-
     },
     _getControls: function () {
         return Ext.create('Ext.form.Panel', {
@@ -1983,7 +1795,7 @@ VariantWidget.prototype = {
         });
 
     },
-    _createCombobox: function (name, label, data, defaultValue, labelWidth, margin) {
+    _createCombobox: function (name, label, data, defaultValue, labelWidth, margin, width) {
         var _this = this;
 
         return Ext.create('Ext.form.field.ComboBox', {
@@ -1998,7 +1810,8 @@ VariantWidget.prototype = {
             labelWidth: labelWidth,
             margin: margin,
             editable: false,
-            allowBlank: false
+            allowBlank: false,
+            width: width
         });
     },
     _createDynCombobox: function (name, label, data, defaultValue) {
@@ -2166,5 +1979,4 @@ VariantWidget.prototype = {
             });
         }
     }
-}
-;
+};
