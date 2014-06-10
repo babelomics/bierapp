@@ -6,15 +6,17 @@ function VariantWidget(args) {
 
     //set default args
     this.border = true;
-    this.autoRender = false;
-    this.targetId;
+    this.autoRender = true;
     this.width;
     this.height = '100%';
     this.closable = true;
     this.url = "";
+    this.target;
 
     //set instantiation args, must be last
     _.extend(this, args);
+
+    this.panelId = "VariantWidget_" + this.job.id;
 
     this.rendered = false;
     if (this.autoRender) {
@@ -24,12 +26,12 @@ function VariantWidget(args) {
 }
 
 VariantWidget.prototype = {
-    render: function (targetId) {
+    render: function (target) {
         var _this = this;
-        this.targetId = (targetId) ? targetId : this.targetId;
+        this.target = (target) ? target : this.target;
 
         /* main panel */
-        this.panel = this._createPanel(this.targetId);
+        this.panel = this._createPanel(this.target);
 
         this.genomeViewerPanel = this._createGenomeViewer();
 
@@ -50,7 +52,8 @@ VariantWidget.prototype = {
         this.toolsPanel = Ext.create("Ext.tab.Panel", {
             xtype: 'basic-tabs',
             border: 0,
-            layout: 'fit'
+            layout: 'fit',
+            margin: '10 0 0 0'
         });
 
         this.rendered = true;
@@ -79,8 +82,7 @@ VariantWidget.prototype = {
                 {"value": ">=", "name": ">="},
                 {"value": "=", "name": "="},
                 {"value": "!=", "name": "!="}
-            ],
-            pageSize: 20
+            ]
         });
 
 
@@ -96,18 +98,19 @@ VariantWidget.prototype = {
         this.toolsPanel.setActiveTab(this.variantEffectWidget.getPanel());
         this._updateInfo();
     },
-    _createPanel: function (targetId) {
+    _createPanel: function (target) {
         var panel = Ext.create('Ext.panel.Panel', {
             title: this.title,
+            id: this.panelId,
             width: '100%',
             height: this.height,
             border: this.border,
             layout: 'hbox',
             closable: this.closable,
-            cls: 'ocb-border-top-lightgrey',
             items: []
         });
-        targetId.add(panel);
+        target.add(panel);
+        target.setActiveTab(panel);
         return panel;
     },
     _createVariantPanel: function () {
@@ -125,17 +128,18 @@ VariantWidget.prototype = {
             },
             cls: 'ocb-border-top-lightgrey',
             items: [
+//                {
+//                    xtype: 'container',
+//                    width: 220,
+//                    layout: 'fit',
+//                    margin: '0 20 20 0',
+//                    items: [
+                this.form
+//                    ]
+//                }
+                ,
                 {
                     xtype: 'container',
-                    width: 220,
-                    layout: 'fit',
-                    margin: '0 20 20 0',
-                    items: [
-                        this.form
-                    ]
-                },
-                {
-                    xtype: '',
                     flex: 1,
                     layout: {
                         type: 'vbox',
@@ -185,7 +189,8 @@ VariantWidget.prototype = {
             _this._addSampleColumn(sName);
 
             sampleTableElems.push({
-                html: sName
+                html: sName + ":",
+                margin: '0 15 0 0'
             });
 
             sampleTableElems.push({
@@ -731,10 +736,13 @@ VariantWidget.prototype = {
 
         var accordion = Ext.create('Ext.form.Panel', {
             border: 1,
-            flex: 1,
+//            flex: 1,
             height: "100%",
             title: "Filters",
-            width: "100%",
+//            width: "100%",
+            width: 220,
+//                    layout: 'fit',
+            margin: '0 20 0 0',
             layout: {
                 type: 'accordion',
                 titleCollapse: true,
@@ -784,35 +792,15 @@ VariantWidget.prototype = {
             }
         });
 
-        var regionItems = [
-            this._getRegionList()
-        ];
+        var region = this._getRegionList();
+        var genes = this._getGenes();
+        var samples = this._getMissing();
+        var controls = this._getControls();
+        var effect = this._getConsequenceType();
 
-        var geneItems = [
-            this._getGenes()
-        ];
-
-        var region = Ext.create('Ext.panel.Panel', {
-            title: "Region",
-            items: regionItems,
-            collapsed: true
-        });
-
-        var genes = Ext.create('Ext.panel.Panel', {
-            title: "Gene",
-            items: geneItems,
-            collapsed: true
-        });
-
-        var samples = Ext.create('Ext.panel.Panel', {
+        var sampleContainer = Ext.create('Ext.form.FieldContainer', {
             width: '100%',
-            height: 300,
-            title: 'Segregation',
-            autoScroll: true
-        });
-
-        var sampleContainer = Ext.create('Ext.container.Container', {
-            width: '100%',
+            border: false,
             layout: {
                 type: 'table',
                 columns: 4
@@ -823,39 +811,14 @@ VariantWidget.prototype = {
             },
             id: this.id + "samples_form_panel"
         });
-        samples.add(sampleContainer);
-        samples.add(this._getMissing());
+        samples.insert(0, sampleContainer);
 
-        var controlsItems = [
-            this._getControls()
-        ];
-
-        var controls = Ext.create('Ext.panel.Panel', {
-            title: "MAF",
-            items: controlsItems,
-            collapsed: true
-        });
-
-        var effectItems = [
-            this._getConsequenceType()
-        ];
-
-        var effect = Ext.create('Ext.panel.Panel', {
-            title: "Effect",
-            items: effectItems,
-            collapsed: true
-        });
 
         accordion.add(samples);
         accordion.add(controls);
         accordion.add(effect);
         accordion.add(region);
         accordion.add(genes);
-
-//        controls.collapsed = true;
-//        effect.collapsed = true;
-//        region.collapsed = true;
-//        genes.collapsed = true;
 
         return accordion;
     },
@@ -1596,6 +1559,8 @@ VariantWidget.prototype = {
 
         var values = this.form.getForm().getValues();
 
+        console.log(values);
+
         var formParams = {};
         for (var param in values) {
             if (formParams[param]) {
@@ -1625,13 +1590,13 @@ VariantWidget.prototype = {
         });
 
         return Ext.create('Ext.form.Panel', {
-            border: true,
             bodyPadding: "5",
             margin: "0 0 5 0",
-            flex: 1,
-            border: 0,
             buttonAlign: 'center',
             layout: 'vbox',
+            title: "Region",
+            border: false,
+            collapsed: true,
             items: [
                 {
                     xtype: 'tbtext', text: '<span class="info">Enter regions (comma separated)</span>'
@@ -1651,13 +1616,14 @@ VariantWidget.prototype = {
         });
 
         return Ext.create('Ext.form.Panel', {
-            border: true,
+            title: "Gene",
             bodyPadding: "5",
+            border: false,
+            buttonAlign: 'center',
+            collapsed: true,
+            layout: 'vbox',
             margin: "0 0 5 0",
             width: "100%",
-            border: 0,
-            buttonAlign: 'center',
-            layout: 'vbox',
             items: [
                 {
                     xtype: 'tbtext', text: '<span class="info">Enter genes (comma separated)</span>'
@@ -1669,54 +1635,52 @@ VariantWidget.prototype = {
     _getConsequenceType: function () {
 
         return Ext.create('Ext.form.Panel', {
-            border: true,
+            title: "Effect",
+            collapsed: true,
             bodyPadding: "5",
             margin: "0 0 5 0",
             width: "100%",
             buttonAlign: 'center',
             layout: 'vbox',
-            border: 0,
+            border: false,
             id: this.id + "conseq_type_panel",
             items: []
         });
     },
     _getMissing: function () {
-        var alleles_text = Ext.create('Ext.form.field.Text', {
-            id: this.id + "miss_allele",
-            name: "miss_allele",
-            margin: '0 0 0 5',
-            width: "20%",
-            allowBlank: false
-        });
-
-        var alleles_opt = this._createCombobox("option_miss_alleles", "", this.optValues, 0, 10, '0 0 0 5', 100);
-        //alleles_opt.width = "20%";
 
         var gt_text = Ext.create('Ext.form.field.Text', {
             id: this.id + "miss_gt",
             name: "miss_gt",
             margin: '0 0 0 5',
             allowBlank: false,
-            width: "20%",
+//            width: 50,
+            flex: 1,
             value: 0
         });
 
         var gt_opt = this._createCombobox("option_miss_gt", "", this.optValues, 4, 10, '0 0 0 5');
-        gt_opt.width = "20%";
+        gt_opt.width = 60;
 
         return Ext.create('Ext.form.Panel', {
-            border: true,
+//            border: true,
             bodyPadding: "5",
             margin: "0 0 5 0",
             width: "100%",
+//            height: 60,
             type: 'vbox',
-            border: 0,
+//            border: 0,
+            height: 300,
+            border: false,
+            title: 'Segregation',
+            autoScroll: true,
+
             items: [
                 {
-                    xtype: 'tbtext', text: '<span class="emph">Missings</span>'
-                },
-                {
                     xtype: 'fieldcontainer',
+                    fieldLabel: '<span class="emph">Missings</span>',
+                    labelWidth: 100,
+                    labelAlign: 'top',
                     margin: "0 0 5 0",
                     layout: 'hbox',
                     border: false,
@@ -1730,23 +1694,32 @@ VariantWidget.prototype = {
             margin: "0 0 5 0",
             width: "100%",
             buttonAlign: 'center',
-            layout: 'vbox',
-            border: 0,
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            title: "MAF",
+            collapsed: true,
+            border: false,
+            defaults: {
+                labelWidth: 110,
+                flex: 1
+            },
             items: [
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">1000G MAF <</span>',
                     name: 'maf_1000g_controls',
-                    labelWidth: 120,
-                    width: 180,
+//                    labelWidth: 120,
+//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">EVS MAF   <</span>',
                     name: 'maf_evs_controls',
-                    labelWidth: 120,
-                    width: 180,
+//                    labelWidth: 120,
+//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
@@ -1763,32 +1736,32 @@ VariantWidget.prototype = {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">African MAF <</span>',
                     name: 'maf_1000g_afr_controls',
-                    labelWidth: 120,
-                    width: 180,
+//                    labelWidth: 120,
+//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">American MAF <</span>',
                     name: 'maf_1000g_ame_controls',
-                    labelWidth: 120,
-                    width: 180,
+//                    labelWidth: 120,
+//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">Asian MAF <</span>',
                     name: 'maf_1000g_asi_controls',
-                    labelWidth: 120,
-                    width: 180,
+//                    labelWidth: 120,
+//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">European MAF <</span>',
                     name: 'maf_1000g_eur_controls',
-                    labelWidth: 120,
-                    width: 180,
+//                    labelWidth: 120,
+//                    width: 180,
                     labelAlign: 'right'
                 }
             ]
