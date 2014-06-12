@@ -459,7 +459,11 @@ Bierapp.prototype.jobItemClick = function (record) {
                     title: record.data.name,
                     job: record.data,
                     url: url,
-                    border: false
+                    border: false,
+                    filters: {},
+                    tools: {
+                        //variantEffect:false
+                    }
                 });
                 this.variantWidget.draw();
             } else {

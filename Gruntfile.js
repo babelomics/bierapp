@@ -65,7 +65,6 @@ module.exports = function (grunt) {
                     },
                     scripts: {
                         vendor: [
-                            '<%= def.build %>/vendor/ext-5/ext-all.js',
                             '<%= def.build %>/vendor/underscore*.js',
                             '<%= def.build %>/vendor/backbone*.js',
                             '<%= def.build %>/vendor/jquery.min.js',
