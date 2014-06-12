@@ -17,7 +17,6 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
-                    'src/variant-widget.js',
                     'src/variant-index-form.js',
                     'src/bierapp.js'
                 ],
