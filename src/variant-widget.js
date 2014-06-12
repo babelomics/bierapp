@@ -12,6 +12,17 @@ function VariantWidget(args) {
     this.closable = true;
     this.url = "";
     this.target;
+    this.filters = {
+        segregation: true,
+        maf: true,
+        effect: true,
+        region: true,
+        gene: true
+    };
+
+
+    _.extend(this.filters, args.filters);
+    delete args.filters;
 
     //set instantiation args, must be last
     _.extend(this, args);
@@ -22,7 +33,6 @@ function VariantWidget(args) {
     if (this.autoRender) {
         this.render();
     }
-
 }
 
 VariantWidget.prototype = {
@@ -50,10 +60,16 @@ VariantWidget.prototype = {
         });
 
         this.toolsPanel = Ext.create("Ext.tab.Panel", {
-            xtype: 'basic-tabs',
+            title: 'Tools',
             border: 0,
             layout: 'fit',
-            margin: '10 0 0 0'
+            margin: '10 0 0 0',
+            collapsed: true,
+            collapsible: true,
+            animCollapse: false,
+            collapseDirection: Ext.Component.DIRECTION_BOTTOM,
+            titleCollapse: true,
+            overlapHeader: true
         });
 
         this.rendered = true;
@@ -61,6 +77,10 @@ VariantWidget.prototype = {
     },
     draw: function () {
         var _this = this;
+        _this.target.add(this.panel);
+        _this.target.setActiveTab(this.panel);
+
+
         OpencgaManager.variantInfoMongo({
             accountId: $.cookie("bioinfo_account"),
             sessionId: $.cookie("bioinfo_sid"),
@@ -85,8 +105,7 @@ VariantWidget.prototype = {
             ]
         });
 
-
-//        this.summaryPanel = this._createSummaryPanel(this.variantInfo);
+        //        this.summaryPanel = this._createSummaryPanel(this.variantInfo);
         //this.panel.add(this.summaryPanel);
 
         this.variantPanel = this._createVariantPanel();
@@ -109,8 +128,6 @@ VariantWidget.prototype = {
             closable: this.closable,
             items: []
         });
-        target.add(panel);
-        target.setActiveTab(panel);
         return panel;
     },
     _createVariantPanel: function () {
@@ -126,18 +143,8 @@ VariantWidget.prototype = {
                 type: 'hbox',
                 align: 'stretch'
             },
-            cls: 'ocb-border-top-lightgrey',
             items: [
-//                {
-//                    xtype: 'container',
-//                    width: 220,
-//                    layout: 'fit',
-//                    margin: '0 20 20 0',
-//                    items: [
-                this.form
-//                    ]
-//                }
-                ,
+                this.form,
                 {
                     xtype: 'container',
                     flex: 1,
@@ -212,19 +219,22 @@ VariantWidget.prototype = {
 
         _this.grid.reconfigure(null, _this.columnsGrid);
 
-        var ctForm = Ext.getCmp(this.id + "conseq_type_panel");
-        ctForm.removeAll();
-        ctForm.add([
-            {
-                xtype: 'tbtext', text: '<span class="info">Select one or multiple conseq. type</span>'
-            },
-            _this._createDynCombobox("conseq_type", "Consequence Type", this.variantInfo.consequenceTypes, "non_synonymous_codon")
-        ]);
+        if (_this.filters.effect) {
+            var ctForm = Ext.getCmp(this.id + "conseq_type_panel");
+            ctForm.removeAll();
+            ctForm.add([
+                {
+                    xtype: 'tbtext', text: '<span class="info">Select one or multiple conseq. type</span>'
+                },
+                _this._createDynCombobox("conseq_type", "Consequence Type", this.variantInfo.consequenceTypes, "non_synonymous_codon")
+            ]);
+        }
 
-        var samples = Ext.getCmp(this.id + "samples_form_panel");
-        samples.removeAll();
-        samples.add(sampleTableElems);
-
+        if (_this.filters.segregation) {
+            var samples = Ext.getCmp(this.id + "samples_form_panel");
+            samples.removeAll();
+            samples.add(sampleTableElems);
+        }
         _this.panel.setLoading(false);
     },
     _addSampleColumn: function (sampleName) {
@@ -736,12 +746,9 @@ VariantWidget.prototype = {
 
         var accordion = Ext.create('Ext.form.Panel', {
             border: 1,
-//            flex: 1,
             height: "100%",
             title: "Filters",
-//            width: "100%",
             width: 220,
-//                    layout: 'fit',
             margin: '0 20 0 0',
             layout: {
                 type: 'accordion',
@@ -792,34 +799,44 @@ VariantWidget.prototype = {
             }
         });
 
-        var region = this._getRegionList();
-        var genes = this._getGenes();
-        var samples = this._getMissing();
-        var controls = this._getControls();
-        var effect = this._getConsequenceType();
-
-        var sampleContainer = Ext.create('Ext.form.FieldContainer', {
-            width: '100%',
-            border: false,
-            layout: {
-                type: 'table',
-                columns: 4
-            },
-            defaults: {
+        if (_this.filters.segregation) {
+            var segregation = this._getSegregation();
+            var sampleContainer = Ext.create('Ext.form.FieldContainer', {
+                width: '100%',
                 border: false,
-                padding: 4
-            },
-            id: this.id + "samples_form_panel"
-        });
-        samples.insert(0, sampleContainer);
+                layout: {
+                    type: 'table',
+                    columns: 4
+                },
+                defaults: {
+                    border: false,
+                    padding: 4
+                },
+                id: this.id + "samples_form_panel"
+            });
+            segregation.insert(0, sampleContainer);
+            accordion.add(segregation);
+        }
 
+        if (_this.filters.maf) {
+            var controls = this._getControls();
+            accordion.add(controls);
+        }
 
-        accordion.add(samples);
-        accordion.add(controls);
-        accordion.add(effect);
-        accordion.add(region);
-        accordion.add(genes);
+        if (_this.filters.effect) {
+            var effect = this._getConsequenceType();
+            accordion.add(effect);
+        }
 
+        if (_this.filters.region) {
+            var region = this._getRegionList();
+            accordion.add(region);
+        }
+
+        if (_this.filters.gene) {
+            var genes = this._getGenes();
+            accordion.add(genes);
+        }
         return accordion;
     },
     _createGrid: function () {
@@ -1279,7 +1296,6 @@ VariantWidget.prototype = {
 
 
                                         Ext.getCmp(_this.id + "_progressBarExport").updateProgress(1, "Downloaded");
-                                        //this.up(".window").hide();
                                         Ext.getCmp(_this.id + "fileName").reset();
 
                                     }
@@ -1288,15 +1304,12 @@ VariantWidget.prototype = {
                         }).show();
                     } else {
                         Ext.getCmp(_this.id + "exportWindow").show();
-
                     }
                     Ext.getCmp(_this.id + "_progressBarExport").updateProgress(0, "Progress");
                     Ext.getCmp(_this.id + "_downloadExport").enable();
                 }
-
             }
-        )
-
+        );
 
         var grid = Ext.create('Ext.grid.Panel', {
                 title: 'Variant Info',
@@ -1305,8 +1318,9 @@ VariantWidget.prototype = {
                 columns: this.columnsGrid,
                 plugins: 'bufferedrenderer',
                 loadMask: true,
-                //collapsible: true,
-                //titleCollapse: true,
+                collapsible: true,
+                titleCollapse: true,
+                animCollapse: false,
                 features: [
                     {ftype: 'summary'}
                 ],
@@ -1315,6 +1329,7 @@ VariantWidget.prototype = {
                     enableTextSelection: true
                 },
                 bbar: paging
+
             }
         );
 
@@ -1363,7 +1378,6 @@ VariantWidget.prototype = {
             }
         }
         return subCols;
-
     },
     _exportToTab: function (columns) {
 
@@ -1385,7 +1399,7 @@ VariantWidget.prototype = {
                 headerLine += col["boxLabel"] + "\t";
                 colNames.push(col["boxLabel"]);
             }
-            b
+
             subCols.splice(0, subCols.length);
 
         }
@@ -1647,14 +1661,14 @@ VariantWidget.prototype = {
             items: []
         });
     },
-    _getMissing: function () {
+    _getSegregation: function () {
 
         var gt_text = Ext.create('Ext.form.field.Text', {
             id: this.id + "miss_gt",
             name: "miss_gt",
             margin: '0 0 0 5',
             allowBlank: false,
-//            width: 50,
+            //            width: 50,
             flex: 1,
             value: 0
         });
@@ -1663,18 +1677,14 @@ VariantWidget.prototype = {
         gt_opt.width = 60;
 
         return Ext.create('Ext.form.Panel', {
-//            border: true,
             bodyPadding: "5",
             margin: "0 0 5 0",
             width: "100%",
-//            height: 60,
             type: 'vbox',
-//            border: 0,
             height: 300,
             border: false,
             title: 'Segregation',
             autoScroll: true,
-
             items: [
                 {
                     xtype: 'fieldcontainer',
@@ -1710,16 +1720,12 @@ VariantWidget.prototype = {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">1000G MAF <</span>',
                     name: 'maf_1000g_controls',
-//                    labelWidth: 120,
-//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">EVS MAF   <</span>',
                     name: 'maf_evs_controls',
-//                    labelWidth: 120,
-//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
@@ -1736,32 +1742,24 @@ VariantWidget.prototype = {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">African MAF <</span>',
                     name: 'maf_1000g_afr_controls',
-//                    labelWidth: 120,
-//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">American MAF <</span>',
                     name: 'maf_1000g_ame_controls',
-//                    labelWidth: 120,
-//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">Asian MAF <</span>',
                     name: 'maf_1000g_asi_controls',
-//                    labelWidth: 120,
-//                    width: 180,
                     labelAlign: 'right'
                 },
                 {
                     xtype: 'textfield',
                     fieldLabel: '<span class="emph">European MAF <</span>',
                     name: 'maf_1000g_eur_controls',
-//                    labelWidth: 120,
-//                    width: 180,
                     labelAlign: 'right'
                 }
             ]
@@ -1769,8 +1767,6 @@ VariantWidget.prototype = {
 
     },
     _createCombobox: function (name, label, data, defaultValue, labelWidth, margin, width) {
-        var _this = this;
-
         return Ext.create('Ext.form.field.ComboBox', {
             id: this.id + name,
             name: name,
@@ -1788,8 +1784,6 @@ VariantWidget.prototype = {
         });
     },
     _createDynCombobox: function (name, label, data, defaultValue) {
-        var _this = this;
-
         var dataAux = [];
         for (var key in data) {
             if (key != '.') {
@@ -1820,13 +1814,9 @@ VariantWidget.prototype = {
         });
     },
     _clearForm: function () {
-
-        var _this = this;
-        _this.form.getForm().reset();
+       _this.form.getForm().reset();
     },
     _reloadForm: function () {
-
-        var _this = this;
         _this.form.getForm().reset();
     },
     _checkForm: function () {
@@ -1837,8 +1827,6 @@ VariantWidget.prototype = {
 
     },
     _getEffect: function (record) {
-        var _this = this;
-
         var req = record.chromosome + ":" + record.position + ":" + record.ref + ":" + record.alt[0];
 
         $.ajax({

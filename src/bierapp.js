@@ -113,7 +113,7 @@ Bierapp.prototype = {
         }
 
         /* Header Widget */
-        this.headerWidget = this._createHeaderWidget($(this.headerWidgetDiv).attr('id'));
+        this.headerWidget = this._createHeaderWidget(this.headerWidgetDiv);
 
         /* Header Widget */
         this.menu = this._createMenu($(this.menuDiv).attr('id'));
@@ -140,9 +140,8 @@ Bierapp.prototype = {
         this.container.add(this.homePanel);
 
         /* Job List Widget */
-        this.jobListWidget = this._createJobListWidget($(this.sidePanelDiv).attr('id'));
+        this.jobListWidget = this._createJobListWidget(this.sidePanelDiv);
 
-        //debugger
         this.variantIndexForm = new VariantIndexForm({
             webapp: this,
             closable: false,
@@ -170,10 +169,10 @@ Bierapp.prototype = {
         }
 
     },
-    _createHeaderWidget: function (targetId) {
+    _createHeaderWidget: function (target) {
         var _this = this;
         var headerWidget = new HeaderWidget({
-            targetId: targetId,
+            target: target,
             autoRender: true,
             appname: this.title,
             description: this.description,
@@ -355,30 +354,22 @@ Bierapp.prototype = {
         return panel;
     },
 
-    _createJobListWidget: function (targetId) {
+    _createJobListWidget: function (target) {
         var _this = this;
 
         var jobListWidget = new JobListWidget({
-            'timeout': 4000,
-            'suiteId': this.suiteId,
-            'tools': this.tools,
-            'pagedViewList': {
-                'title': 'Jobs',
-                'pageSize': 7,
-                'targetId': targetId,
-                'order': 0,
-                'width': 300,
-                'height': 625,
-                border: true,
-                'mode': 'view'
+            target: target,
+            timeout: 4000,
+            width: 280,
+            height: 625,
+            tools: this.tools,
+            handlers: {
+                'item:click': function (data) {
+                    _this.jobItemClick(data.item);
+                }
             }
         });
 
-
-        /**Atach events i listen**/
-        jobListWidget.pagedListViewWidget.on('item:click', function (data) {
-            _this.jobItemClick(data.item);
-        });
         jobListWidget.draw();
 
         return jobListWidget;
@@ -396,7 +387,7 @@ Bierapp.prototype.sessionFinished = function () {
     Ext.getCmp(this.id + 'jobsButton').disable();
     Ext.getCmp(this.id + 'jobsButton').toggle(false);
 
-    this.jobListWidget.clean();
+    this.jobListWidget.hide();
     this.accountData = null;
 
     this.panel.items.each(function (child) {
@@ -464,7 +455,7 @@ Bierapp.prototype.jobItemClick = function (record) {
             if (!this.panel.contains(Ext.getCmp("VariantWidget_" + this.jobId))) {
 
                 this.variantWidget = new VariantWidget({
-                    targetId: this.panel,
+                    target: this.panel,
                     title: record.data.name,
                     job: record.data,
                     url: url,

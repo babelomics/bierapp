@@ -124,7 +124,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-hub');
 
     grunt.registerTask('log-deploy', 'Deploy path info', function (version) {
-        grunt.log.writeln("DEPLOY COMMAND: scp -r build/" + grunt.config.data.pkg.version + " cafetero@mem16:/httpd/bioinfo/www-apps/" + grunt.config.data.def.name + "/");
+        grunt.log.writeln("DEPLOY COMMAND: rsync -avz --no-whole-file -e ssh build/" + grunt.config.data.pkg.version + " cafetero@mem16:/httpd/bioinfo/www-apps/" + grunt.config.data.def.name + "/");
     });
 
 
