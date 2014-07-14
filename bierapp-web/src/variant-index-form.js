@@ -25,7 +25,6 @@ function VariantIndexForm(args) {
     args.analysis = "variant-mongo";
     GenericFormPanel.prototype.constructor.call(this, args);
 
-    //debugger
     this.id = Utils.genId("VariantIndexForm");
     this.headerWidget = this.webapp.headerWidget;
     this.opencgaBrowserWidget = this.webapp.headerWidget.opencgaBrowserWidget;
@@ -67,7 +66,6 @@ VariantIndexForm.prototype._getExampleForm = function () {
     var example1 = Ext.create('Ext.Component', {
         id: "loadExample1Button",
         width: 275,
-        //html: '<span class="u" title="Indexing time: 4 minutes"><span class="emph u">Load example 1.</span> <span class="info s110" >1000G (1K mut, 4 min)</span></span>',
         html: '<span class="s120" title="Indexing time: ~1min"><span class="btn btn-default">Load</span> &nbsp; example 1000G <span class="info">(1K mut, ~1min)</span></span>',
         cls: 'dedo',
         listeners: {
@@ -103,7 +101,6 @@ VariantIndexForm.prototype._getBrowseForm = function () {
     var formBrowser = Ext.create('Ext.panel.Panel', {
         title: "Select your data",
         header: this.headerFormConfig,
-        //cls:'panel-border-top',
         border: true,
         padding: "5 0 0 0",
         bodyPadding: 10,
@@ -126,7 +123,7 @@ VariantIndexForm.prototype._getBrowseForm = function () {
 VariantIndexForm.prototype.loadExample1 = function () {
 
     Ext.getCmp("loadExample1Button").show();
-    Ext.getCmp(this.id + 'vcf-file').setText('<span class="emph">Example 1000G (Short Version)</span>', false);
+    Ext.getCmp(this.id + 'vcf-file').update('<span class="emph">Example 1000G (Short Version)</span>', false);
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_file.vcf');
 
     //Ext.getCmp(this.id + 'ped-file').setText('<span class="emph">Example file.ped</span>', false);
@@ -137,7 +134,7 @@ VariantIndexForm.prototype.loadExample1 = function () {
     Ext.getCmp(this.id + 'jobdescription').setValue("VCF 1000G (Short Version)");
 };
 VariantIndexForm.prototype.loadExample2 = function () {
-    Ext.getCmp(this.id + 'vcf-file').setText('<span class="emph" title="It takes a long time">Example 1000G (Long Version)/span>', false);
+    Ext.getCmp(this.id + 'vcf-file').update('<span class="emph" title="It takes a long time">Example 1000G (Long Version)/span>', false);
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_1000g.vcf');
 
     //Ext.getCmp(this.id + 'ped-file').setText('<span class="emph">Example 1000G.ped</span>', false);

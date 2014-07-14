@@ -17,9 +17,7 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
-                    'src/variant-widget.js',
                     'src/variant-index-form.js',
-                    'src/bierapp-widget.js',
                     'src/bierapp.js'
                 ],
                 dest: '<%= def.build %>/<%= def.name %>.js'
@@ -39,66 +37,66 @@ module.exports = function (grunt) {
             build: {
                 files: [
                     {   expand: true, cwd: './src', src: ['ba-config.js'], dest: '<%= def.build %>' },
-                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['vendor/**'], dest: '<%= def.build %>' },
-                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>' }, // includes files in path and its subdirs
-                    {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' },
-                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['worker*'], dest: '<%= def.build %>/' }
+                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['vendor/**'], dest: '<%= def.build %>/'  },
+                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>/'  },
+                    {   expand: true, cwd: './<%= def.jsorolla %>/src/lib', src: ['worker*'], dest: '<%= def.build %>/' },
+                    {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer/', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' }
                 ]
             }
         },
         clean: {
-            build: ["<%= def.build %>/"]
+            dist: ["<%= def.build %>/"]
         },
-
         htmlbuild: {
-            dist: {
+            build: {
                 src: 'src/<%= def.name %>.html',
-                dest: '<%= def.build %>',
+                dest: '<%= def.build %>/',
                 options: {
                     beautify: true,
-                    scripts: {
-                        'js': '<%= def.build %>/<%= def.name %>.min.js',
+                    styles: {
                         'vendor': [
-                            '<%= def.build %>/vendor/jquery.min.js',
+                            '<%= def.build %>/vendor/ext-5/theme-babel/theme-babel-all.css',
+                            '<%= def.build %>/vendor/jquery.qtip*.css',
+                            '<%= def.build %>/vendor/bootstrap-*-dist/css/bootstrap.min.css',
+                            '<%= def.build %>/vendor/typeahead.js-bootstrap.css',
+                            '<%= def.build %>/vendor/jquery.simplecolorpicker.css'
+                        ],
+                        'css': ['<%= def.build %>/styles/css/style.css']
+                    },
+                    scripts: {
+                        vendor: [
                             '<%= def.build %>/vendor/underscore*.js',
                             '<%= def.build %>/vendor/backbone*.js',
-                            '<%= def.build %>/vendor/bootstrap-scoped-dist/js/bootstrap.min.js',
+                            '<%= def.build %>/vendor/jquery.min.js',
+                            '<%= def.build %>/vendor/bootstrap-*-dist/js/bootstrap.min.js',
                             '<%= def.build %>/vendor/typeahead.min.js',
-                            '<%= def.build %>/vendor/jquery.mousewheel*.js',
-                            '<%= def.build %>/vendor/gl-matrix-min*.js',
-                            '<%= def.build %>/vendor/ChemDoodleWeb*.js',
                             '<%= def.build %>/vendor/jquery.cookie*.js',
                             '<%= def.build %>/vendor/purl*.js',
                             '<%= def.build %>/vendor/jquery.sha1*.js',
-                            '<%= def.build %>/vendor/jquery.qtip*.js',
-                            '<%= def.build %>/vendor/rawdeflate*.js',
-
+                            '<%= def.build %>/vendor/jquery.qtip*.js'
                         ],
-                        gv: [
-                            '<%= def.build %>/opencga*.min.js',
-                            '<%= def.build %>/genome-viewer*.min.js'
-                        ],
-                        gvconfig: [
+                        config: [
                             '<%= def.build %>/gv-config.js'
-                        ]
-                    },
-                    styles: {
-                        'css': ['<%= def.build %>/styles/css/style.css'],
-                        'vendor': [
-                            '<%= def.build %>/vendor/ChemDoodleWeb*.css',
-                            '<%= def.build %>/vendor/jquery.qtip*.css',
-                            '<%= def.build %>/vendor/bootstrap-scoped-dist/css/bootstrap.min.css',
-                            '<%= def.build %>/vendor/typeahead.js-bootstrap.css'
-                        ]
+                        ],
+                        lib: [
+                            '<%= def.build %>/opencga*.min.js',
+                            '<%= def.build %>/genome-viewer.min.js'
+                        ],
+                        js: '<%= def.build %>/<%= def.name %>.min.js'
                     }
+
                 }
             }
         },
+        'curl-dir': {
+
+        },
+
         rename: {
-            html: {
+            dist: {
                 files: [
                     {
-                        src: ['<%= def.build %>/bierapp.html'],
+                        src: ['<%= def.build %>/<%= def.name %>.html'],
                         dest: '<%= def.build %>/index.html'}
                 ]
             }
@@ -123,10 +121,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-curl');
     grunt.loadNpmTasks('grunt-hub');
 
-    grunt.registerTask('log-deploy', 'Deploy path info', function () {
-        grunt.log.writeln("DEPLOY COMMAND: scp -r build/" + grunt.config.data.pkg.version + " cafetero@mem16:/httpd/bioinfo/www-apps/bierapp/");
+    grunt.registerTask('log-deploy', 'Deploy path info', function (version) {
+        grunt.log.writeln("DEPLOY COMMAND: rsync -avz --no-whole-file -e ssh build/" + grunt.config.data.pkg.version + " cafetero@mem16:/httpd/bioinfo/www-apps/" + grunt.config.data.def.name + "/");
     });
 
+
     // Default task.
-    grunt.registerTask('default', ['hub', 'clean', 'concat', 'uglify', 'copy', 'htmlbuild', 'rename:html', 'log-deploy']);
+    grunt.registerTask('default', ['hub', 'clean', 'concat', 'uglify', 'copy', 'htmlbuild', 'rename', 'log-deploy']);
 };
