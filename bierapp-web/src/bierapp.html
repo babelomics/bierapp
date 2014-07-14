@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Bierapp</title>
 
-<!--<link rel="stylesheet" type="text/css" href="http://cdn.sencha.io/ext/gpl/4.2.1/resources/css/ext-all-gray.css">-->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- CSS from vendors -->
 <!-- build:style vendor -->
@@ -23,7 +23,8 @@
 
 <!-- Sencha Ext -->
 <script type="text/javascript" src="http://cdn.sencha.io/ext/gpl/5.0.0/build/ext-all.js"></script>
-<script type="text/javascript" src="http://cdn.sencha.io/ext/gpl/5.0.0/build/packages/ext-charts/build/ext-charts.js"></script>
+<script type="text/javascript"
+        src="http://cdn.sencha.io/ext/gpl/5.0.0/build/packages/ext-charts/build/ext-charts.js"></script>
 
 <!-- Workers directory -->
 <script type="text/javascript">
@@ -103,7 +104,7 @@
 <script type="text/javascript" src="../lib/jsorolla/src/lib/feature-binary-search-tree.js"></script>
 <script type="text/javascript" src="../lib/jsorolla/src/lib/cache/memory-store.js"></script>
 <script type="text/javascript" src="../lib/jsorolla/src/lib/cache/feature-chunk-cache.js"></script>
-<script type="text/javascript" src="../lib/jsorolla/src/lib/cache/feature-cache.js"></script>
+<script type="text/javascript" src="../lib/jsorolla/src/lib/cache/file-feature-cache.js"></script>
 <script type="text/javascript" src="../lib/jsorolla/src/lib/cache/bam-cache.js"></script>
 
 
@@ -144,9 +145,11 @@
 <script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/opencga/result-widget.js"></script>
 <script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/opencga/result-table.js"></script>
 <script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/opencga/upload-widget.js"></script>
-<script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/feature/variant-effect-grid-widget.js"></script>
-<script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/feature/genotype-grid-widget.js"></script>
-<script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/feature/variant-widget.js"></script>
+
+<script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/feature/variant/variant-widget.js"></script>
+<script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/feature/variant/variant-browser-grid.js"></script>
+<script type="text/javascript" src="../lib/jsorolla/src/lib/widgets/feature/variant/variant-genotype-grid.js"></script>
+
 
 
 <script type="text/javascript">
@@ -163,15 +166,15 @@
 
 
 <script>
-//     Ext.Loader.setConfig({enabled: true});
-//     Ext.Loader.setPath('Ext.ux', 'http://cdn.sencha.io/ext/gpl/4.2.1/examples/ux');
-//     Ext.QuickTips.init();
-//     Ext.require([
-//         'Ext.ux.grid.FiltersFeature',
-//         'Ext.grid.plugin.BufferedRenderer'
-// 	    'Ext.grid.PagingScroller',
-//     'Ext.ux.data.PagingMemoryProxy'
-//     ]);
+    //     Ext.Loader.setConfig({enabled: true});
+    //     Ext.Loader.setPath('Ext.ux', 'http://cdn.sencha.io/ext/gpl/4.2.1/examples/ux');
+    //     Ext.QuickTips.init();
+    //     Ext.require([
+    //         'Ext.ux.grid.FiltersFeature',
+    //         'Ext.grid.plugin.BufferedRenderer'
+    // 	    'Ext.grid.PagingScroller',
+    //     'Ext.ux.data.PagingMemoryProxy'
+    //     ]);
 
     var variant;
     Ext.onReady(function () {
@@ -179,214 +182,86 @@
 
         CheckBrowser("bierapp");
         bierapp = new Bierapp({
-            targetId: 'application',
-            autoRender: true
+            target: 'application',
+            width: $('html').width(),
+            height: $('html').height()
         }); //the div must exist
         bierapp.draw();
     });
 </script>
 <STYLE type="text/css">
-html {
-    overflow: hidden;
-    height: 100%;
-}
+    html {
+        position: fixed;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        /*margin-right: 300px;*/
+        /*margin-left: 300px;*/
+    }
 
-body {
-    padding: 4px;
-    position: relative;
-    background-color: #f5f5f5;
-    margin: 0px;
-    /*height: calc(100% -8px);*/
-    height: 100%
-}
+    body {
+        height: 100%;
+        width: 100%;
+    }
 
-#application {
-    height: 100%;
-}
+    #application {
+        height: 100%;
+        width: 100%;
+    }
 
-.hpg-variant.vcf-stats, .variant {
-    /*padding:2px 5px;*/
-    display: inline-block;
-    /*background-color: #e2edf7;*/
-    color: #428bca;
-}
+    ul.ocb-app-menu > li#home {
+        padding: 0 10px 0 30px;
+    }
 
-.hpg-variant.gwas-assoc, .hpg-variant.effect {
-    /*padding:2px 5px;*/
-    display: inline-block;
-    /*background-color: #fcf1dc;*/
-    /*color:#ffffff;*/
-    color: #eca81f;
-}
+    ul.ocb-app-menu > li.preprocess {
+        color: #428bca;
+        padding: 0 10px 0 30px;
+    }
 
-.variant-menu {
-    font-size: 16px;
-    /*background-color: #f8f8f8;*/
-    background-color: #ffffff;
-    padding: 0 10px 0 10px;
-    /*text-align: center;*/
-    /*border-top:1px solid #d3d3d3;*/
-    /*border-right:1px solid #d3d3d3;*/
-}
+    ul.ocb-app-menu > li.analysis {
+        color: #eca81f;
+        padding: 0 10px 0 30px;
+    }
 
-.home-header {
-    height: 33px;
-    background-color: #d1d9e3;
-}
+    ul.ocb-app-menu > li.visualization {
+        color: #d9534f;
+        padding: 0 10px 0 30px;
+    }
 
-.home-header-dark {
-    font-size: 16px;
-    color: #FFFFFF;
-    background-color: #596F8F;
-    padding: 7px 10px;
-}
+    ul.ocb-app-menu > li.active {
+        background: #d1d9e3;
+        color: #435f7a;
+    }
 
-.visualization-header {
-    /*height: 33px;*/
-    background-color: #f9e2e2;
-}
+    ul.ocb-app-menu > li.title {
+        font-size: 14px;
+        padding: 0 10px 0 10px;
+        color: #696969;
+    }
 
-.preprocess-header {
-    font-size: 16px;
-    color: #FFFFFF;
-    background-color: #428bca;
-    padding: 7px 10px;
-}
+    ul.ocb-app-menu > li:hover {
+        background: #d1d9e3;
+        color: #435f7a;
+    }
 
-.preprocess-header-form {
-    font-size: 13px;
-    color: #428bca;
-    background-color: #e2edf7;
-    font-weight: bold;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-}
+    ul.ocb-app-menu > li.title:hover {
+        background: white;
+        color: #435f7a;
+    }
 
-.analysis-header {
-    font-size: 16px;
-    color: #FFFFFF;
-    background-color: #eca81f;
-    padding: 7px 10px;
-}
+    .header-form {
+        font-size: 16px;
+        line-height: 22px;
+        /*background-color: #f5f5f5;*/
+        padding: 4px 6px;
+        border: 1px solid #000000;
+    }
 
-.analysis-header-form {
-    font-size: 13px;
-    color: #eca81f;
-    background-color: #fcf1dc;
-    font-weight: bold;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-}
-
-.visualization-header {
-    font-size: 16px;
-    color: #FFFFFF;
-    background-color: #d9534f;
-    padding: 7px 10px;
-}
-
-.visualization-header-form {
-    font-size: 13px;
-    color: #d9534f;
-    background-color: #f9e2e2;
-    font-weight: bold;
-    padding: 4px 6px;
-    border: 1px solid #d3d3d3;
-}
-
-.variant-menu .header {
-    font-size: 14px;
-    color: gray;
-    margin: 7px 10px 4px 10px;
-    text-align: left;
-
-    /*border-bottom: 1px;*/
-    /*border-bottom-style: solid;*/
-    /*border-bottom-color: #d3d3d3;*/
-}
-
-.variant-menu .home, .home {
-    margin-top: 0px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    color: #596F8F;
-    padding: 7px 20px;
-    /*margin-top: 33px;*/
-}
-
-.variant-menu .home:hover {
-    background-color: #d1d9e3;
-    text-decoration: underline;
-}
-
-.variant-menu .home.active {
-    color: #ffffff;
-    background-color: #596F8F;
-}
-
-.variant-menu .data {
-    cursor: pointer;
-    color: #5CB85C;
-    padding: 7px 20px;
-}
-
-.variant-menu .data:hover {
-    background-color: #e9f6e9;
-    text-decoration: underline;
-}
-
-/*.variant-menu .data.active {*/
-/*color: #ffffff;*/
-/*background-color: #5CB85C;*/
-/*}*/
-
-.variant-menu .preprocess, .preprocess {
-    cursor: pointer;
-    color: #428bca;
-    padding: 7px 20px;
-}
-
-.variant-menu .preprocess:hover {
-    background-color: #e2edf7;
-    text-decoration: underline;
-}
-
-.variant-menu .preprocess.active {
-    color: #ffffff;
-    background-color: #428bca;
-}
-
-.variant-menu .analysis, .analysis {
-    cursor: pointer;
-    color: #eca81f;
-    padding: 7px 20px;
-}
-
-.variant-menu .analysis:hover {
-    background-color: #fcf1dc;
-    text-decoration: underline;
-}
-
-.variant-menu .analysis.active {
-    color: #ffffff;
-    background-color: #eca81f;
-}
-
-.variant-menu .visualization, .visualization {
-    cursor: pointer;
-    color: #d9534f;
-    padding: 7px 20px;
-}
-
-.variant-menu .visualization:hover {
-    background-color: #f9e2e2;
-    text-decoration: underline;
-}
-
-.variant-menu .visualization.active {
-    color: #ffffff;
-    background-color: #d9534f;
-}
+    .variant-mongo {
+        padding: 2px 5px;
+        display: inline-block;
+        color: #09A8BF;
+    }
 
 </STYLE>
 </head>

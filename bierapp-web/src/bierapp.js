@@ -9,12 +9,13 @@ function Bierapp(args) {
     this.title = '<span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span> ';
     this.description = '';
     this.version = '1.1.0';
-//    this.tools = ["variant", "variant-mongo"];
+
     this.tools = {
         "variant-mongo": true
     };
     this.border = true;
-    this.targetId;
+    this.autoRender = true;
+    this.target;
     this.width;
     this.height;
 
@@ -35,61 +36,43 @@ function Bierapp(args) {
 
 
 Bierapp.prototype = {
-    render: function (targetId) {
+    render: function () {
         var _this = this;
-        this.targetId = (targetId) ? targetId : this.targetId;
-        if ($('#' + this.targetId).length < 1) {
-            console.log('targetId notf found in DOM');
-            return;
-        }
 
-        console.log("Initializing BierApp");
-        this.targetDiv = $('#' + this.targetId)[0];
-        this.div = $('<div id="variant" style="height:100%;position:relative;"></div>')[0];
-        $(this.targetDiv).append(this.div);
-
-        this.headerWidgetDiv = $('<div id="header-widget"></div>')[0];
-        $(this.div).append(this.headerWidgetDiv);
-        this.menuDiv = $('<div id="menu"></div>')[0];
-        $(this.div).append(this.menuDiv);
-        this.wrapDiv = $('<div id="wrap" style="height:100%;position:relative;"></div>')[0];
-        $(this.div).append(this.wrapDiv);
-
-
-        this.sidePanelDiv = $('<div id="right-side-panel" style="position:absolute; z-index:50;right:0px;"></div>')[0];
-        $(this.wrapDiv).append(this.sidePanelDiv);
-
-
-        var leftDivWidth = 150;
-        this.leftDiv = $('<div id="left"></div>')[0];
-        $(this.leftDiv).css({
+        //HTML skel
+        this.div = $('<div id="bierapp"></div>')[0];
+        $(this.div).css({
             position: 'absolute',
             height: '100%',
-            width: leftDivWidth + 'px'
+            width: '100%'
         });
+        this.headerWidgetDiv = $('<div id="header-widget"></div>')[0];
+        $(this.div).append(this.headerWidgetDiv);
+
+        this.wrapDiv = $('<div id="wrap"></div>')[0];
+        $(this.wrapDiv).css({
+            position: 'absolute',
+            height: '100%',
+            width: '100%'
+        });
+        $(this.div).append(this.wrapDiv);
+
+        this.rightDiv = $('<div id="right-side-panel"></div>')[0];
+        $(this.rightDiv).css({
+            position: 'absolute',
+            'z-index': '10000',
+            right: '0px'
+        });
+        $(this.wrapDiv).append(this.rightDiv);
 
         this.contentDiv = $('<div id="content"></div>')[0];
         $(this.contentDiv).css({
             position: 'absolute',
             height: '100%',
-            left: leftDivWidth + 'px',
-            width: 'calc( 100% - ' + leftDivWidth + 'px)'
+            width: '100%'
         });
 
-        $(this.wrapDiv).append(this.leftDiv);
         $(this.wrapDiv).append(this.contentDiv);
-
-
-        //this.contentDiv = $('<div id="content" style="height: 100%;"></div>')[0];
-        //$(this.wrapDiv).append(this.contentDiv);
-
-        this.width = ($(this.div).width());
-        this.height = ($(this.div).height());
-
-        if (this.border) {
-            var border = (_.isString(this.border)) ? this.border : '1px solid lightgray';
-            $(this.div).css({border: border});
-        }
 
         $(window).resize(function (event) {
             if (event.target == window) {
@@ -103,45 +86,32 @@ Bierapp.prototype = {
             }
         });
 
-        this.rendered = true;
-    },
-    draw: function () {
-        var _this = this;
-        if (!this.rendered) {
-            console.info('BierApp is not rendered yet');
-            return;
-        }
+        //
+        //  Children initalization
+        //
+        this.menuEl = this._createMenuEl();
 
         /* Header Widget */
         this.headerWidget = this._createHeaderWidget(this.headerWidgetDiv);
-
-        /* Header Widget */
-        this.menu = this._createMenu($(this.menuDiv).attr('id'));
-
-        this.variantMenu = this._createVariantMenu($(this.leftDiv).attr('id'));
-
         /* check height */
-        var topOffset = $(this.headerWidgetDiv).height() + $(this.menuDiv).height();
+        var topOffset = $(this.headerWidgetDiv).height();
         $(this.wrapDiv).css({height: 'calc(100% - ' + topOffset + 'px)'});
-
-        this.homePanel = this._createHomePanel();
-
-        this.container = Ext.create('Ext.panel.Panel', {
-            renderTo: $(this.contentDiv).attr('id'),
+        this.container = Ext.create('Ext.container.Container', {
             border: 0,
             width: '100%',
             height: '100%',
             layout: 'fit'
         });
 
-        /* Wrap Panel */
-        this.panel = this._createPanel(this.container);
+        this.homePanel = this._createHomePanel();
 
-        this.container.add(this.homePanel);
+        this.resultPanel = this._createResultPanel();
 
         /* Job List Widget */
-        this.jobListWidget = this._createJobListWidget(this.sidePanelDiv);
+        this.jobListWidget = this._createJobListWidget(this.rightDiv);
 
+
+        // FORMS
         this.variantIndexForm = new VariantIndexForm({
             webapp: this,
             closable: false,
@@ -157,6 +127,26 @@ Bierapp.prototype = {
                 baseCls: 'header-form'
             }
         });
+
+
+        this.rendered = true;
+    },
+    draw: function () {
+        this.targetDiv = (this.target instanceof HTMLElement ) ? this.target : document.querySelector('#' + this.target);
+        if (!this.targetDiv) {
+            console.log('target not found');
+            return;
+        }
+        this.targetDiv.appendChild(this.div);
+
+        this.container.render(this.contentDiv)
+        this.container.add(this.homePanel);
+
+
+        this.headerWidget.draw();
+        this.jobListWidget.draw();
+        this.jobListWidget.hide();
+
 
         this.variantIndexForm.draw();
 
@@ -183,7 +173,7 @@ Bierapp.prototype = {
             helpLink: "http://bierapp.babelomics.org",
             tutorialLink: "http://bierapp.babelomics.org",
             aboutText: '',
-            applicationMenuEl: this.variantMenuEl,
+            applicationMenuEl: this.menuEl,
             handlers: {
                 'login': function (event) {
                     Utils.msg('Welcome', 'You logged in');
@@ -208,147 +198,104 @@ Bierapp.prototype = {
 
             }
         });
-        headerWidget.draw();
-
         return headerWidget;
     },
-    _createMenu: function (targetId) {
-        var _this = this;
-        var toolbar = Ext.create('Ext.toolbar.Toolbar', {
-            id: this.id + "navToolbar",
-            renderTo: targetId,
-            cls: 'jso-white-background whiteborder bootstrap',
-            region: "north",
-            width: '100%',
-            border: false,
-            items: [
-                '->',
-                {
-                    id: this.id + 'jobsButton',
-                    tooltip: 'Show Jobs',
-                    text: '<span class="emph"> Hide jobs </span>',
-                    enableToggle: true,
-                    pressed: true,
-                    toggleHandler: function () {
-                        if (this.pressed) {
-                            this.setText('<span class="emph"> Hide jobs </span>');
-                            _this.jobListWidget.show();
-                        } else {
-                            this.setText('<span class="emph"> Show jobs </span>');
-                            _this.jobListWidget.hide();
-                        }
-                    }
-                }
-            ]
-        });
-        return toolbar;
-    },
-
-    _createVariantMenu: function (targetId) {
+    _createMenuEl: function () {
         var _this = this;
 
-        var toolbar = Ext.create('Ext.container.Container', {
-            renderTo: targetId,
-            cls: 'variant-menu',
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            height: '100%',
-            defaults: {
-                xtype: 'box',
-                listeners: {
-                    afterrender: function (box) {
-                        var el = this.getEl();
-                        el.on('click', function () {
-                            if (!box.hasCls('header') && !box.hasCls('data')) {
-                                var cont = box.up('container');
-                                cont.items.each(function (item) {
-                                    item.removeCls('active');
-                                });
-                                box.addCls('active');
 
-                            }
-                            var text = el.getHtml();
-                            switch (text) {
-                                case "Home":
-                                    _this.container.removeAll(false);
-                                    _this.container.add(_this.homePanel);
-                                    break;
-                                case "Results":
-                                    _this.container.removeAll(false);
-                                    _this.container.add(_this.panel);
-                                    break;
-                                case "Upload":
-                                    _this.headerWidget.opencgaBrowserWidget.show({mode: 'manager'});
-                                    break;
-                                case "Analyze":
-                                    _this.showIndexForm();
-                                    //_this.container.removeAll(false);
-                                    //_this.container.add(_this.variantIndexForm.panel);
-                                    _this.variantIndexForm.clearForm();
-                                    break;
-                                case "1000G":
-                                    //_this.container.removeAll(false);
-                                    //_this.container.add(_this.variantIndexForm.panel);
-                                    _this.showIndexFormEx1();
-                                    //_this.variantIndexForm.loadExample1();
+//                {html: "Data", cls: 'header'},
+//                {html: "Upload", cls: 'data'},
+//            ]
 
-                                    break;
+        var menuHtml = '' +
+            '   <ul class="ocb-app-menu unselectable">' +
+            '       <li id="home" class="active">Home</li>' +
+//            '       <li id="data" class="title">Data</li>' +
+//            '       <li id="upload" class="preprocess">Upload</li>' +
+            '       <li id="analysis" class="title">Analysis</li>' +
+            '       <li id="analyze" class="analysis">Analyze</li>' +
+            '       <li id="results" class="analysis">Results</li>' +
+            '       <li id="example" class="title">Try an Example</li>' +
+            '       <li id="thousandg" class="visualization">1000g</li>' +
+            '   </ul>'
+        '';
 
+        var ul = $(menuHtml)[0];
 
-                            }
-                        });
-                    }
+        var els = $(ul).children();
+        var domEls = {};
+        for (var i = 0; i < els.length; i++) {
+            var elid = els[i].getAttribute('id');
+            if (elid) {
+                domEls[elid] = els[i];
+            }
+        }
+        $(ul).click(function (e) {
+            if (!$(e.target).hasClass('title')) {
+                $(ul).children().each(function (index, el) {
+                    $(el).removeClass('active');
+                });
+                $(e.target).addClass('active');
+                var text = $(e.target).text();
+                _this.headerWidget.setDescription(text);
+                switch (text) {
+                    case "Home":
+                        _this.jobListWidget.hide();
+                        _this.container.removeAll(false);
+                        _this.container.add(_this.homePanel);
+                        _this.headerWidget.toogleAppMenu(false);
+                        break;
+                    case "Results":
+                        _this.jobListWidget.show();
+                        _this.container.removeAll(false);
+                        _this.container.add(_this.resultPanel);
+                        _this.headerWidget.toogleAppMenu(false);
+                        break;
+                    case "Analyze":
+                        _this.jobListWidget.show();
+                        _this.container.removeAll(false);
+                        _this.container.add(_this.variantIndexForm.panel);
+                        break;
+                    case "1000g":
+                        _this.jobListWidget.show();
+                        _this.container.removeAll(false);
+                        _this.container.add();
+                        break;
                 }
-            },
-            items: [
-                {html: "Home", cls: 'home active'},
 
-                {html: "Data", cls: 'header'},
-                {html: "Upload", cls: 'data'},
-
-                {html: "Analysis", cls: 'header'},
-                {html: "Analyze", cls: 'visualization'},
-                {html: "Results", cls: 'visualization'},
-
-                {html: "Try an Example", cls: 'header'},
-                {html: "1000G", cls: 'visualization'}
-            ]
+            }
         });
-        return toolbar;
+        return ul;
     },
     _createHomePanel: function () {
         var homePanel = Ext.create('Ext.panel.Panel', {
-            border: 0,
-            header: {
-                baseCls: 'home-header'
+            bodyStyle: {
+                fontSize: '22px',
+                lineHeight: '30px',
+                fontWeight: '300',
+                color: '#ccc',
+                background: '#314559',
+                padding: '20px 0 0 200px'
             },
-            items: [
-                {
-                    xtype: 'container',
-                    style: {fontSize: '15px', color: 'dimgray'},
-                    html: SUITE_INFO,
-                    margin: '30 0 0 30',
-                    autoScroll: true
-                }
-            ]
+            border: 0,
+            html: SUITE_INFO
         });
         return homePanel;
     },
-
-    _createPanel: function (targetId) {
-
+    _createResultPanel: function () {
         var panel = Ext.create('Ext.tab.Panel', {
-            width: '100%',
-            height: '100%',
 //            tabBar: {
 //                baseCls: 'visualization-header',
 //                height: 33,
 //                padding: '12 0 0 5'
 //            },
+            width: '100%',
+            height: '100%',
+//            plain:true,
+//            padding: '0 0 0 200px',
             border: 0,
-            activeTab: 0,
+//            activeTab: 0,
             items: []
         });
         return panel;
@@ -370,31 +317,27 @@ Bierapp.prototype = {
             }
         });
 
-        jobListWidget.draw();
-
         return jobListWidget;
     }
 
 }
 Bierapp.prototype.sessionInitiated = function () {
-    Ext.getCmp(this.id + 'jobsButton').enable();
-    Ext.getCmp(this.id + 'jobsButton').toggle(true);
-    //this.jobListWidget.draw();
-    //this.dataListWidget.draw();
+
 };
 
 Bierapp.prototype.sessionFinished = function () {
-    Ext.getCmp(this.id + 'jobsButton').disable();
-    Ext.getCmp(this.id + 'jobsButton').toggle(false);
-
     this.jobListWidget.hide();
     this.accountData = null;
 
-    this.panel.items.each(function (child) {
+    this.resultPanel.items.each(function (child) {
         if (child.title != 'Home') {
             child.destroy();
         }
     })
+
+    this.container.removeAll(false);
+    this.container.add(this.homePanel);
+    this.headerWidget.toogleAppMenu(false);
 };
 
 
@@ -407,8 +350,7 @@ Bierapp.prototype.setSize = function (width, height) {
     this.width = width;
     this.height = height;
     this.headerWidget.setWidth(width);
-    this.menu.setWidth($(this.menuDiv).width());
-    this.panel.setWidth($(this.contentDiv).width());
+    this.resultPanel.setWidth($(this.contentDiv).width());
 };
 
 Bierapp.prototype.jobItemClick = function (record) {
@@ -417,30 +359,29 @@ Bierapp.prototype.jobItemClick = function (record) {
     this.container.removeAll(false);
     this.container.add(this.panel);
 
-    this.variantMenu.items.each(function (item) {
-        if (item.getEl().getHtml() == 'Results') {
-            item.addCls('active');
-        } else {
-            item.removeCls('active');
-        }
-    });
+//    this.variantMenu.items.each(function (item) {
+//        if (item.getEl().getHtml() == 'Results') {
+//            item.addCls('active');
+//        } else {
+//            item.removeCls('active');
+//        }
+//    });
 
 
     this.jobId = record.data.id;
     if (record.data.visites >= 0) {
-
-        Ext.getCmp(this.id + 'jobsButton').toggle(false);
+        this.container.removeAll(false);
+        this.container.add(this.resultPanel);
 
         var toolName = record.data.toolName;
-        console.log(toolName);
 
+        //TODO fix with new variant widget
         if (record.data.status == "execution_error" || record.data.status == "queue_error") {
             var resultWidget = new ResultWidget({
-                targetId: this.panel.getId(),
-                application: 'variant',
+                targetId: this.resultPanel.getId(),
+                application: 'bierapp',
                 app: this,
-                //layoutName: record.raw.toolName
-                layoutName: 'variant'
+                layoutName: record.data.toolName
             });
             resultWidget.draw($.cookie('bioinfo_sid'), record);
 
@@ -452,8 +393,9 @@ Bierapp.prototype.jobItemClick = function (record) {
 
             var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), record.data.id) + '/variantsMongo';
 
-            if (!this.panel.contains(Ext.getCmp("VariantWidget_" + this.jobId))) {
+            if (!this.resultPanel.contains(Ext.getCmp("VariantWidget_" + this.jobId))) {
 
+                debugger
                 this.variantWidget = new VariantWidget({
                     target: this.panel,
                     title: record.data.name,
@@ -467,14 +409,14 @@ Bierapp.prototype.jobItemClick = function (record) {
                 });
                 this.variantWidget.draw();
             } else {
-                this.panel.setActiveTab("VariantWidget_" + this.jobId);
+                this.resultPanel.setActiveTab("VariantWidget_" + this.jobId);
             }
 
 
         } else {
             var resultWidget = new ResultWidget({
-                targetId: this.panel.getId(),
-                application: 'variant',
+                targetId: this.resultPanel.getId(),
+                application: 'bierapp',
                 app: this,
                 //layoutName: record.raw.toolName
                 layoutName: 'variant' // TODO aaleman: Quitar esta línea cuando cambiemos el toolName a "variant"

@@ -48,12 +48,11 @@ VariantIndexForm.prototype.getPanels = function () {
     var form = Ext.create('Ext.panel.Panel', {
         margin: "15 0 5 0",
         border: false,
-//		layout:{type:'vbox', align: 'stretch'},
         buttonAlign: 'center',
-        width: "99%",
-        //height:900,
-        //width: "600",
-        items: items
+        items: items,
+        defaults: {
+            margin: '0 0 15 0'
+        }
     });
 
     return [this._getExampleForm(), form];
@@ -91,21 +90,13 @@ VariantIndexForm.prototype._getExampleForm = function () {
 VariantIndexForm.prototype._getBrowseForm = function () {
     var _this = this;
 
-    var note1 = Ext.create('Ext.container.Container', {
-        html: '<p>Please select a VCF file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.<br/> You can also choose one of the above <span class="info">examples</span></p>'
-    });
-    var note2 = Ext.create('Ext.container.Container', {
-        html: '<p>Please select a PED file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.</p>'
-    });
-
     var formBrowser = Ext.create('Ext.panel.Panel', {
         title: "Select your data",
         header: this.headerFormConfig,
-        border: true,
+        border: this.border,
         padding: "5 0 0 0",
         bodyPadding: 10,
         items: [
-            note1,
             this.createOpencgaBrowserCmp({
                 fieldLabel: 'Input VCF file:',
                 dataParamName: 'vcf-file',
