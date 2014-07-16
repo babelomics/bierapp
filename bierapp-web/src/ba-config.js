@@ -113,3 +113,178 @@ var AVAILABLE_SPECIES = {
 
 /** Reference to a species from the list to be shown at start **/
 var DEFAULT_SPECIES = AVAILABLE_SPECIES.items[0].items[8];
+
+consequenceTypes = [
+    {
+        name:'Transcript Variant',
+        cls: "parent",
+        expanded: true,
+        leaf: false,
+        checked:false,
+        iconCls :'no-icon',
+        children:[{
+            name: 'Coding Variant',
+            cls: "parent",
+            leaf: false ,
+            iconCls :'no-icon',
+            expanded: true,
+            checked:false,
+            children: [
+                {acc: 'SO:0001587', name: 'stop_gained', qtip: 'A sequence variant whereby at least one base of a codon is changed, resulting in a premature stop codon, leading to a shortened transcript',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001578', name: 'stop_lost', qtip: 'A sequence variant where at least one base of the terminator codon (stop) is changed, resulting in an elongated transcript',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001821', name: 'inframe_insertion', qtip: 'An inframe non synonymous variant that inserts bases into in the coding sequence',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001822', name: 'inframe_deletion', qtip: 'An inframe non synonymous variant that deletes bases from the coding sequence',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001589', name: 'frameshift_variant', qtip: 'A sequence variant which causes a disruption of the translational reading frame, because the number of nucleotides inserted or deleted is not a multiple of three',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001621', name: 'NMD_transcript_variant', qtip: 'A variant in a transcript that is the target of NMD',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001582', name: 'initiator_codon_variant', qtip: 'A codon variant that changes at least one base of the first codon of a transcript',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001626', name: 'incomplete_terminal_codon_variant', qtip: 'A sequence variant where at least one base of the final codon of an incompletely annotated transcript is changed',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001583', name: 'missense_variant', qtip: 'A sequence variant, that changes one or more bases, resulting in a different amino acid sequence but where the length is preserved',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001819', name: 'synonymous_variant', qtip: 'A sequence variant where there is no resulting change to the encoded amino acid',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001567', name: 'stop_retained_variant', qtip: 'A sequence variant where at least one base in the terminator codon is changed, but the terminator remains',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001580', name: 'coding_sequence_variant', qtip: 'A sequence variant that changes the coding sequence',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001907', name: 'feature_elongation', qtip: 'A sequence variant that causes the extension of a genomic feature, with regard to the reference sequence',leaf: true,checked: false,  iconCls :'no-icon' },
+                {acc: 'SO:0001906', name: 'feature_truncation', qtip: 'A sequence variant that causes the reduction of a genomic feature, with regard to the reference sequence',leaf: true,checked: false,  iconCls :'no-icon' }
+
+            ]
+        },
+            {
+
+                name: 'Non-coding Variant',
+                cls: "parent",
+                leaf: false ,
+                iconCls :'no-icon',
+                expanded: true,
+                checked:false,
+                children: [
+                    {acc: 'SO:0001623', name: '5_prime_UTR_variant', qtip: 'A UTR variant of the 5\' UTR',leaf: true,checked: false,  iconCls :'no-icon'},
+                    {acc: 'SO:0001624', name: '3_prime_UTR_variant', qtip: 'A UTR variant of the 3\' UTR',leaf: true, checked: false,  iconCls :'no-icon'},
+                    {acc: 'SO:0001792', name: 'non_coding_exon_variant', qtip: 'A sequence variant that changes non-coding exon sequence',leaf: true,checked: false,  iconCls :'no-icon' },
+                    {acc: 'SO:0001619', name: 'nc_transcript_variant', qtip: 'A transcript variant of a non coding RNA',leaf: true,checked: false,  iconCls :'no-icon' },
+                    {acc: 'SO:0001627', name: 'intron_variant', qtip: 'A transcript variant occurring within an intron',leaf: true,checked: false,  iconCls :'no-icon' }
+
+                ]
+
+            },
+            {
+
+                name: 'Splice Variant',
+                cls: "parent",
+                leaf: false ,
+                iconCls :'no-icon',
+                expanded: true,
+                checked:false,
+                children: [
+                    {acc: 'SO:0001575', name: 'splice_donor_variant', qtip: 'A splice variant that changes the 2 base region at the 5\' end of an intron',leaf: true,checked: false,  iconCls :'no-icon' },
+                    {acc: 'SO:0001574', name: 'splice_acceptor_variant', qtip: 'A splice variant that changes the 2 base region at the 3\' end of an intron',leaf: true,checked: false,  iconCls :'no-icon' },
+                    {acc: 'SO:0001630', name: 'splice_region_variant', qtip: 'A sequence variant in which a change has occurred within the region of the splice site, either within 1-3 bases of the exon or 3-8 bases of the intron',leaf: true,checked: false,  iconCls :'no-icon' }
+
+                ]
+
+            },
+
+            {acc: 'SO:0001893', name: 'transcript_ablation', qtip: 'A feature ablation whereby the deleted region includes a transcript feature',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001889', name: 'transcript_amplification', qtip: 'A feature amplification of a region containing a transcript',leaf: true,checked: false,  iconCls :'no-icon' }
+
+        ]
+
+    },
+    {
+        name:'Regulatory Variant ',
+        cls: "parent",
+        expanded: true,
+        leaf: false,
+        checked:false,
+        iconCls :'no-icon',
+        children: [
+            {acc: 'SO:0001782', name: 'TF_binding_site_variant', qtip: 'A sequence variant located within a transcription factor binding site',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001895', name: 'TFBS_ablation', qtip: 'A feature ablation whereby the deleted region includes a transcription factor binding site',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001892', name: 'TFBS_amplification', qtip: 'A feature amplification of a region containing a transcription factor binding site',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001620', name: 'mature_miRNA_variant', qtip: 'A transcript variant located with the sequence of the mature miRNA',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001566', name: 'regulatory_region_variant', qtip: 'A sequence variant located within a regulatory region',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001894', name: 'regulatory_region_ablation', qtip: 'A feature ablation whereby the deleted region includes a regulatory region',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001891', name: 'regulatory_region_amplification', qtip: 'A feature amplification of a region containing a regulatory region',leaf: true,checked: false,  iconCls :'no-icon' }
+        ]
+    },
+    {
+        name:'Intergenic Variant',
+        cls: "parent",
+        expanded: true,
+        leaf: false,
+        checked:false,
+        iconCls :'no-icon',
+        children: [
+            {acc: 'SO:0001631', name: 'upstream_gene_variant', qtip: 'A sequence variant located 5\' of a gene',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001632', name: 'downstream_gene_variant', qtip: 'A sequence variant located 3\' of a gene',leaf: true,checked: false,  iconCls :'no-icon' },
+            {acc: 'SO:0001628', name: 'intergenic_variant', qtip: 'A sequence variant located in the intergenic region, between genes',leaf: true,checked: false,  iconCls :'no-icon' }
+        ]
+    }
+
+];
+
+
+
+bierappColumns = [
+    {
+        text: "SNP Id",
+        dataIndex: 'id'
+    },
+    {
+        text: "Chromosome",
+        dataIndex: 'chromosome'
+    },
+    {
+        text: 'Position',
+        dataIndex: 'start'
+    },
+    //{
+    //text: 'End',
+    //dataIndex: 'end'
+    //},
+    {
+        text: 'Aleles',
+        xtype: "templatecolumn",
+        tpl: "{reference}>{alternate}"
+    },
+    {
+        text: 'Class',
+        dataIndex: 'type'
+    },
+    {
+        text: '1000G MAF',
+        dataIndex: ''
+    },
+    {
+        text: 'Consequence Type',
+        dataIndex: 'ct'
+    },
+    {
+        text: 'Gene',
+        dataIndex: 'gene'
+    },
+    {
+        text: 'HGVS Names',
+        dataIndex: 'hgvs_name'
+    },
+    {
+        text: 'View',
+        //dataIndex: 'id',
+        xtype: 'templatecolumn',
+        tpl: '<tpl if="id"><a href="?variantID={id}" target="_blank"><img class="eva-grid-img" src="img/eva_logo.png"/></a>&nbsp;' +
+            '<a href="http://www.ensembl.org/Homo_sapiens/Variation/Explore?vdb=variation;v={id}" target="_blank"><img alt="" src="http://static.ensembl.org/i/search/ensembl.gif"></a>' +
+            '&nbsp;<a href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs={id}" target="_blank"><span>dbSNP</span></a>' +
+            '<tpl else><a href="?variantID={chromosome}:{start}:{ref}:{alt}" target="_blank"><img class="eva-grid-img" src="img/eva_logo.png"/></a>&nbsp;<img alt="" class="in-active" src="http://static.ensembl.org/i/search/ensembl.gif">&nbsp;<span  style="opacity:0.2" class="in-active">dbSNP</span></tpl>'
+    }
+
+    //
+];
+
+bierappAttributes = [
+    {name: 'id', type: 'string'},
+    {name: "chromosome", type: "string"},
+    {name: "start", type: "int"},
+    {name: "end", type: "int"},
+    {name: "type", type: "string"},
+    {name: "ref", type: "string"},
+    {name: "alt", type: "string"},
+    {name: 'hgvs_name', type: 'string'},
+];

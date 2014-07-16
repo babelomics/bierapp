@@ -375,7 +375,8 @@ Bierapp.prototype.jobItemClick = function (record) {
 
         var toolName = record.data.toolName;
 
-        //TODO fix with new variant widget
+
+        //Use result widget if error
         if (record.data.status == "execution_error" || record.data.status == "queue_error") {
             var resultWidget = new ResultWidget({
                 targetId: this.resultPanel.getId(),
@@ -389,29 +390,8 @@ Bierapp.prototype.jobItemClick = function (record) {
             var command = resultWidget.job.command.data;
         }
         else if (toolName == 'variant-mongo') {
-            record.data.command = Utils.parseJobCommand(record.data);
 
-            var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), record.data.id) + '/variantsMongo';
-
-            if (!this.resultPanel.contains(Ext.getCmp("VariantWidget_" + this.jobId))) {
-
-                debugger
-                this.variantWidget = new VariantWidget({
-                    target: this.panel,
-                    title: record.data.name,
-                    job: record.data,
-                    url: url,
-                    border: false,
-                    filters: {},
-                    tools: {
-                        //variantEffect:false
-                    }
-                });
-                this.variantWidget.draw();
-            } else {
-                this.resultPanel.setActiveTab("VariantWidget_" + this.jobId);
-            }
-
+            this._createVariantResult(record);
 
         } else {
             var resultWidget = new ResultWidget({
@@ -428,4 +408,209 @@ Bierapp.prototype.jobItemClick = function (record) {
         }
 
     }
+
+};
+Bierapp.prototype._createVariantResult = function (record) {
+    var _this = this;
+    var jobId = record.data.id;
+    record.data.command = Utils.parseJobCommand(record.data);
+
+    var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), jobId) + '/variantsMongo';
+
+    var tab = this.resultPanel.down('[id=' + jobId + ']');
+    if (tab == null) {
+
+        var div = document.createElement('div');
+        var variantWidgetDiv = document.createElement('div');
+        $(variantWidgetDiv).addClass('ba-variantWidgetDiv');
+        var filterDiv = document.createElement('div');
+        $(filterDiv).addClass('ba-filterFormDiv');
+        div.appendChild(filterDiv);
+        div.appendChild(variantWidgetDiv);
+
+
+        var tab = Ext.create("Ext.panel.Panel", {
+            id: jobId,
+            border: false,
+            title: record.data.name,
+            closable: true,
+            contentEl: div
+        });
+        this.resultPanel.add(tab);
+        this.resultPanel.setActiveTab(tab);
+
+        var variantWidget = new VariantWidget({
+////                    job: record.data,
+            target: variantWidgetDiv,
+            title: record.data.name,
+            headerConfig: {
+                baseCls: 'ba-title-1'
+            },
+            width: $(variantWidgetDiv).width(),
+            border: true,
+            browserGridConfig: {
+                border: true
+            },
+//            data: EXAMPLE_DATA,
+            filters: {},
+            defaultToolConfig: {},
+////                    url: url,
+            columns: bierappColumns,
+            attributes: bierappAttributes,
+//                    tools: {
+//                        //variantEffect:false
+//                    }
+            dataParser: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var variant = data[i];
+                    variant.chromosome = variant.chr;
+                    variant.alternate = variant.alt;
+                    variant.reference = variant.ref;
+
+                    if (variant.hgvs && variant.hgvs.genomic > 0) {
+                        variant.hgvs_name = variant.hgvs.genomic[0];
+                    }
+                }
+            }
+        });
+        variantWidget.draw();
+
+
+        var positionFilter = new PositionFilterFormPanel({
+//            border: true,
+            testRegion: '1:14000-20000',
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            }
+        });
+        var conseqType = new ConsequenceTypeFilterFormPanel({
+//            border: true,
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            }
+        });
+
+        var sampleNames = [];
+        var url = BierappManager.get({
+            host: 'http://aaleman:8080/bierapp/rest',
+            resource: 'studies',
+            action: 'info',
+            async: false,
+            params: {
+                //TODO
+                study: 'FILE'
+            },
+            success: function (data) {
+                try {
+                    sampleNames = Object.keys(data.response[0].result[0].samplesPositon);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+        });
+        var segType = new SegregationFilterFormPanel({
+//            border: true,
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            },
+            samples: sampleNames
+        });
+        var mafType = new MafFilterFormPanel({
+//            border: true,
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            }
+        });
+
+        var formPanel = new FormPanel({
+            title: 'Filter',
+            headerConfig: {
+                baseCls: 'ba-title-1'
+            },
+            mode: 'accordion',
+            target: filterDiv,
+            submitButtonText: 'Submit',
+            filters: [segType, mafType, positionFilter, conseqType],
+            width: $(filterDiv).width(),
+//            height: 1043,
+            border: false,
+            handlers: {
+                'submit': function (e) {
+                    console.log(e.values);
+                    variantWidget.setLoading(true);
+
+                    var regions = [];
+                    if (e.values.region !== "") {
+                        regions = e.values.region.split(",");
+                    }
+                    delete  e.values.region;
+
+                    if (typeof e.values.ct !== 'undefined') {
+                        if (e.values.ct instanceof Array) {
+                            e.values.ct = e.values.ct.join(",");
+                        }
+                    }
+
+                    if (typeof e.values.gene !== 'undefined') {
+                        CellBaseManager.get({
+                            species: 'hsapiens',
+                            category: 'feature',
+                            subCategory: 'gene',
+                            query: e.values.gene,
+                            resource: "info",
+                            async: false,
+                            params: {
+                                include: 'chromosome,start,end'
+                            },
+                            success: function (data) {
+                                for (var i = 0; i < data.response.length; i++) {
+                                    var queryResult = data.response[i];
+                                    var region = new Region(queryResult.result[0]);
+                                    regions.push(region.toString());
+                                }
+                            }
+                        });
+                        delete  e.values.gene;
+                    }
+
+                    if (typeof e.values.snp !== 'undefined') {
+                        CellBaseManager.get({
+                            species: 'hsapiens',
+                            category: 'feature',
+                            subCategory: 'snp',
+                            query: e.values.snp,
+                            resource: "info",
+                            async: false,
+                            params: {
+                                include: 'chromosome,start,end'
+                            },
+                            success: function (data) {
+                                for (var i = 0; i < data.response.length; i++) {
+                                    var queryResult = data.response[i];
+                                    var region = new Region(queryResult.result[0]);
+                                    regions.push(region.toString());
+                                }
+                            }
+                        });
+                        delete  e.values.snp;
+                    }
+
+                    var url = BierappManager.url({
+                        host: 'http://aaleman:8080/bierapp/rest',
+                        resource: 'variants',
+                        action: 'get',
+                        params: {
+                            region: regions
+                        }
+                    });
+                    variantWidget.retrieveData(url, e.values)
+                }
+            }
+        });
+        formPanel.draw();
+
+    } else {
+        this.resultPanel.setActiveTab(tab);
+    }
+
 };
