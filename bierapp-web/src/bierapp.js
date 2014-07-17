@@ -437,6 +437,9 @@ Bierapp.prototype._createVariantResult = function (record) {
         this.resultPanel.add(tab);
         this.resultPanel.setActiveTab(tab);
 
+        var variantEffect = new BierAppEffectGrid({});
+        var variantStats = new BierAppStatsGrid({});
+
         var variantWidget = new VariantWidget({
             target: variantWidgetDiv,
             title: record.data.name,
@@ -454,6 +457,16 @@ Bierapp.prototype._createVariantResult = function (record) {
             },
             filters: {},
             defaultToolConfig: {effect: false, stats: false},
+            tools: [
+                {
+                    tool: variantEffect,
+                    title: "Effect & Annotation"
+                },
+                {
+                    tool: variantStats,
+                    title: "Study Summary"
+                }
+            ],
             columns: bierappColumns,
             attributes: bierappAttributes,
             responseRoot: 'response.result',
@@ -471,6 +484,7 @@ Bierapp.prototype._createVariantResult = function (record) {
             dataParser: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     var v = data[i], aux;
+                    delete v.controls.BIER;
                     for (var key in v.sampleGenotypes) {
                         aux = v.sampleGenotypes[key];
                         aux = aux.replace(/-1/g, ".");
@@ -481,6 +495,11 @@ Bierapp.prototype._createVariantResult = function (record) {
                 }
             }
         });
+
+        variantWidget.on("variant:change", function (e) {
+            variantEffect.load(e.variant);
+        });
+
         variantWidget.draw();
 
 
