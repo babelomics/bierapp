@@ -27,6 +27,7 @@ function BierAppStatsGrid(args) {
     this.storeConfig = {};
     this.gridConfig = {};
     this.height = 500;
+    this.stats = {};
 
     _.extend(this, args);
 
@@ -59,11 +60,13 @@ BierAppStatsGrid.prototype = {
         this.targetDiv.appendChild(this.div);
         this.panel.render(this.div);
     },
-    _createSummaryPanel: function (data) {
+    _createPanel: function () {
         var _this = this;
 
         var cts = [];
         var ss = [];
+        var data = this.stats;
+        debugger
 
         for (var key in data.consequenceTypes) {
             cts.push({
@@ -229,6 +232,12 @@ BierAppStatsGrid.prototype = {
 
         var items = [
             {
+                xtype: 'box',
+                cls: 'ocb-header-4',
+                html: 'Effects',
+                margin: '5 0 10 10'
+            },
+            {
                 xtype: 'container',
                 layout: 'vbox',
                 flex: 1,
@@ -264,28 +273,19 @@ BierAppStatsGrid.prototype = {
             }
         ];
 
-        var panel = Ext.create('Ext.window.Window', {
-            title: 'Summary',
-            height: 1000,
-            border: 0,
-            layout: 'hbox',
-            bodyPadding: 60,
-            width: 1000,
-            autoScroll: true,
-            modal: true,
-            minimizable: true,
-            closable: false,
+        var panel = Ext.create('Ext.container.Container', {
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            overflowY: true,
+            padding: 10,
             items: items,
-            listeners: {
-                minimize: function (win, obj) {
-                    win.hide();
-                }
-            }
+            height: this.height
         });
-
         return panel;
     }
 
-  }
+}
 
 

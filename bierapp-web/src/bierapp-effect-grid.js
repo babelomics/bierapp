@@ -288,6 +288,7 @@ BierAppEffectGrid.prototype = {
             overflowY: true,
             padding: 10,
             items: [
+
                 {
                     xtype: 'box',
                     cls: 'ocb-header-4',

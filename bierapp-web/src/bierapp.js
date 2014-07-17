@@ -437,8 +437,58 @@ Bierapp.prototype._createVariantResult = function (record) {
         this.resultPanel.add(tab);
         this.resultPanel.setActiveTab(tab);
 
+
+        var sampleNames = [];
+        var consequenceTypes = [];
+        var stats = {};
+
+//        var url = BierappManager.get({
+//            host: 'http://aaleman:8080/bierapp/rest',
+//            resource: 'studies',
+//            action: 'info',
+//            async: false,
+//            params: {
+//                //TODO
+//                study: 'FILE'
+//            },
+//            success: function (data) {
+//                try {
+//                    sampleNames = Object.keys(data.response[0].result[0].samplesPositon);
+//                } catch (e) {
+//                    console.log(e);
+//                }
+//            }
+//        });
+
+        var url = OpencgaManager.variantInfoMongo({
+            accountId: $.cookie("bioinfo_account"),
+            sessionId: $.cookie("bioinfo_sid"),
+            jobId: jobId,
+            async: false,
+            success: function (data, textStatus, jqXHR) {
+                try {
+                    sampleNames = data.response.result[0].samples;
+                    stats = data.response.result[0];
+
+                    var cts = data.response.result[0].consequenceTypes;
+                    for (key in cts) {
+                        consequenceTypes.push({
+                            name: key,
+                            leaf: false,
+                            checked: false,
+                            iconCls: 'ba-no-icon'
+                        });
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+        });
+
         var variantEffect = new BierAppEffectGrid({});
-        var variantStats = new BierAppStatsGrid({});
+        var variantStats = new BierAppStatsGrid({
+            stats: stats
+        });
 
         var variantWidget = new VariantWidget({
             target: variantWidgetDiv,
@@ -510,42 +560,24 @@ Bierapp.prototype._createVariantResult = function (record) {
                 baseCls: 'ba-title-2'
             }
         });
+
+
         var conseqType = new ConsequenceTypeFilterFormPanel({
 //            border: true,
+            consequenceTypes: consequenceTypes,
+            fields: [
+                {name: 'name', type: 'string'},
+            ],
+            columns: [
+                {
+                    xtype: 'treecolumn',
+                    flex: 1,
+                    sortable: false,
+                    dataIndex: 'name'
+                }
+            ],
             headerConfig: {
                 baseCls: 'ba-title-2'
-            }
-        });
-
-        var sampleNames = [];
-//        var url = BierappManager.get({
-//            host: 'http://aaleman:8080/bierapp/rest',
-//            resource: 'studies',
-//            action: 'info',
-//            async: false,
-//            params: {
-//                //TODO
-//                study: 'FILE'
-//            },
-//            success: function (data) {
-//                try {
-//                    sampleNames = Object.keys(data.response[0].result[0].samplesPositon);
-//                } catch (e) {
-//                    console.log(e);
-//                }
-//            }
-//        });
-        var url = OpencgaManager.variantInfoMongo({
-            accountId: $.cookie("bioinfo_account"),
-            sessionId: $.cookie("bioinfo_sid"),
-            jobId: jobId,
-            async: false,
-            success: function (data, textStatus, jqXHR) {
-                try {
-                    sampleNames = data.response.result[0].samples;
-                } catch (e) {
-                    console.log(e);
-                }
             }
         });
 
