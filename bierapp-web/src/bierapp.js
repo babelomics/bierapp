@@ -412,6 +412,10 @@ Bierapp.prototype.jobItemClick = function (record) {
 };
 Bierapp.prototype._createVariantResult = function (record) {
     var _this = this;
+
+    this.jobListWidget.hide();
+    this.headerWidget.toogleAppMenu(false);
+
     var jobId = record.data.id;
     record.data.command = Utils.parseJobCommand(record.data);
 
@@ -540,6 +544,7 @@ Bierapp.prototype._createVariantResult = function (record) {
         var conseqType = new ConsequenceTypeFilterFormPanel({
 //            border: true,
             consequenceTypes: consequenceTypes,
+            collapsed: true,
             fields: [
                 {name: 'name', type: 'string'},
             ],
