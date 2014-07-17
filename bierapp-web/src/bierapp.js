@@ -415,8 +415,6 @@ Bierapp.prototype._createVariantResult = function (record) {
     var jobId = record.data.id;
     record.data.command = Utils.parseJobCommand(record.data);
 
-    var url = OpencgaManager.getJobAnalysisUrl($.cookie("bioinfo_account"), jobId) + '/variantsMongo';
-
     var tab = this.resultPanel.down('[id=' + jobId + ']');
     if (tab == null) {
 
@@ -440,7 +438,6 @@ Bierapp.prototype._createVariantResult = function (record) {
         this.resultPanel.setActiveTab(tab);
 
         var variantWidget = new VariantWidget({
-////                    job: record.data,
             target: variantWidgetDiv,
             title: record.data.name,
             headerConfig: {
@@ -449,27 +446,38 @@ Bierapp.prototype._createVariantResult = function (record) {
             width: $(variantWidgetDiv).width(),
             border: true,
             browserGridConfig: {
+                title: 'Variant Browser',
                 border: true
             },
-//            data: EXAMPLE_DATA,
+            toolPanelConfig: {
+                title: 'Variant Data'
+            },
             filters: {},
-            defaultToolConfig: {},
-////                    url: url,
+            defaultToolConfig: {effect: false, stats: false},
             columns: bierappColumns,
             attributes: bierappAttributes,
-//                    tools: {
-//                        //variantEffect:false
-//                    }
+            responseRoot: 'response.result',
+            responseTotal: 'response.numResults',
+            startParam: 'start',
+            responseParser: function (response) {
+                var res = [];
+                try {
+                    res = response.response.result;
+                } catch (e) {
+                    console.log(e);
+                }
+                return  res;
+            },
             dataParser: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    var variant = data[i];
-                    variant.chromosome = variant.chr;
-                    variant.alternate = variant.alt;
-                    variant.reference = variant.ref;
-
-                    if (variant.hgvs && variant.hgvs.genomic > 0) {
-                        variant.hgvs_name = variant.hgvs.genomic[0];
+                    var v = data[i], aux;
+                    for (var key in v.sampleGenotypes) {
+                        aux = v.sampleGenotypes[key];
+                        aux = aux.replace(/-1/g, ".");
+                        aux = aux.replace("|", "/");
+                        v[key] = aux;
                     }
+                    v["genes"] = v.genes.join(",");
                 }
             }
         });
@@ -478,7 +486,7 @@ Bierapp.prototype._createVariantResult = function (record) {
 
         var positionFilter = new PositionFilterFormPanel({
 //            border: true,
-            testRegion: '1:14000-20000',
+//            testRegion: '1:14000-20000',
             headerConfig: {
                 baseCls: 'ba-title-2'
             }
@@ -491,23 +499,37 @@ Bierapp.prototype._createVariantResult = function (record) {
         });
 
         var sampleNames = [];
-        var url = BierappManager.get({
-            host: 'http://aaleman:8080/bierapp/rest',
-            resource: 'studies',
-            action: 'info',
+//        var url = BierappManager.get({
+//            host: 'http://aaleman:8080/bierapp/rest',
+//            resource: 'studies',
+//            action: 'info',
+//            async: false,
+//            params: {
+//                //TODO
+//                study: 'FILE'
+//            },
+//            success: function (data) {
+//                try {
+//                    sampleNames = Object.keys(data.response[0].result[0].samplesPositon);
+//                } catch (e) {
+//                    console.log(e);
+//                }
+//            }
+//        });
+        var url = OpencgaManager.variantInfoMongo({
+            accountId: $.cookie("bioinfo_account"),
+            sessionId: $.cookie("bioinfo_sid"),
+            jobId: jobId,
             async: false,
-            params: {
-                //TODO
-                study: 'FILE'
-            },
-            success: function (data) {
+            success: function (data, textStatus, jqXHR) {
                 try {
-                    sampleNames = Object.keys(data.response[0].result[0].samplesPositon);
+                    sampleNames = data.response.result[0].samples;
                 } catch (e) {
                     console.log(e);
                 }
             }
         });
+
         var segType = new SegregationFilterFormPanel({
 //            border: true,
             headerConfig: {
@@ -539,16 +561,13 @@ Bierapp.prototype._createVariantResult = function (record) {
                     console.log(e.values);
                     variantWidget.setLoading(true);
 
-                    var regions = [];
-                    if (e.values.region !== "") {
-                        regions = e.values.region.split(",");
-                    }
-                    delete  e.values.region;
-
-                    if (typeof e.values.ct !== 'undefined') {
-                        if (e.values.ct instanceof Array) {
-                            e.values.ct = e.values.ct.join(",");
+                    //POSITION CHECK
+                    if (typeof e.values.region !== 'undefined') {
+                        var regions = [];
+                        if (e.values.region !== "") {
+                            regions = e.values.region.split(",");
                         }
+                        delete  e.values.region;
                     }
 
                     if (typeof e.values.gene !== 'undefined') {
@@ -595,13 +614,26 @@ Bierapp.prototype._createVariantResult = function (record) {
                         delete  e.values.snp;
                     }
 
-                    var url = BierappManager.url({
-                        host: 'http://aaleman:8080/bierapp/rest',
-                        resource: 'variants',
-                        action: 'get',
-                        params: {
-                            region: regions
+
+                    //CONSEQUENCE TYPES CHECK
+                    if (typeof e.values.ct !== 'undefined') {
+                        if (e.values.ct instanceof Array) {
+                            e.values.ct = e.values.ct.join(",");
                         }
+                    }
+
+//                    var url = BierappManager.url({
+//                        host: 'http://aaleman:8080/bierapp/rest',
+//                        resource: 'variants',
+//                        action: 'get',
+//                        params: {
+//                            region: regions
+//                        }
+//                    });
+                    var url = OpencgaManager.variantsUrl({
+                        accountId: $.cookie("bioinfo_account"),
+                        sessionId: $.cookie("bioinfo_sid"),
+                        jobId: jobId
                     });
                     variantWidget.retrieveData(url, e.values)
                 }
