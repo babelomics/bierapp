@@ -26,8 +26,9 @@ function BierAppStatsGrid(args) {
     this.autoRender = true;
     this.storeConfig = {};
     this.gridConfig = {};
-    this.height = 500;
+    this.height;
     this.stats = {};
+    this.headerConfig;
 
     _.extend(this, args);
 
@@ -48,6 +49,9 @@ BierAppStatsGrid.prototype = {
         this.div = document.createElement('div');
         this.div.setAttribute('id', this.id);
 
+        this.chartDiv = document.createElement('div');
+
+
         this.panel = this._createPanel();
 
     },
@@ -63,157 +67,145 @@ BierAppStatsGrid.prototype = {
     _createPanel: function () {
         var _this = this;
 
-        var cts = [];
-        var ss = [];
         var data = this.stats;
-        debugger
-
+        var consequenceTypeData = [];
         for (var key in data.consequenceTypes) {
-            cts.push({
-                name: Utils.formatText(key, "_"),
-                count: data.consequenceTypes[key]
-            });
+            consequenceTypeData.push([Utils.formatText(key, "_"), data.consequenceTypes[key]])
         }
 
-        for (var key in data.sampleStats) {
-            ss.push({
-                sampleName: key,
-                homozygotesNumber: data.sampleStats[key].homozygotesNumber,
-                mendelianErrors: data.sampleStats[key].mendelianErrors,
-                missingGenotypes: data.sampleStats[key].missingGenotypes
-            });
-        }
-
-        _this.ctStore = Ext.create('Ext.data.Store', {
-            fields: ['name', 'count'],
-            data: cts
-
-        });
-
-        _this.ssStore = Ext.create('Ext.data.Store', {
-            fields: ['sampleName', 'homozygotesNumber', 'mendelianErrors', 'missingGenotypes'],
-            data: ss
-        });
-
-        var chartCT = Ext.create('Ext.chart.Chart', {
-            xtype: 'chart',
-            width: 700,
-            height: 700,
-            store: _this.ctStore,
-            animate: true,
-            shadow: true,
-            legend: {
-                position: 'right'
+        $(this.chartDiv).highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,//null or 1..,
+                plotShadow: false
             },
-            theme: 'Base:gradients',
-            insetPadding: 60,
+            title: {
+//                text: 'Browser market shares at a specific website, 2014'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
             series: [
                 {
                     type: 'pie',
-                    field: 'count',
-                    showInLegend: true,
-                    tips: {
-                        trackMouse: true,
-                        width: 200,
-                        height: 28,
-                        renderer: function (storeItem, item) {
-                            //calculate percentage.
-                            var total = 0;
-                            _this.ctStore.each(function (rec) {
-                                total += rec.get('count');
-                            });
-                            var name = Utils.formatText(storeItem.get('name'), "_");
-                            this.setTitle(name + ': ' + Math.round(storeItem.get('count') / total * 100) + '%');
-                        }
-                    },
-                    highlight: {
-                        segment: {
-                            margin: 20
-                        }
-                    },
-
-                    label: {
-                        field: 'name',
-                        display: 'rotate',
-                        contrast: true,
-                        font: '10px Arial'
-                    }
-
+                    name: 'Frequency',
+                    data: consequenceTypeData,
+//                    data: [
+//                        ['Firefox', 45.0],
+//                        ['IE', 26.8],
+//                        {
+//                            name: 'Chrome',
+//                            y: 12.8,
+//                            sliced: true,
+//                            selected: true
+//                        },
+//                        ['Safari', 8.5],
+//                        ['Opera', 6.2],
+//                        ['Others', 0.7]
+//                    ]
                 }
             ]
         });
+//
+//
+//        tpl: new Ext.XTemplate(
+//                '<table class="ocb-stats-table">' +
+//                '<tr>' +
+//                '<td class="header">Minor Allele Frequency:</td>' +
+//                '<td>{maf} ({mafAllele})</td>' +
+//                '</tr>',
+//                '<tr>' +
+//                '<td class="header">Minor Genotype Frequency:</td>' +
+//                '<td>{mgf} ({mgfAllele})</td>' +
+//                '</tr>',
+//                '<tr>' +
+//                '<td class="header">Mendelian Errors:</td>' +
+//                '<td>{mendelianErrors}</td>' +
+//                '</tr>',
+//                '<tr>' +
+//                '<td class="header">Missing Alleles:</td>' +
+//                '<td>{missingAlleles}</td>' +
+//                '</tr>',
+//                '<tr>' +
+//                '<td class="header">Missing Genotypes:</td>' +
+//                '<td>{missingGenotypes}</td>' +
+//                '</tr>',
+//            '</table>'
+//        ),
 
         var itemTplSamples = new Ext.XTemplate(
-            '<table cellspacing="0" style="max-width:400px;border-collapse: collapse;border:1px solid #ccc;"><thead>',
-            '<th style="min-width:50px;border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">Samples</th>',
-            '</thead><tbody>',
+            '<table class="ocb-stats-table">',
+                '<tr>' +
+                '<td class="header">Samples</td>' +
+                '</tr>',
             '<tpl for="samples">',
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">{.}</td>',
-            '</tr>',
+                '<tr>' +
+                '<td>{.}</td>' +
+                '</tr>',
             '</tpl>',
-            '</tbody></table>'
+            '</table>'
         );
 
         var globalStats = new Ext.XTemplate(
-            '<table cellspacing="0" style="max-width:400px;border-collapse: collapse;border:1px solid #ccc;"><thead>',
-            '<th colspan="2" style="min-width:50px;border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">Global Stats</th>',
-            '</thead><tbody>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num variants</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{variantsCount}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num samples</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{samplesCount}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num indels</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{indelCount}</td>',
-            '</tr>',
-
-            //'<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            //'<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num snps</td>',
-            //'<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{snpCount}</td>',
-            //'</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num biallelic</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{biallelicsCount}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num multiallelic</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{multiallelicsCount}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num transitions</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{transitionsCount}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Num transversions</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{transversionsCount}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">% PASS</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{[this.pass(values)]}%</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Ti/Tv Ratio</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{[this.titv(values)]}</td>',
-            '</tr>',
-
-            '<tr style="border-collapse: collapse;border:1px solid #ccc;">',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;color:steelblue;font-weight:bold;white-space: nowrap;">Avg. Quality</td>',
-            '<td style="border-collapse: collapse;border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;">{[this.avgq(values)]}</td>',
-            '</tr>',
+                '<table class="ocb-stats-table">' +
+                '<tr>' +
+                '<td class="header">Num variants:</td>' +
+                '<td>{variantsCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Num samples:</td>' +
+                '<td>{samplesCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Num indels:</td>' +
+                '<td>{indelCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Num biallelic:</td>' +
+                '<td>{biallelicsCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Num multiallelic:</td>' +
+                '<td>{multiallelicsCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Num transitions:</td>' +
+                '<td>{transitionsCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Num transversions:</td>' +
+                '<td>{transversionsCount}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">% PASS:</td>' +
+                '<td>{[this.pass(values)]}%</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Ti/Tv Ratio:</td>' +
+                '<td>{[this.titv(values)]}</td>' +
+                '</tr>',
+                '<tr>' +
+                '<td class="header">Avg. Quality:</td>' +
+                '<td>{[this.avgq(values)]}</td>' +
+                '</tr>',
+            '</table>',
             {
                 pass: function (values) {
                     var res = values.passCount / values.variantsCount;
@@ -232,51 +224,45 @@ BierAppStatsGrid.prototype = {
 
         var items = [
             {
-                xtype: 'box',
-                cls: 'ocb-header-4',
-                html: 'Effects',
-                margin: '5 0 10 10'
-            },
-            {
-                xtype: 'container',
-                layout: 'vbox',
+                xtype: 'panel',
+                title: 'Effects',
+                header: this.headerConfig,
+                border: 0,
+                layout: 'hbox',
                 flex: 1,
                 items: [
                     {
                         xtype: 'box',
-                        flex: 1,
-                        margin: 10,
-                        data: data,
-                        tpl: itemTplSamples
-                    },
-                    {
-                        xtype: 'box',
-                        flex: 1,
                         margin: 10,
                         data: data.globalStats,
                         tpl: globalStats
+                    },
+                    {
+                        xtype: 'box',
+                        margin: 10,
+                        data: data,
+                        tpl: itemTplSamples
                     }
                 ]
             },
             {
-                xtype: 'container',
-                layout: 'vbox',
-                flex: 3,
-                items: [
-                    {
-                        xtype: 'box',
-                        width: 700,
-                        html: '<div style="border:1px solid #ccc;padding: 5px;background-color: whiteSmoke;font-weight: bold;">Consequence type</div>'
-                    },
-                    chartCT
-                ]
+                xtype: 'panel',
+                title: 'Consequence type',
+                header: this.headerConfig,
+                border: 0,
+                layout: 'fit',
+                flex: 4,
+                contentEl: this.chartDiv
             }
         ];
 
         var panel = Ext.create('Ext.container.Container', {
             layout: {
-                type: 'vbox',
+                type: 'hbox',
                 align: 'stretch'
+            },
+            defaults: {
+                margin: 10
             },
             overflowY: true,
             padding: 10,

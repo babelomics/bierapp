@@ -8,10 +8,11 @@ function Bierapp(args) {
     this.suiteId = 6;
     this.title = '<span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span> ';
     this.description = '';
-    this.version = '1.1.0';
+    this.version = '1.4.0';
 
     this.tools = {
-        "variant-mongo": true
+        "variant-mongo": true,
+        "bierapp": true
     };
     this.border = true;
     this.autoRender = true;
@@ -94,7 +95,7 @@ Bierapp.prototype = {
         /* Header Widget */
         this.headerWidget = this._createHeaderWidget(this.headerWidgetDiv);
         /* check height */
-        var topOffset = $(this.headerWidgetDiv).height();
+        var topOffset = this.headerWidget.getHeight();
         $(this.wrapDiv).css({height: 'calc(100% - ' + topOffset + 'px)'});
         this.container = Ext.create('Ext.container.Container', {
             border: 0,
@@ -104,6 +105,7 @@ Bierapp.prototype = {
         });
 
         this.homePanel = this._createHomePanel();
+        this.aboutPanel = this._createAboutPanel();
 
         this.resultPanel = this._createResultPanel();
 
@@ -169,9 +171,9 @@ Bierapp.prototype = {
             version: this.version,
             suiteId: this.suiteId,
             accountData: this.accountData,
-            homeLink: "http://bierapp.babelomics.org",
-            helpLink: "http://bierapp.babelomics.org",
-            tutorialLink: "http://bierapp.babelomics.org",
+            homeLink: "./",
+            helpLink: "https://github.com/babelomics/bierapp/wiki",
+            tutorialLink: "https://github.com/babelomics/bierapp/wiki/Tutorial",
             aboutText: '',
             applicationMenuEl: this.menuEl,
             handlers: {
@@ -192,8 +194,10 @@ Bierapp.prototype = {
                     _this.jobListWidget.toggle();
                 },
                 'about:click': function () {
-                    _this.jobListWidget.toggle(false);
-//                    _this.headerWidget.
+                    _this.jobListWidget.hide();
+                    _this.container.removeAll(false);
+                    _this.container.add(_this.aboutPanel);
+                    _this.headerWidget.toogleAppMenu(false);
                 }
 
             }
@@ -255,12 +259,14 @@ Bierapp.prototype = {
                     case "Analyze":
                         _this.jobListWidget.show();
                         _this.container.removeAll(false);
+                        _this.variantIndexForm.clean();
                         _this.container.add(_this.variantIndexForm.panel);
                         break;
                     case "1000g":
                         _this.jobListWidget.show();
                         _this.container.removeAll(false);
-                        _this.container.add();
+                        _this.variantIndexForm.loadExample1();
+                        _this.container.add(_this.variantIndexForm.panel);
                         break;
                 }
 
@@ -282,6 +288,21 @@ Bierapp.prototype = {
             html: SUITE_INFO
         });
         return homePanel;
+    },
+    _createAboutPanel: function () {
+        var panel = Ext.create('Ext.panel.Panel', {
+            bodyStyle: {
+                fontSize: '22px',
+                lineHeight: '30px',
+                fontWeight: '300',
+                color: '#ccc',
+                background: '#314559',
+                padding: '20px 0 0 200px'
+            },
+            border: 0,
+            html: BIERAPP_ABOUT
+        });
+        return panel;
     },
     _createResultPanel: function () {
         var panel = Ext.create('Ext.tab.Panel', {
@@ -318,8 +339,7 @@ Bierapp.prototype = {
         });
 
         return jobListWidget;
-    }
-
+    },
 }
 Bierapp.prototype.sessionInitiated = function () {
 
@@ -356,8 +376,6 @@ Bierapp.prototype.setSize = function (width, height) {
 Bierapp.prototype.jobItemClick = function (record) {
     var _this = this;
 
-    this.container.removeAll(false);
-    this.container.add(this.panel);
 
 //    this.variantMenu.items.each(function (item) {
 //        if (item.getEl().getHtml() == 'Results') {
@@ -367,9 +385,10 @@ Bierapp.prototype.jobItemClick = function (record) {
 //        }
 //    });
 
-
     this.jobId = record.data.id;
     if (record.data.visites >= 0) {
+        this.jobListWidget.hide();
+        this.headerWidget.toogleAppMenu(false);
         this.container.removeAll(false);
         this.container.add(this.resultPanel);
 
@@ -412,9 +431,6 @@ Bierapp.prototype.jobItemClick = function (record) {
 };
 Bierapp.prototype._createVariantResult = function (record) {
     var _this = this;
-
-    this.jobListWidget.hide();
-    this.headerWidget.toogleAppMenu(false);
 
     var jobId = record.data.id;
     record.data.command = Utils.parseJobCommand(record.data);
@@ -489,8 +505,15 @@ Bierapp.prototype._createVariantResult = function (record) {
             }
         });
 
-        var variantEffect = new BierAppEffectGrid({});
+        var variantEffect = new BierAppEffectGrid({
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            }
+        });
         var variantStats = new BierAppStatsGrid({
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            },
             stats: stats
         });
 
@@ -510,7 +533,7 @@ Bierapp.prototype._createVariantResult = function (record) {
                 title: 'Variant Data'
             },
             filters: {},
-            defaultToolConfig: {effect: false, stats: false},
+            defaultToolConfig: {effect: false, stats: false, genotype: false},
             tools: [
                 {
                     tool: variantEffect,
@@ -522,6 +545,7 @@ Bierapp.prototype._createVariantResult = function (record) {
                 }
             ],
             columns: bierappColumns,
+            samples: sampleNames,
             attributes: bierappAttributes,
             responseRoot: 'response.result',
             responseTotal: 'response.numResults',
@@ -618,8 +642,8 @@ Bierapp.prototype._createVariantResult = function (record) {
                     variantWidget.setLoading(true);
 
                     //POSITION CHECK
+                    var regions = [];
                     if (typeof e.values.region !== 'undefined') {
-                        var regions = [];
                         if (e.values.region !== "") {
                             regions = e.values.region.split(",");
                         }
@@ -688,9 +712,12 @@ Bierapp.prototype._createVariantResult = function (record) {
 //                    });
                     var url = OpencgaManager.variantsUrl({
                         accountId: $.cookie("bioinfo_account"),
-                        sessionId: $.cookie("bioinfo_sid"),
                         jobId: jobId
                     });
+                    if (regions.length > 0) {
+                        e.values['region'] = regions.join(',');
+                    }
+                    e.values['sessionid'] = $.cookie("bioinfo_sid");
                     variantWidget.retrieveData(url, e.values)
                 }
             }
@@ -700,5 +727,4 @@ Bierapp.prototype._createVariantResult = function (record) {
     } else {
         this.resultPanel.setActiveTab(tab);
     }
-
 };

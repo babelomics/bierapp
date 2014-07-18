@@ -18,6 +18,9 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     'src/variant-index-form.js',
+                    'src/bierapp-effect-grid.js',
+                    'src/bierapp-manager.js',
+                    'src/bierapp-stats-grid.js',
                     'src/bierapp.js'
                 ],
                 dest: '<%= def.build %>/<%= def.name %>.js'

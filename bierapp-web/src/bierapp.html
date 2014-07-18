@@ -23,8 +23,6 @@
 
 <!-- Sencha Ext -->
 <script type="text/javascript" src="http://cdn.sencha.io/ext/gpl/5.0.0/build/ext-all.js"></script>
-<script type="text/javascript"
-        src="http://cdn.sencha.io/ext/gpl/5.0.0/build/packages/ext-charts/build/ext-charts.js"></script>
 
 <!-- Workers directory -->
 <script type="text/javascript">
@@ -54,8 +52,10 @@
 <!--<script type="text/javascript" src="../vendor/genome-viewer-1.0.2.js"></script>-->
 <!--<script type="text/javascript" src="../vendor/opencga-1.0.0.js"></script>-->
 
-
 <!-- /build -->
+
+
+<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
 
 
 <!-- Genome Maps config -->
@@ -202,10 +202,11 @@
 </script>
 <STYLE type="text/css">
     html {
-        position: fixed;
+        /*position: fixed;*/
         overflow: hidden;
-        height: 100%;
+        /*overflow-x: hidden;*/
         width: 100%;
+        height: 100%;
         /*margin-right: 300px;*/
         /*margin-left: 300px;*/
     }
@@ -284,7 +285,7 @@
         border: none;
     }
 
-    .variant-mongo {
+    .variant-mongo, .bierapp {
         padding: 2px 5px;
         display: inline-block;
         color: #09A8BF;

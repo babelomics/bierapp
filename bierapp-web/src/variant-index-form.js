@@ -112,33 +112,20 @@ VariantIndexForm.prototype._getBrowseForm = function () {
 
 
 VariantIndexForm.prototype.loadExample1 = function () {
-
-    Ext.getCmp("loadExample1Button").show();
-    Ext.getCmp(this.id + 'vcf-file').update('<span class="emph">Example 1000G (Short Version)</span>', false);
+    this.clean();
+    Ext.getCmp(this.id + 'vcf-file').setValue('Example 1000G (Short Version)');
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_file.vcf');
-
-    //Ext.getCmp(this.id + 'ped-file').setText('<span class="emph">Example file.ped</span>', false);
-    //Ext.getCmp(this.id + 'ped-file' + 'hidden').setValue('example_file.ped');
 
 
     Ext.getCmp(this.id + 'jobname').setValue("Example 1000G (Short)");
     Ext.getCmp(this.id + 'jobdescription').setValue("VCF 1000G (Short Version)");
 };
 VariantIndexForm.prototype.loadExample2 = function () {
-    Ext.getCmp(this.id + 'vcf-file').update('<span class="emph" title="It takes a long time">Example 1000G (Long Version)/span>', false);
+    this.clean();
+    Ext.getCmp(this.id + 'vcf-file').setValue('Example 1000G (Long Version)');
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_1000g.vcf');
-
-    //Ext.getCmp(this.id + 'ped-file').setText('<span class="emph">Example 1000G.ped</span>', false);
-    //Ext.getCmp(this.id + 'ped-file' + 'hidden').setValue('example_1000g.ped');
-
 
     Ext.getCmp(this.id + 'jobname').setValue("VCF 1000G (Long)");
     Ext.getCmp(this.id + 'jobdescription').setValue("VCF 1000G (Long Version)");
-};
-VariantIndexForm.prototype.clearForm = function () {
-    var _this = this;
-    _this.getForm().getForm().reset();
-    Ext.getCmp(this.id + 'vcf-file').setText('');
-    Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('');
 };
 
