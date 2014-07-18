@@ -48,12 +48,11 @@ VariantIndexForm.prototype.getPanels = function () {
     var form = Ext.create('Ext.panel.Panel', {
         margin: "15 0 5 0",
         border: false,
-//		layout:{type:'vbox', align: 'stretch'},
         buttonAlign: 'center',
-        width: "99%",
-        //height:900,
-        //width: "600",
-        items: items
+        items: items,
+        defaults: {
+            margin: '0 0 15 0'
+        }
     });
 
     return [this._getExampleForm(), form];
@@ -91,21 +90,13 @@ VariantIndexForm.prototype._getExampleForm = function () {
 VariantIndexForm.prototype._getBrowseForm = function () {
     var _this = this;
 
-    var note1 = Ext.create('Ext.container.Container', {
-        html: '<p>Please select a VCF file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.<br/> You can also choose one of the above <span class="info">examples</span></p>'
-    });
-    var note2 = Ext.create('Ext.container.Container', {
-        html: '<p>Please select a PED file from your <span class="info">server account</span> using the <span class="emph">Browse</span> button.</p>'
-    });
-
     var formBrowser = Ext.create('Ext.panel.Panel', {
         title: "Select your data",
         header: this.headerFormConfig,
-        border: true,
+        border: this.border,
         padding: "5 0 0 0",
         bodyPadding: 10,
         items: [
-            note1,
             this.createOpencgaBrowserCmp({
                 fieldLabel: 'Input VCF file:',
                 dataParamName: 'vcf-file',
@@ -121,33 +112,20 @@ VariantIndexForm.prototype._getBrowseForm = function () {
 
 
 VariantIndexForm.prototype.loadExample1 = function () {
-
-    Ext.getCmp("loadExample1Button").show();
-    Ext.getCmp(this.id + 'vcf-file').update('<span class="emph">Example 1000G (Short Version)</span>', false);
+    this.clean();
+    Ext.getCmp(this.id + 'vcf-file').setValue('Example 1000G (Short Version)');
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_file.vcf');
-
-    //Ext.getCmp(this.id + 'ped-file').setText('<span class="emph">Example file.ped</span>', false);
-    //Ext.getCmp(this.id + 'ped-file' + 'hidden').setValue('example_file.ped');
 
 
     Ext.getCmp(this.id + 'jobname').setValue("Example 1000G (Short)");
     Ext.getCmp(this.id + 'jobdescription').setValue("VCF 1000G (Short Version)");
 };
 VariantIndexForm.prototype.loadExample2 = function () {
-    Ext.getCmp(this.id + 'vcf-file').update('<span class="emph" title="It takes a long time">Example 1000G (Long Version)/span>', false);
+    this.clean();
+    Ext.getCmp(this.id + 'vcf-file').setValue('Example 1000G (Long Version)');
     Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('example_1000g.vcf');
-
-    //Ext.getCmp(this.id + 'ped-file').setText('<span class="emph">Example 1000G.ped</span>', false);
-    //Ext.getCmp(this.id + 'ped-file' + 'hidden').setValue('example_1000g.ped');
-
 
     Ext.getCmp(this.id + 'jobname').setValue("VCF 1000G (Long)");
     Ext.getCmp(this.id + 'jobdescription').setValue("VCF 1000G (Long Version)");
-};
-VariantIndexForm.prototype.clearForm = function () {
-    var _this = this;
-    _this.getForm().getForm().reset();
-    Ext.getCmp(this.id + 'vcf-file').setText('');
-    Ext.getCmp(this.id + 'vcf-file' + 'hidden').setValue('');
 };
 
