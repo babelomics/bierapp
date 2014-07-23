@@ -42,20 +42,11 @@ Bierapp.prototype = {
 
         //HTML skel
         this.div = $('<div id="bierapp"></div>')[0];
-        $(this.div).css({
-            position: 'absolute',
-            height: '100%',
-            width: '100%'
-        });
+
         this.headerWidgetDiv = $('<div id="header-widget"></div>')[0];
         $(this.div).append(this.headerWidgetDiv);
 
         this.wrapDiv = $('<div id="wrap"></div>')[0];
-        $(this.wrapDiv).css({
-            position: 'absolute',
-            height: '100%',
-            width: '100%'
-        });
         $(this.div).append(this.wrapDiv);
 
         this.rightDiv = $('<div id="right-side-panel"></div>')[0];
@@ -67,11 +58,6 @@ Bierapp.prototype = {
         $(this.wrapDiv).append(this.rightDiv);
 
         this.contentDiv = $('<div id="content"></div>')[0];
-        $(this.contentDiv).css({
-            position: 'absolute',
-            height: '100%',
-            width: '100%'
-        });
 
         $(this.wrapDiv).append(this.contentDiv);
 
@@ -96,12 +82,12 @@ Bierapp.prototype = {
         this.headerWidget = this._createHeaderWidget(this.headerWidgetDiv);
         /* check height */
         var topOffset = this.headerWidget.getHeight();
-        $(this.wrapDiv).css({height: 'calc(100% - ' + topOffset + 'px)'});
+//        $(this.wrapDiv).css({height: 'calc(100% - ' + topOffset + 'px)'});
         this.container = Ext.create('Ext.container.Container', {
             border: 0,
-            width: '100%',
-            height: '100%',
-            layout: 'fit'
+            style: {
+                position: 'absolute'
+            }
         });
 
         this.homePanel = this._createHomePanel();
@@ -121,10 +107,10 @@ Bierapp.prototype = {
             testing: false,
             formBorder: false,
             border: false,
-            style: {
-                borderTop: '1px solid #d1d9e3'
-            },
             bodyPadding: '20 0 0 200',
+            style: {
+                borderTop: '1px solid #C6D0DA'
+            },
             headerFormConfig: {
                 baseCls: 'header-form'
             }
@@ -159,6 +145,8 @@ Bierapp.prototype = {
         } else {
             this.sessionFinished();
         }
+
+        $('body').addClass('bierapp-dark-background');
 
     },
     _createHeaderWidget: function (target) {
@@ -198,6 +186,7 @@ Bierapp.prototype = {
                     _this.container.removeAll(false);
                     _this.container.add(_this.aboutPanel);
                     _this.headerWidget.toogleAppMenu(false);
+                    $('body').addClass('bierapp-dark-background');
                 }
 
             }
@@ -243,12 +232,14 @@ Bierapp.prototype = {
                 $(e.target).addClass('active');
                 var text = $(e.target).text();
                 _this.headerWidget.setDescription(text);
+                $('body').removeClass('bierapp-dark-background');
                 switch (text) {
                     case "Home":
                         _this.jobListWidget.hide();
                         _this.container.removeAll(false);
                         _this.container.add(_this.homePanel);
                         _this.headerWidget.toogleAppMenu(false);
+                        $('body').addClass('bierapp-dark-background');
                         break;
                     case "Results":
                         _this.jobListWidget.show();
@@ -275,31 +266,13 @@ Bierapp.prototype = {
         return ul;
     },
     _createHomePanel: function () {
-        var homePanel = Ext.create('Ext.panel.Panel', {
-            bodyStyle: {
-                fontSize: '22px',
-                lineHeight: '30px',
-                fontWeight: '300',
-                color: '#ccc',
-                background: '#314559',
-                padding: '20px 0 0 200px'
-            },
-            border: 0,
+        var homePanel = Ext.create('Ext.container.Container', {
             html: SUITE_INFO
         });
         return homePanel;
     },
     _createAboutPanel: function () {
-        var panel = Ext.create('Ext.panel.Panel', {
-            bodyStyle: {
-                fontSize: '22px',
-                lineHeight: '30px',
-                fontWeight: '300',
-                color: '#ccc',
-                background: '#314559',
-                padding: '20px 0 0 200px'
-            },
-            border: 0,
+        var panel = Ext.create('Ext.container.Container', {
             html: BIERAPP_ABOUT
         });
         return panel;
@@ -328,8 +301,8 @@ Bierapp.prototype = {
         var jobListWidget = new JobListWidget({
             target: target,
             timeout: 4000,
-            width: 280,
-            height: 625,
+//            width: 280,
+//            height: 500,
             tools: this.tools,
             handlers: {
                 'item:click': function (data) {
@@ -391,6 +364,7 @@ Bierapp.prototype.jobItemClick = function (record) {
         this.headerWidget.toogleAppMenu(false);
         this.container.removeAll(false);
         this.container.add(this.resultPanel);
+//        $('body').removeClass('bierapp-dark-background');
 
         var toolName = record.data.toolName;
 
@@ -437,8 +411,10 @@ Bierapp.prototype._createVariantResult = function (record) {
 
     var tab = this.resultPanel.down('[id=' + jobId + ']');
     if (tab == null) {
-
         var div = document.createElement('div');
+        $(div).css({
+            minHeight: '1100px'
+        });
         var variantWidgetDiv = document.createElement('div');
         $(variantWidgetDiv).addClass('ba-variantWidgetDiv');
         var filterDiv = document.createElement('div');
