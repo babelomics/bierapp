@@ -1,6 +1,6 @@
 {
     "name": "Bierapp",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "devDependencies": {
         "grunt": "^0.4.4",
         "grunt-contrib-clean": "~0.4.1",
