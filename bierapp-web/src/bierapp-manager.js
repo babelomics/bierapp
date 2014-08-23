@@ -19,7 +19,8 @@
  * along with EVA. If not, see <http://www.gnu.org/licenses/>.
  */
 var BierappManager = {
-    host: 'http://ws-beta.bioinfo.cipf.es/bierapp-staging/rest',
+//    host: 'http://ws-beta.bioinfo.cipf.es/bierapp-staging/rest',
+    host: BIERAPP_HOST,
     get: function (args) {
         var success = args.success;
         var error = args.error;

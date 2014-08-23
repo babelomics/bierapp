@@ -1,6 +1,7 @@
 package org.babelomics.bierapp.cli;
 
 import com.beust.jcommander.ParameterException;
+import org.babelomics.bierapp.lib.storage.VariantBierAppVcfMongoDataWriter;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreePedReader;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreeReader;
 import org.opencb.commons.bioformats.variant.Variant;
@@ -13,7 +14,6 @@ import org.opencb.commons.bioformats.variant.vcf4.io.writers.VariantWriter;
 import org.opencb.commons.containers.list.SortedList;
 import org.opencb.commons.run.Task;
 import org.opencb.opencga.lib.auth.MongoCredentials;
-import org.opencb.opencga.storage.variant.VariantVcfMongoDataWriter;
 import org.opencb.variant.lib.runners.VariantRunner;
 import org.opencb.variant.lib.runners.tasks.VariantAnnotTask;
 import org.opencb.variant.lib.runners.tasks.VariantEffectTask;
@@ -118,7 +118,7 @@ public class BierAppMain {
             properties.load(new InputStreamReader(new FileInputStream(credentialsPath)));
 
             credentials = new MongoCredentials(properties);
-            writers.add(new VariantVcfMongoDataWriter(source, "opencga-hsapiens", credentials));
+            writers.add(new VariantBierAppVcfMongoDataWriter(source, "opencga-hsapiens", credentials));
 
             taskList.add(new VariantEffectTask());
             taskList.add(new VariantStatsTask(reader, source));

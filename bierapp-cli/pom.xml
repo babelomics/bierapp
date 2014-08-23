@@ -18,7 +18,7 @@
             <artifactId>jcommander</artifactId>
             <version>1.30</version>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.opencb.variant</groupId>
             <artifactId>variant-lib</artifactId>
         </dependency>
@@ -29,8 +29,17 @@
         </dependency>
 
         <dependency>
-            <groupId>org.opencb.opencga</groupId>
-            <artifactId>opencga-storage</artifactId>
+            <groupId>org.babelomics.bierapp</groupId>
+            <artifactId>bierapp-lib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opencb.commons</groupId>
+            <artifactId>commons-lib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opencb.commons</groupId>
+            <artifactId>bioformats</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -3,11 +3,11 @@ package org.babelomics.bierapp.server.ws;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang.mutable.MutableInt;
-import org.opencb.commons.bioformats.variant.json.VariantAnalysisInfo;
-import org.opencb.commons.bioformats.variant.json.VariantInfo;
+import org.babelomics.bierapp.lib.json.VariantAnalysisInfo;
+import org.babelomics.bierapp.lib.json.VariantInfo;
+import org.babelomics.bierapp.lib.storage.VariantBierAppMongoQueryBuilder;
 import org.opencb.commons.containers.QueryResult;
 import org.opencb.opencga.lib.auth.MongoCredentials;
-import org.opencb.opencga.storage.variant.VariantMongoQueryBuilder;
 import org.opencb.opencga.storage.variant.VariantQueryBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,8 +86,8 @@ public class VariantWSServer extends BierAppServer {
             String res = null;
             QueryResult<VariantInfo> queryResult = null;
             try {
-                vqm = new VariantMongoQueryBuilder(credentials);
-                queryResult = ((VariantMongoQueryBuilder) vqm).getRecordsMongo(page, start, limit, count, map);
+                vqm = new VariantBierAppMongoQueryBuilder(credentials);
+                queryResult = ((VariantBierAppMongoQueryBuilder) vqm).getRecordsMongo(page, start, limit, count, map);
 
                 queryResult.setNumResults(count.intValue());
                 vqm.close();
@@ -126,9 +126,9 @@ public class VariantWSServer extends BierAppServer {
             String res = null;
             QueryResult<VariantAnalysisInfo> queryResult = null;
             try {
-                vqm = new VariantMongoQueryBuilder(credentials);
+                vqm = new VariantBierAppMongoQueryBuilder(credentials);
 
-                queryResult = ((VariantMongoQueryBuilder) vqm).getAnalysisInfo(studyId);
+                queryResult = ((VariantBierAppMongoQueryBuilder) vqm).getAnalysisInfo(studyId);
 
                 res = jsonObjectMapper.writeValueAsString(queryResult);
 

@@ -48,6 +48,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.babelomics.bierapp</groupId>
+            <artifactId>bierapp-lib</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.opencb.opencga</groupId>
             <artifactId>opencga-account</artifactId>
             <version>${opencga.version}</version>
@@ -97,6 +102,16 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>16.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opencb.commons</groupId>
+            <artifactId>bioformats</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opencb.opencga</groupId>
+            <artifactId>opencga-lib</artifactId>
+            <version>0.2.0</version>
         </dependency>
     </dependencies>
 
