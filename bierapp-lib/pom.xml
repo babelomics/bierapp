@@ -5,7 +5,7 @@
     <parent>
         <artifactId>bierapp</artifactId>
         <groupId>org.babelomics.bierapp</groupId>
-        <version>1.4.1</version>
+        <version>1.4.2</version>
         <relativePath>..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -29,6 +29,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
 
 </project>

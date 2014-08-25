@@ -7,7 +7,7 @@
     <groupId>org.babelomics.bierapp</groupId>
     <artifactId>bierapp</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 
     <modules>
         <module>bierapp-server</module>
@@ -19,6 +19,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
         <opencga.version>0.2.0</opencga.version>
+        <bierapp.version>1.4.2</bierapp.version>
         <variant.version>1.0.0</variant.version>
         <compileSource>1.7</compileSource>
     </properties>
@@ -30,7 +31,7 @@
             <dependency>
                 <groupId>org.babelomics.bierapp</groupId>
                 <artifactId>bierapp-lib</artifactId>
-                <version>1.4.1</version>
+                <version>${bierapp.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.opencb.commons</groupId>

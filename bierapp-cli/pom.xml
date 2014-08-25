@@ -6,8 +6,8 @@
     <parent>
         <groupId>org.babelomics.bierapp</groupId>
         <artifactId>bierapp</artifactId>
+        <version>1.4.2</version>
         <relativePath>..</relativePath>
-        <version>1.4.1</version>
     </parent>
 
     <artifactId>bierapp-cli</artifactId>
@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.30</version>
         </dependency>
         <dependency>
             <groupId>org.opencb.variant</groupId>
