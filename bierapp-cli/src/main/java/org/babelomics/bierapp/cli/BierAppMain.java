@@ -34,6 +34,7 @@ public class BierAppMain {
 
     //    private static final String credentialsPath = BierAppMain.class.getResource("/bierapp.credentials").toString();
     private static final String credentialsPath = BierAppMain.class.getResource("/bierapp.credentials").getFile();
+    private static final String goOboPath = BierAppMain.class.getResource("/go.obo.gz").getFile();
 
 
     public static void main(String[] args) throws IOException {
@@ -54,6 +55,9 @@ public class BierAppMain {
                     break;
                 case "index":
                     command = parser.getIndexCommand();
+                    break;
+                case "init":
+                    command = parser.getInitCommand();
                     break;
                 default:
                     System.out.println("Command not implemented");
@@ -134,6 +138,11 @@ public class BierAppMain {
             System.out.println("Indexing variants...");
             vr.run();
             System.out.println("Variants indexed!");
+
+        } else if (command instanceof OptionsParser.CommandInit) {
+            System.out.println("Init BierApp");
+
+            System.out.println("goOboPath = " + goOboPath);
 
         }
 

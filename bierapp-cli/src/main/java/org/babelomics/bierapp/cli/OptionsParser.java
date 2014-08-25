@@ -14,6 +14,7 @@ public class OptionsParser {
 
     private final CommandAnnot annot;
     private final CommandIndex index;
+    private final CommandInit init;
 
 
     public OptionsParser() {
@@ -21,9 +22,12 @@ public class OptionsParser {
 
         annot = new CommandAnnot();
         index = new CommandIndex();
+        init = new CommandInit();
+
 
         jcommander.addCommand(annot);
         jcommander.addCommand(index);
+        jcommander.addCommand(init);
 
     }
 
@@ -63,6 +67,10 @@ public class OptionsParser {
 
     }
 
+    @Parameters(commandNames = {"init"}, commandDescription = "Init BierApp")
+    class CommandInit implements Command {
+    }
+
 
     String parse(String[] args) throws ParameterException {
         jcommander.parse(args);
@@ -82,5 +90,10 @@ public class OptionsParser {
     CommandIndex getIndexCommand() {
         return index;
     }
+
+    CommandInit getInitCommand() {
+        return init;
+    }
+
 
 }
