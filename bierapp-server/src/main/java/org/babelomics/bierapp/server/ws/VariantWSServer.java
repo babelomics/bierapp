@@ -11,10 +11,7 @@ import org.opencb.opencga.lib.auth.MongoCredentials;
 import org.opencb.opencga.storage.variant.VariantQueryBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -47,6 +44,13 @@ public class VariantWSServer extends BierAppServer {
 
         this.accountId = accountId;
         this.jobId = jobId;
+    }
+
+
+    @OPTIONS
+    @Path("/variants")
+    public Response getVariantsOpt() {
+        return createOkResponse("");
     }
 
     @GET
@@ -101,6 +105,11 @@ public class VariantWSServer extends BierAppServer {
         }
     }
 
+    @OPTIONS
+    @Path("/study")
+    public Response getStudyInfoOpt() {
+        return createOkResponse("");
+    }
 
     @GET
     @Path("/study")

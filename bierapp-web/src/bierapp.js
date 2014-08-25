@@ -438,25 +438,7 @@ Bierapp.prototype._createVariantResult = function (record) {
         var consequenceTypes = [];
         var stats = {};
 
-//        var url = BierappManager.get({
-//            host: 'http://aaleman:8080/bierapp/rest',
-//            resource: 'studies',
-//            action: 'info',
-//            async: false,
-//            params: {
-//                //TODO
-//                study: 'FILE'
-//            },
-//            success: function (data) {
-//                try {
-//                    sampleNames = Object.keys(data.response[0].result[0].samplesPositon);
-//                } catch (e) {
-//                    console.log(e);
-//                }
-//            }
-//        });
-
-        var url = OpencgaManager.variantInfoMongo({
+        var url = BierappManager.analysisInfo({
             accountId: $.cookie("bioinfo_account"),
             sessionId: $.cookie("bioinfo_sid"),
             jobId: jobId,
@@ -477,8 +459,7 @@ Bierapp.prototype._createVariantResult = function (record) {
                     }
                 } catch (e) {
                     console.log(e);
-                }
-            }
+                }            }
         });
 
         var variantEffect = new BierAppEffectGrid({
@@ -686,14 +667,14 @@ Bierapp.prototype._createVariantResult = function (record) {
 //                            region: regions
 //                        }
 //                    });
-                    var url = OpencgaManager.variantsUrl({
+                    var url = BierappManager.variantsUrl({
                         accountId: $.cookie("bioinfo_account"),
                         jobId: jobId
                     });
                     if (regions.length > 0) {
                         e.values['region'] = regions.join(',');
                     }
-                    e.values['sessionid'] = $.cookie("bioinfo_sid");
+                    e.values['sessionId'] = $.cookie("bioinfo_sid");
                     variantWidget.retrieveData(url, e.values)
                 }
             }

@@ -21,6 +21,7 @@
 var BierappManager = {
 //    host: 'http://ws-beta.bioinfo.cipf.es/bierapp-staging/rest',
     host: BIERAPP_HOST,
+    version: BIERAPP_VERSION,
     get: function (args) {
         var success = args.success;
         var error = args.error;
@@ -83,5 +84,63 @@ var BierappManager = {
         var url = config.host + '/' + config.resource + '/' + config.action;
         url = Utils.addQueryParamtersToUrl(config.params, url);
         return url;
+    },
+    analysisInfo: function (args) {
+        var queryParams = {
+            'sessionId': args.sessionId
+        };
+
+        var url = BierappManager.getJobAnalysisUrl(args.accountId, args.jobId) + '/study' + BierappManager.getQuery(queryParams);
+
+        function success(data) {
+            console.log(data);
+            args.success(data);
+        }
+
+        function error(data) {
+            if (_.isFunction(args.error)) args.error(data);
+        }
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            async: args.async,
+            success: success,
+            error: error
+        });
+
+    },
+    doGet: function (url, successCallback, errorCallback) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: successCallback,
+            error: errorCallback
+        });
+    },
+    getJobAnalysisUrl: function (accountId, jobId) {
+        return BierappManager.getAccountUrl(accountId) + '/job/' + jobId;
+    },
+    getAccountUrl: function (accountId) {
+        return BierappManager.getHost() + '/account/' + accountId;
+    },
+
+    getHost: function () {
+        return BierappManager.host + '/' + BierappManager.version;
+    },
+    getQuery: function (paramsWS) {
+        var query = "";
+        for (var key in paramsWS) {
+            if (paramsWS[key] != null)
+                query += key + '=' + paramsWS[key] + '&';
+        }
+        if (query != '')
+            query = "?" + query.slice(0, -1);
+        return query;
+    },
+    variantsUrl: function (args) {
+//        accountId, jobId
+        var url = BierappManager.getJobAnalysisUrl(args.accountId, args.jobId) + '/variants'
+        return url
     }
 };
