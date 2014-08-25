@@ -2,6 +2,8 @@
 CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
 CELLBASE_VERSION = "v3";
 OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
+BIERAPP_HOST = "http://ws-beta.bioinfo.cipf.es/bierapp-staging/rest";
+BIERAPP_VERSION = "1.4.1"
 
 if (
     window.location.host.indexOf("localhost") != -1 ||
@@ -14,7 +16,7 @@ if (
 
     //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
     CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
-    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging-aleman/rest";
+    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
 }
 
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
@@ -23,10 +25,10 @@ CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
 var POPULAR_SPECIES = ["Homo sapiens", "Mus musculus", "Danio rerio", "Drosophila melanogaster", "Saccharomyces cerevisiae", "Plasmodium falciparum", "Arabidopsis thaliana", "Citrus Clementina"];
 
 
-SUITE_INFO = '<div style="width:800px;">'
-    + '<p style="font-size:30px;color:white">Overview</p><p style="text-align:justify">Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes  affected by deleterious variants that segregate along family pedigrees , case-controls or sporadic samples .</p>'
-    + '<p style="font-size:30px;color:white">Try an Example</p><p style="text-align:justify">Here you can try all the filtering options and discover the gene affected in a test family.</p>'
-    + '<p style="font-size:30px;color:white">Analyze your own families or case-control data</p><p style="text-align:justify">Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the segregation schema along the family.</p>'
+SUITE_INFO = '<div class="bierapp-info">'
+    + '<p style="font-size:30px;color:white">Overview</p><p class="bierapp-paragraph">Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes  affected by deleterious variants that segregate along family pedigrees , case-controls or sporadic samples .</p>'
+    + '<p style="font-size:30px;color:white">Try an Example</p><p class="bierapp-paragraph">Here you can try all the filtering options and discover the gene affected in a test family.</p>'
+    + '<p style="font-size:30px;color:white">Analyze your own families or case-control data</p><p class="bierapp-paragraph">Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the segregation schema along the family.</p>'
 
     + '<p style="color:white">Supported by</p><p style="text-align:justify;">'
     + '<img style="margin:3px;height:67px;" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"/>'
@@ -39,11 +41,11 @@ SUITE_INFO = '<div style="width:800px;">'
     + '<p style="color:white">Note</p><p style="text-align:justify;font-size: 16px">This web application makes an intensive use of new web technologies and standards like HTML5, so browsers that are fully supported for this site are: Chrome 14+, Firefox 7+, Safari 5+ and Opera 11+. Older browser like Chrome13-, Firefox 5- or Internet Explorer 9 may rise some errors. Internet Explorer 6 and 7 are no supported at all.</p>'
     + '</div>';
 
-BIERAPP_ABOUT = '<div style="width:800px;">'
+BIERAPP_ABOUT = '<div class="bierapp-about">'
     + '<p style="font-size:30px;color:white">About</p>'
-    + '<p style="text-align:justify">BiERApp is an interactive tool that allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples. BiERApp has built with open and free technologies like HTML5 and Javascript.</p>'
-    + '<p style="text-align:justify">BierApp project is a joint development of the BiER and the Computational Genomics Program, in the Systems Genomics Laboratory at CIPF in Valencia, Spain.</p>'
-    + '<p style="text-align:justify">For more information please visit our web page <a style="color:white" href="http://bioinfo.cipf.es">http://bioinfo.cipf.es</a></p>'
+    + '<p class="bierapp-paragraph">BiERApp is an interactive tool that allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples. BiERApp has built with open and free technologies like HTML5 and Javascript.</p>'
+    + '<p class="bierapp-paragraph">BierApp project is a joint development of the BiER and the Computational Genomics Program, in the Systems Genomics Laboratory at CIPF in Valencia, Spain.</p>'
+    + '<p class="bierapp-paragraph">For more information please visit our web page <a style="color:white" href="http://bioinfo.cipf.es">http://bioinfo.cipf.es</a></p>'
     + '<p style="text-align:justify;">'
     + '</p>'
     + '</div>';

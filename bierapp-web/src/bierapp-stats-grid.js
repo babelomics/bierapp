@@ -152,9 +152,9 @@ BierAppStatsGrid.prototype = {
 
         var itemTplSamples = new Ext.XTemplate(
             '<table class="ocb-stats-table">',
-                '<tr>' +
-                '<td class="header">Samples</td>' +
-                '</tr>',
+//                '<tr>' +
+//                '<td class="header">Samples</td>' +
+//                '</tr>',
             '<tpl for="samples">',
                 '<tr>' +
                 '<td>{.}</td>' +
@@ -233,25 +233,35 @@ BierAppStatsGrid.prototype = {
                 items: [
                     {
                         xtype: 'box',
-                        margin: 10,
+                        margin: 2,
                         data: data.globalStats,
                         tpl: globalStats
                     },
-                    {
-                        xtype: 'box',
-                        margin: 10,
-                        data: data,
-                        tpl: itemTplSamples
-                    }
                 ]
             },
+//            {
+//                xtype: 'panel',
+//                title: 'Samples',
+//                header: this.headerConfig,
+//                border: 0,
+//                layout: 'fit',
+//                flex: 0.8,
+//                items: [
+//                    {
+//                        xtype: 'box',
+//                        margin: 2,
+//                        data: data,
+//                        tpl: itemTplSamples
+//                    }
+//                ]
+//            },
             {
                 xtype: 'panel',
                 title: 'Consequence type',
                 header: this.headerConfig,
                 border: 0,
                 layout: 'fit',
-                flex: 4,
+                flex: 5,
                 contentEl: this.chartDiv
             }
         ];
@@ -262,7 +272,7 @@ BierAppStatsGrid.prototype = {
                 align: 'stretch'
             },
             defaults: {
-                margin: 10
+                margin: 5
             },
             overflowY: true,
             padding: 10,
