@@ -571,7 +571,7 @@ Bierapp.prototype._createVariantResult = function (record) {
             consequenceTypes: consequenceTypes,
             collapsed: true,
             fields: [
-                {name: 'name', type: 'string'},
+                {name: 'name', type: 'string'}
             ],
             columns: [
                 {
@@ -600,6 +600,15 @@ Bierapp.prototype._createVariantResult = function (record) {
             }
         });
 
+        var goFilter = new GoFilterFormPanel({
+//            border: true,
+//            testRegion: '1:14000-20000',
+            headerConfig: {
+                baseCls: 'ba-title-2'
+            }
+        });
+
+
         var formPanel = new FormPanel({
             title: 'Filter',
             headerConfig: {
@@ -608,7 +617,8 @@ Bierapp.prototype._createVariantResult = function (record) {
             mode: 'accordion',
             target: filterDiv,
             submitButtonText: 'Submit',
-            filters: [segType, mafType, positionFilter, conseqType],
+//            filters: [segType, mafType, positionFilter, goFilter, conseqType  ],
+            filters: [goFilter, conseqType  ],
             width: $(filterDiv).width(),
 //            height: 1043,
             border: false,
@@ -675,6 +685,13 @@ Bierapp.prototype._createVariantResult = function (record) {
                     if (typeof e.values.ct !== 'undefined') {
                         if (e.values.ct instanceof Array) {
                             e.values.ct = e.values.ct.join(",");
+                        }
+                    }
+                     //CONSEQUENCE TYPES CHECK
+
+                    if (typeof e.values.go !== 'undefined') {
+                        if (e.values.go instanceof Array) {
+                            e.values.go = e.values.go.join(",");
                         }
                     }
 
