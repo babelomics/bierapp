@@ -1,6 +1,7 @@
 package org.babelomics.bierapp.cli;
 
 import com.beust.jcommander.ParameterException;
+import org.babelomics.bierapp.lib.json.GoTerm;
 import org.babelomics.bierapp.lib.storage.VariantBierAppVcfMongoDataWriter;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreePedReader;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreeReader;
@@ -19,6 +20,7 @@ import org.opencb.variant.lib.runners.tasks.VariantAnnotTask;
 import org.opencb.variant.lib.runners.tasks.VariantEffectTask;
 import org.opencb.variant.lib.runners.tasks.VariantStatsTask;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.GZIPInputStream;
 
 /**
  * @author Alejandro Alemán Ramos <aaleman@cipf.es>
@@ -140,9 +143,24 @@ public class BierAppMain {
             System.out.println("Variants indexed!");
 
         } else if (command instanceof OptionsParser.CommandInit) {
-            System.out.println("Init BierApp");
+            List<GoTerm> goTermList = GoTerm.parseObo(goOboPath);
+            for(GoTerm goterm : goTermList){
+                System.out.println(goterm.getId());
+                System.out.println(goterm.getParents());
+            }
 
-            System.out.println("goOboPath = " + goOboPath);
+//            BufferedReader goReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(goOboPath))));
+//
+//            String line = null;
+//
+//            while((line = goReader.readLine()) != null){
+//                System.out.println(line);
+//
+//            }
+//
+//            goReader.close();
+
+
 
         }
 
