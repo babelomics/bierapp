@@ -1,6 +1,9 @@
 package org.babelomics.bierapp.cli;
 
 import com.beust.jcommander.ParameterException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.*;
+import org.babelomics.bierapp.lib.json.GoTerm;
 import org.babelomics.bierapp.lib.storage.VariantBierAppVcfMongoDataWriter;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreePedReader;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreeReader;
@@ -34,6 +37,7 @@ public class BierAppMain {
 
     //    private static final String credentialsPath = BierAppMain.class.getResource("/bierapp.credentials").toString();
     private static final String credentialsPath = BierAppMain.class.getResource("/bierapp.credentials").getFile();
+    private static final String goOboPath = BierAppMain.class.getResource("/go.obo.gz").getFile();
 
 
     public static void main(String[] args) throws IOException {
@@ -54,6 +58,9 @@ public class BierAppMain {
                     break;
                 case "index":
                     command = parser.getIndexCommand();
+                    break;
+                case "init":
+                    command = parser.getInitCommand();
                     break;
                 default:
                     System.out.println("Command not implemented");
@@ -134,6 +141,31 @@ public class BierAppMain {
             System.out.println("Indexing variants...");
             vr.run();
             System.out.println("Variants indexed!");
+
+        } else if (command instanceof OptionsParser.CommandInit) {
+            List<GoTerm> goTermList = GoTerm.parseObo(goOboPath);
+
+
+            Properties properties = new Properties();
+            properties.load(new InputStreamReader(new FileInputStream(credentialsPath)));
+
+            MongoCredentials credentials = new MongoCredentials(properties);
+            ServerAddress address = new ServerAddress(credentials.getMongoHost(), credentials.getMongoPort());
+            MongoClient mongoClient = new MongoClient(address, Arrays.asList(credentials.getMongoCredentials()));
+            ObjectMapper mapper = new ObjectMapper();
+            DB db = mongoClient.getDB(credentials.getMongoDbName());
+            DBCollection goCollection = db.getCollection("go");
+
+            goCollection.remove(new BasicDBObject());
+
+            WriteResult wr;
+
+            for (GoTerm go : goTermList) {
+                DBObject dbo = mapper.convertValue(go, BasicDBObject.class);
+                wr = goCollection.save(dbo);
+                goCollection.ensureIndex(new BasicDBObject("id", 1));
+            }
+            mongoClient.close();
 
         }
 
