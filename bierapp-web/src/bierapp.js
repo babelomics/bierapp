@@ -250,15 +250,14 @@ Bierapp.prototype = {
                     case "Analyze":
                         _this.jobListWidget.show();
                         _this.container.removeAll(false);
+                        _this._checkLogin();
                         _this.variantIndexForm.clean();
                         _this.container.add(_this.variantIndexForm.panel);
                         break;
                     case "1000g":
                         _this.jobListWidget.show();
                         _this.container.removeAll(false);
-
                         _this._checkLogin();
-
                         _this.variantIndexForm.loadExample1();
                         _this.container.add(_this.variantIndexForm.panel);
                         break;
