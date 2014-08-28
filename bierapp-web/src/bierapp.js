@@ -601,8 +601,7 @@ Bierapp.prototype._createVariantResult = function (record) {
             mode: 'accordion',
             target: filterDiv,
             submitButtonText: 'Submit',
-//            filters: [segType, mafType, positionFilter, goFilter, conseqType  ],
-            filters: [goFilter, conseqType  ],
+            filters: [segType, mafType, positionFilter, goFilter, conseqType  ],
             width: $(filterDiv).width(),
 //            height: 1043,
             border: false,
@@ -671,7 +670,7 @@ Bierapp.prototype._createVariantResult = function (record) {
                             e.values.ct = e.values.ct.join(",");
                         }
                     }
-                     //CONSEQUENCE TYPES CHECK
+                     //Gos CHECK
 
                     if (typeof e.values.go !== 'undefined') {
                         if (e.values.go instanceof Array) {
