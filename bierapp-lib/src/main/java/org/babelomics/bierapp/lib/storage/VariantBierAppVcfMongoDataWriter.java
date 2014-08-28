@@ -20,16 +20,6 @@ public class VariantBierAppVcfMongoDataWriter extends VariantVcfMongoDataWriter 
 
     }
 
-
-    @Override
-    public boolean pre() {
-        boolean b = super.pre();
-
-        sourcesCollection.remove(new BasicDBObject());
-        variantCollection.remove(new BasicDBObject());
-        return b;
-    }
-
     @Override
     public boolean buildBatchRaw(List<Variant> data) {
         for (Variant v : data) {
