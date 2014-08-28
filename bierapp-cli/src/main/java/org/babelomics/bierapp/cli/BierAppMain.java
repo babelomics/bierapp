@@ -35,7 +35,6 @@ import java.util.Properties;
  */
 public class BierAppMain {
 
-    //    private static final String credentialsPath = BierAppMain.class.getResource("/bierapp.credentials").toString();
     private static final String credentialsPath = BierAppMain.class.getResource("/bierapp.credentials").getFile();
     private static final String goOboPath = BierAppMain.class.getResource("/go.obo.gz").getFile();
 
@@ -47,7 +46,6 @@ public class BierAppMain {
         if (args.length == 0 || args[0].equals("-h") || args[0].equals("--help")) {
             System.out.println(parser.usage());
         }
-
 
         OptionsParser.Command command = null;
 
@@ -100,6 +98,7 @@ public class BierAppMain {
             annots.add(new VariantConsequenceTypeAnnotator());
             annots.add(new VariantGeneNameAnnotator());
             annots.add(new VariantControlMongoAnnotator());
+            annots.add(new VariantGOAnnotator());
 
             writers.add(writer);
 
