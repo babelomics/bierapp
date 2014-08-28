@@ -8,7 +8,7 @@ function Bierapp(args) {
     this.suiteId = 6;
     this.title = '<span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span> ';
     this.description = '';
-    this.version = '1.4.0';
+    this.version = '1.4.2';
 
     this.tools = {
         "variant-mongo": true,
@@ -256,6 +256,9 @@ Bierapp.prototype = {
                     case "1000g":
                         _this.jobListWidget.show();
                         _this.container.removeAll(false);
+
+                        _this._checkLogin();
+
                         _this.variantIndexForm.loadExample1();
                         _this.container.add(_this.variantIndexForm.panel);
                         break;
@@ -459,7 +462,8 @@ Bierapp.prototype._createVariantResult = function (record) {
                     }
                 } catch (e) {
                     console.log(e);
-                }            }
+                }
+            }
         });
 
         var variantEffect = new BierAppEffectGrid({
@@ -683,5 +687,11 @@ Bierapp.prototype._createVariantResult = function (record) {
 
     } else {
         this.resultPanel.setActiveTab(tab);
+    }
+};
+
+Bierapp.prototype._checkLogin = function () {
+    if (!$.cookie('bioinfo_sid')) {
+        this.headerWidget.loginWidget.anonymousSign();
     }
 };
