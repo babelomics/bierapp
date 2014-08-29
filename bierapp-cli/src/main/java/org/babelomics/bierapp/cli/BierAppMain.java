@@ -125,6 +125,7 @@ public class BierAppMain {
 
             credentials = new MongoCredentials(properties);
             writers.add(new VariantBierAppVcfMongoDataWriter(source, "opencga-hsapiens", credentials));
+            writers.add(new VariantCSVDataWriter(adsfadfadf));
 
             taskList.add(new VariantEffectTask());
             taskList.add(new VariantStatsTask(reader, source));

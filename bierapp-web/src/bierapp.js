@@ -454,7 +454,7 @@ Bierapp.prototype._createVariantResult = function (record) {
                     for (key in cts) {
                         consequenceTypes.push({
                             name: key,
-                            leaf: false,
+                            leaf: true,
                             checked: false,
                             iconCls: 'ba-no-icon'
                         });
@@ -601,7 +601,7 @@ Bierapp.prototype._createVariantResult = function (record) {
             mode: 'accordion',
             target: filterDiv,
             submitButtonText: 'Submit',
-            filters: [segType, mafType, positionFilter, goFilter, conseqType  ],
+            filters: [segType, mafType, positionFilter, /*goFilter,*/ conseqType  ],
             width: $(filterDiv).width(),
 //            height: 1043,
             border: false,
@@ -670,7 +670,7 @@ Bierapp.prototype._createVariantResult = function (record) {
                             e.values.ct = e.values.ct.join(",");
                         }
                     }
-                     //Gos CHECK
+                    //Gos CHECK
 
                     if (typeof e.values.go !== 'undefined') {
                         if (e.values.go instanceof Array) {
