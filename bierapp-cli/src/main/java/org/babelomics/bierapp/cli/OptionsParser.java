@@ -38,20 +38,9 @@ public class OptionsParser {
     @Parameters(commandNames = {"annot"}, commandDescription = "Annot vcf file")
     class CommandAnnot implements Command {
 
-
         @Parameter(names = {"-i", "--input"}, description = "Input file", required = true, arity = 1)
         String input;
 
-        //        @Parameter(names = { "-p", "--prefix" }, description = "Accession IDs prefix", arity = 1)
-//        String prefix;
-//
-//        @Parameter(names = { "-s", "--study-alias" }, description = "Unique ID for the study where the file is classified (used for prefixes)",
-//                required = true, arity = 1)//, validateValueWith = StudyIdValidator.class)
-//                String studyId;
-//
-//        @Parameter(names = { "-r", "--resume-from-accession" }, description = "Starting point to generate accessions (will not be included)", arity = 1)
-//        String resumeFromAccession;
-//
         @Parameter(names = {"-o", "--output"}, description = "Output file", required = true, arity = 1)
         String output;
 
@@ -65,12 +54,14 @@ public class OptionsParser {
         @Parameter(names = {"-s", "--study"}, description = "Study ID", required = true, arity = 1)
         String studyId;
 
+        @Parameter(names = {"-c", "--csv"}, description = "Export to CSV")
+        boolean csv;
+
     }
 
     @Parameters(commandNames = {"init"}, commandDescription = "Init BierApp")
     class CommandInit implements Command {
     }
-
 
     String parse(String[] args) throws ParameterException {
         jcommander.parse(args);

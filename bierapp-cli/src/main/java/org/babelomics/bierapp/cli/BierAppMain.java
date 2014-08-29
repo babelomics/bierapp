@@ -4,6 +4,7 @@ import com.beust.jcommander.ParameterException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.*;
 import org.babelomics.bierapp.lib.json.GoTerm;
+import org.babelomics.bierapp.lib.storage.VariantBierAppCSVDataWriter;
 import org.babelomics.bierapp.lib.storage.VariantBierAppVcfMongoDataWriter;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreePedReader;
 import org.opencb.commons.bioformats.pedigree.io.readers.PedigreeReader;
@@ -125,7 +126,10 @@ public class BierAppMain {
 
             credentials = new MongoCredentials(properties);
             writers.add(new VariantBierAppVcfMongoDataWriter(source, "opencga-hsapiens", credentials));
-            writers.add(new VariantCSVDataWriter(adsfadfadf));
+
+            if (ci.csv) {
+                writers.add(new VariantBierAppCSVDataWriter(source, ci.input + ".csv"));
+            }
 
             taskList.add(new VariantEffectTask());
             taskList.add(new VariantStatsTask(reader, source));
