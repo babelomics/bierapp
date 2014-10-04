@@ -16,7 +16,7 @@ if (
 
     //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
     CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
-    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
+    OPENCGA_HOST = "http://localhost:8080/opencga/rest";
 }
 
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
@@ -34,7 +34,7 @@ SUITE_INFO = '<div class="bierapp-info">'
     + '<img style="margin:3px;height:67px;" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"/>'
     + '<img style="margin:3px;height:67px;" src="http://www2.iib.uam.es/ivarela_lab/imagenes/logo_ciberer.jpg"/>'
     + '<img style="margin:3px;height:67px;" src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png"/>'
-    + '<img style="margin:3px;height:67px;" src="http://bioinfo.cipf.es/babeltrac/chrome/site/babeltitle200.gif"/>'
+    + '<img style="margin:3px;height:67px;" src="http://bioinfo.cipf.es/sites/bioinfo.cipf.es/files/image/tools/babeltitle200.gif"/>'
     + '<img style="margin:3px;height:67px;" src="http://img2.mailchimp.com/2009/03/25/1efbf9c6a8/LOGO_Micinn_Isciii.jpg"/>'
     + '</p>'
 

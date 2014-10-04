@@ -47,6 +47,7 @@ Bierapp.prototype = {
         $(this.div).append(this.headerWidgetDiv);
 
         this.wrapDiv = $('<div id="wrap"></div>')[0];
+        this.wrapDiv.style.height = "100%";
         $(this.div).append(this.wrapDiv);
 
         this.rightDiv = $('<div id="right-side-panel"></div>')[0];
@@ -58,6 +59,7 @@ Bierapp.prototype = {
         $(this.wrapDiv).append(this.rightDiv);
 
         this.contentDiv = $('<div id="content"></div>')[0];
+        this.contentDiv.style.height = "100%";
 
         $(this.wrapDiv).append(this.contentDiv);
 
@@ -80,6 +82,7 @@ Bierapp.prototype = {
 
         /* Header Widget */
         this.headerWidget = this._createHeaderWidget(this.headerWidgetDiv);
+
         /* check height */
         var topOffset = this.headerWidget.getHeight();
 //        $(this.wrapDiv).css({height: 'calc(100% - ' + topOffset + 'px)'});
@@ -146,6 +149,11 @@ Bierapp.prototype = {
             this.sessionFinished();
         }
 
+
+        /*TEST DEVELOP ONLY*/
+        this.headerWidget.trigger('projects:click',{});
+
+
         $('body').addClass('bierapp-dark-background');
 
     },
@@ -180,6 +188,13 @@ Bierapp.prototype = {
                 },
                 'jobs:click': function () {
                     _this.jobListWidget.toggle();
+                },
+                'projects:click': function () {
+                    _this.jobListWidget.hide();
+                    while (_this.contentDiv.firstChild) {
+                        _this.contentDiv.removeChild(_this.contentDiv.firstChild);
+                    }
+                    _this.contentDiv.appendChild(_this.headerWidget.projectBrowser);
                 },
                 'about:click': function () {
                     _this.jobListWidget.hide();
