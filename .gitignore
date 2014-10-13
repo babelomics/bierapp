@@ -51,3 +51,4 @@ local.properties
 build/
 node_modules/
 chrome-ext
+bower_components/

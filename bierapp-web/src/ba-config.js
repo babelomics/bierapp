@@ -16,7 +16,8 @@ if (
 
     //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
     CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
-    OPENCGA_HOST = "http://localhost:8080/opencga/rest";
+//    OPENCGA_HOST = "http://localhost:8080/opencga/rest";
+    OPENCGA_HOST = "http://test.babelomics.org/opencga/rest";
 }
 
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
@@ -125,268 +126,214 @@ var AVAILABLE_SPECIES = {
 /** Reference to a species from the list to be shown at start **/
 var DEFAULT_SPECIES = AVAILABLE_SPECIES.items[0].items[8];
 
+
+//bierappXtmplPoly = new Ext.XTemplate(
+//    '{[this.parseEffect(values)]}',
+//    {
+//        parseEffect: function (value) {
+//
+//            if (value.polyphen_score == 0 && value.polyphen_effect == 0) {
+//                return ".";
+//            }
+//
+//            var score = value.polyphen_score;
+//            var effect = "";
+//            switch (value.polyphen_effect) {
+//                case 0:
+//                    effect = "probably damaging";
+//                    break;
+//                case 1:
+//                    effect = "possibly damaging";
+//                    break;
+//                case 2:
+//                    effect = "benign";
+//                    break;
+//                case 3:
+//                    effect = "unknown";
+//                    break;
+//                default:
+//                    return ".";
+//            }
+//            return(score + " - (" + effect + ")");
+//        }
+//    }
+//);
+//bierappXtmplSift = new Ext.XTemplate(
+//    '{[this.parseEffect(values)]}',
+//    {
+//        parseEffect: function (value) {
+//            if (value.sift_score == 0 && value.sift_effect == 0) {
+//                return ".";
+//            }
+//
+//            var score = value.sift_score;
+//            var effect = "";
+//            switch (value.sift_effect) {
+//                case 0:
+//                    effect = "tolerated";
+//                    break;
+//                case 1:
+//                    effect = "deleterious";
+//                    break;
+//                default:
+//                    return ".";
+//            }
+//            return(score + " - (" + effect + ")");
+//        }
+//    }
+//);
+//
+//bierappParseMafControl = function (control) {
+//    var maf = control.maf;
+//    var res = maf.toFixed(3);
+//    if (control.allele != "") {
+//        res = res + " (" + control.allele + ")";
+//    }
+//    return res;
+//};
+//
+//
 //bierappColumns = [
 //    {
-//        text: "SNP Id",
-//        dataIndex: 'id'
-//    },
-//    {
-//        text: "Chromosome",
-//        dataIndex: 'chromosome'
-//    },
-//    {
-//        text: 'Position',
-//        dataIndex: 'start'
-//    },
-//    //{
-//    //text: 'End',
-//    //dataIndex: 'end'
-//    //},
-//    {
-//        text: 'Aleles',
+//        text: "Variant",
+//        dataIndex: 'chromosome',
+//        flex: 1,
 //        xtype: "templatecolumn",
-//        tpl: "{reference}>{alternate}"
+//        tpl: "{chromosome}:{position}"
 //    },
 //    {
-//        text: 'Class',
-//        dataIndex: 'type'
+//        text: "Alleles",
+//        flex: 0.5,
+//        xtype: "templatecolumn",
+//        tpl: "{ref}>{alt}",
+//        sortable: false
 //    },
 //    {
-//        text: '1000G MAF',
-//        dataIndex: ''
+//        text: "Gene",
+//        dataIndex: 'genes',
+//        flex: 1,
+//        sortable: false
 //    },
 //    {
-//        text: 'Consequence Type',
-//        dataIndex: 'ct'
+//        text: 'Samples',
+//        flex: 1,
+//        sortable: false,
+//        columns: []
 //    },
 //    {
-//        text: 'Gene',
-//        dataIndex: 'gene'
+//        text: "SNP Id",
+//        dataIndex: 'snpid',
+//        flex: 1,
+//        sortable: true
 //    },
 //    {
-//        text: 'HGVS Names',
-//        dataIndex: 'hgvs_name'
-//    },
-//    {
-//        text: 'View',
-//        //dataIndex: 'id',
-//        xtype: 'templatecolumn',
-//        tpl: '<tpl if="id"><a href="?variantID={id}" target="_blank"><img class="eva-grid-img" src="img/eva_logo.png"/></a>&nbsp;' +
-//            '<a href="http://www.ensembl.org/Homo_sapiens/Variation/Explore?vdb=variation;v={id}" target="_blank"><img alt="" src="http://static.ensembl.org/i/search/ensembl.gif"></a>' +
-//            '&nbsp;<a href="http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?searchType=adhoc_search&type=rs&rs={id}" target="_blank"><span>dbSNP</span></a>' +
-//            '<tpl else><a href="?variantID={chromosome}:{start}:{ref}:{alt}" target="_blank"><img class="eva-grid-img" src="img/eva_logo.png"/></a>&nbsp;<img alt="" class="in-active" src="http://static.ensembl.org/i/search/ensembl.gif">&nbsp;<span  style="opacity:0.2" class="in-active">dbSNP</span></tpl>'
-//    }
+//        flex: 1,
+//        text: "Controls (MAF)",
+//        defaults: {
+//            width: 100
+//        },
+//        columns: [
+//            {
+//                text: "1000G",
+//                renderer: function (val, meta, record) {
+//                    if (record.data.controls["1000G"]) {
+//                        return bierappParseMafControl(record.data.controls["1000G"]);
+//                    } else {
+//                        return ".";
+//                    }
+//                }
+//            },
+//            {
+//                text: "1000G-AFR",
+//                renderer: function (val, meta, record) {
+//                    if (record.data.controls["1000G-AFR"]) {
+//                        return bierappParseMafControl(record.data.controls["1000G-AFR"]);
+//                    } else {
+//                        return ".";
+//                    }
+//                }
+//            },
+//            {
+//                text: "1000G-ASI",
+//                renderer: function (val, meta, record) {
+//                    if (record.data.controls["1000G-ASI"]) {
+//                        return bierappParseMafControl(record.data.controls["1000G-ASI"]);
 //
-//    //
+//                    } else {
+//                        return ".";
+//                    }
+//                }
+//            },
+//            {
+//                text: "1000G-AME",
+//                renderer: function (val, meta, record) {
+//                    if (record.data.controls["1000G-AME"]) {
+//                        return bierappParseMafControl(record.data.controls["1000G-AME"]);
+//                    } else {
+//                        return ".";
+//                    }
+//                }
+//            },
+//            {
+//                text: "1000G-EUR",
+//                renderer: function (val, meta, record) {
+//                    if (record.data.controls["1000G-EUR"]) {
+//                        return bierappParseMafControl(record.data.controls["1000G-EUR"]);
+//                    } else {
+//                        return ".";
+//                    }
+//                }
+//            },
+//            {
+//                text: "EVS",
+//                renderer: function (val, meta, record) {
+//                    if (record.data.controls["EVS"]) {
+//                        return bierappParseMafControl(record.data.controls["EVS"]);
+//                    } else {
+//                        return ".";
+//                    }
+//                }
+//            }
+//        ]
+//    },
+//    {
+//        text: "Consq. Type",
+//        dataIndex: "consequence_types",
+//        flex: 1,
+//        sortable: false
+//    },
+//    {
+//        text: 'Polyphen',
+//        flex: 1,
+//        dataIndex: 'polyphen_score',
+//        xtype: 'templatecolumn',
+//        tpl: bierappXtmplPoly,
+//        sortable: false
+//    },
+//    {
+//        text: 'SIFT',
+//        flex: 1,
+//        dataIndex: 'sift_score',
+//        xtype: "templatecolumn",
+//        tpl: bierappXtmplSift,
+//        sortable: false
+//    },
+//    {
+//        text: 'Phenotype',
+//        dataIndex: 'phenotype',
+//        sortable: false
+//    },
+//    {
+//        text: "Is indel?",
+//        flex: 1,
+//        xtype: 'booleancolumn',
+//        trueText: 'Yes',
+//        falseText: 'No',
+//        dataIndex: 'stats_is_indel',
+//        sortable: true,
+//        hidden: true
+//    }
 //];
-
-bierappXtmplPoly = new Ext.XTemplate(
-    '{[this.parseEffect(values)]}',
-    {
-        parseEffect: function (value) {
-
-            if (value.polyphen_score == 0 && value.polyphen_effect == 0) {
-                return ".";
-            }
-
-            var score = value.polyphen_score;
-            var effect = "";
-            switch (value.polyphen_effect) {
-                case 0:
-                    effect = "probably damaging";
-                    break;
-                case 1:
-                    effect = "possibly damaging";
-                    break;
-                case 2:
-                    effect = "benign";
-                    break;
-                case 3:
-                    effect = "unknown";
-                    break;
-                default:
-                    return ".";
-            }
-            return(score + " - (" + effect + ")");
-        }
-    }
-);
-bierappXtmplSift = new Ext.XTemplate(
-    '{[this.parseEffect(values)]}',
-    {
-        parseEffect: function (value) {
-            if (value.sift_score == 0 && value.sift_effect == 0) {
-                return ".";
-            }
-
-            var score = value.sift_score;
-            var effect = "";
-            switch (value.sift_effect) {
-                case 0:
-                    effect = "tolerated";
-                    break;
-                case 1:
-                    effect = "deleterious";
-                    break;
-                default:
-                    return ".";
-            }
-            return(score + " - (" + effect + ")");
-        }
-    }
-);
-
-bierappParseMafControl = function (control) {
-    var maf = control.maf;
-    var res = maf.toFixed(3);
-    if (control.allele != "") {
-        res = res + " (" + control.allele + ")";
-    }
-    return res;
-};
-
-
-bierappColumns = [
-    {
-        text: "Variant",
-        dataIndex: 'chromosome',
-        flex: 1,
-        xtype: "templatecolumn",
-        tpl: "{chromosome}:{position}"
-    },
-    {
-        text: "Alleles",
-        flex: 0.5,
-        xtype: "templatecolumn",
-        tpl: "{ref}>{alt}",
-        sortable: false
-    },
-    {
-        text: "Gene",
-        dataIndex: 'genes',
-        flex: 1,
-        sortable: false
-    },
-    {
-        text: 'Samples',
-        flex: 1,
-        sortable: false,
-        columns: []
-    },
-    {
-        text: "SNP Id",
-        dataIndex: 'snpid',
-        flex: 1,
-        sortable: true
-    },
-    {
-        flex: 1,
-        text: "Controls (MAF)",
-        defaults: {
-            width: 100
-        },
-        columns: [
-            {
-                text: "1000G",
-                renderer: function (val, meta, record) {
-                    if (record.data.controls["1000G"]) {
-                        return bierappParseMafControl(record.data.controls["1000G"]);
-                    } else {
-                        return ".";
-                    }
-                }
-            },
-            {
-                text: "1000G-AFR",
-                renderer: function (val, meta, record) {
-                    if (record.data.controls["1000G-AFR"]) {
-                        return bierappParseMafControl(record.data.controls["1000G-AFR"]);
-                    } else {
-                        return ".";
-                    }
-                }
-            },
-            {
-                text: "1000G-ASI",
-                renderer: function (val, meta, record) {
-                    if (record.data.controls["1000G-ASI"]) {
-                        return bierappParseMafControl(record.data.controls["1000G-ASI"]);
-
-                    } else {
-                        return ".";
-                    }
-                }
-            },
-            {
-                text: "1000G-AME",
-                renderer: function (val, meta, record) {
-                    if (record.data.controls["1000G-AME"]) {
-                        return bierappParseMafControl(record.data.controls["1000G-AME"]);
-                    } else {
-                        return ".";
-                    }
-                }
-            },
-            {
-                text: "1000G-EUR",
-                renderer: function (val, meta, record) {
-                    if (record.data.controls["1000G-EUR"]) {
-                        return bierappParseMafControl(record.data.controls["1000G-EUR"]);
-                    } else {
-                        return ".";
-                    }
-                }
-            },
-            {
-                text: "EVS",
-                renderer: function (val, meta, record) {
-                    if (record.data.controls["EVS"]) {
-                        return bierappParseMafControl(record.data.controls["EVS"]);
-                    } else {
-                        return ".";
-                    }
-                }
-            }
-        ]
-    },
-    {
-        text: "Consq. Type",
-        dataIndex: "consequence_types",
-        flex: 1,
-        sortable: false
-    },
-    {
-        text: 'Polyphen',
-        flex: 1,
-        dataIndex: 'polyphen_score',
-        xtype: 'templatecolumn',
-        tpl: bierappXtmplPoly,
-        sortable: false
-    },
-    {
-        text: 'SIFT',
-        flex: 1,
-        dataIndex: 'sift_score',
-        xtype: "templatecolumn",
-        tpl: bierappXtmplSift,
-        sortable: false
-    },
-    {
-        text: 'Phenotype',
-        dataIndex: 'phenotype',
-        sortable: false
-    },
-    {
-        text: "Is indel?",
-        flex: 1,
-        xtype: 'booleancolumn',
-        trueText: 'Yes',
-        falseText: 'No',
-        dataIndex: 'stats_is_indel',
-        sortable: true,
-        hidden: true
-    }
-];
 
 
 //bierappAttributes = [

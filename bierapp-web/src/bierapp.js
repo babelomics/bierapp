@@ -59,7 +59,8 @@ Bierapp.prototype = {
         $(this.wrapDiv).append(this.rightDiv);
 
         this.contentDiv = $('<div id="content"></div>')[0];
-        this.contentDiv.style.height = "100%";
+        this.contentDiv.style.height = "900px";
+        this.contentDiv.style.position = "relative";
 
         $(this.wrapDiv).append(this.contentDiv);
 
@@ -151,7 +152,7 @@ Bierapp.prototype = {
 
 
         /*TEST DEVELOP ONLY*/
-        this.headerWidget.trigger('projects:click',{});
+        this.headerWidget.trigger('projects:click', {});
 
 
         $('body').addClass('bierapp-dark-background');

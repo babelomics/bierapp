@@ -1,0 +1,43 @@
+<link rel="import" href="../lib/jsorolla/src/lib/components/jso-header.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-project-browser.html">
+<link rel="import" href="bierapp-home.html">
+
+<polymer-element name="bierapp-element">
+    <template>
+        <style>
+            :host {
+                display: block;
+                position: relative;
+                height: 100vh;
+                background-color: #314559;
+            }
+
+            jso-project-browser {
+                height: calc(100vh - 60px);
+            }
+        </style>
+        <jso-header selectedOption="{{selectedOption}}" userData="{{userData}}">
+            <span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span>
+        </jso-header>
+
+        <template if="{{ selectedOption == 'home' }}">
+            <bierapp-home></bierapp-home>
+        </template>
+
+        <template if="{{ selectedOption == 'projects' }}">
+            <jso-project-browser userData="{{userData}}"></jso-project-browser>
+        </template>
+
+    </template>
+    <script>
+        Polymer({
+            created: function () {
+                this.selectedOption = 'home';
+                this.userData;
+            },
+            ready: function () {
+
+            }
+        });
+    </script>
+</polymer-element>

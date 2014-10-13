@@ -10,18 +10,19 @@
 <!-- /build -->
 
 <!-- build:[src] vendor/polymer/ -->
-<link src="../lib/jsorolla/vendor/polymer/polymer.html">
+<link rel="import" href="../lib/jsorolla/vendor/polymer/polymer.html">
 <!-- /build -->
 
 <!-- build:[href] vendor/font-awesome/css/ -->
 <link rel="stylesheet" href="../lib/jsorolla/vendor/font-awesome/css/font-awesome.min.css">
 <!-- /build -->
 
-
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-project-browser.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-project.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-study.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-project.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-study.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-upload.html">
 
 
 <!-- CSS from vendors -->
@@ -36,10 +37,18 @@
 <!-- CSS from Styles -->
 <!-- build:style css -->
 <link rel="stylesheet" href="../lib/jsorolla/styles/css/style.css"/>
+<link rel="stylesheet" href="../lib/jsorolla/src/lib/components/jso-style.css"/>
 <!-- /build -->
 
 <!-- build:[src] vendor/ext-5/  -->
 <script src="../lib/jsorolla/vendor/ext-5/ext-all.js"></script>
+<!-- /build -->
+
+<!-- build:[src] vendor/highcharts/adapters/ -->
+<script src="../lib/jsorolla/vendor/highcharts/adapters/standalone-framework.js"></script>
+<!-- /build -->
+<!-- build:[src] vendor/highcharts/ -->
+<script src="../lib/jsorolla/vendor/highcharts/highcharts-all.js"></script>
 <!-- /build -->
 
 
@@ -71,9 +80,6 @@
 <!--<script  src="../vendor/opencga-1.0.0.js"></script>-->
 
 <!-- /build -->
-
-
-<script src="../lib/jsorolla/vendor/highcharts/highcharts.js"></script>
 
 
 <!-- Genome Maps config -->
@@ -180,7 +186,7 @@
 
 
 <script>
-    WORKERS_PATH = "../lib/jsorolla/src/lib/opencga/";
+    WORKERS_PATH = "../lib/jsorolla/src/lib/";
 </script>
 <!-- /build -->
 
