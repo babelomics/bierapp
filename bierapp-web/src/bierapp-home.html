@@ -7,40 +7,48 @@
             }
 
             .info {
-                max-width: 800px;
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 820px;
                 width: 70%;
                 font-size: 22px;
-                line-height: 30px;
+                line-height: 25px;
                 font-weight: 300;
                 color: #ccc;
-                margin: 0 0 0 10vw;
             }
 
             .info > .paragraph {
                 text-align: justify;
             }
+
+            .title {
+                font-size: 30px;
+                color: white;
+            }
+
+            .title2 {
+                color: white;
+            }
         </style>
 
         <div class="info">
-            <p style="font-size:30px;color:white">Overview</p>
-
+            <p class="title">Overview</p>
             <p class="paragraph">Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases).
-                This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees ,
-                case-controls or sporadic samples .</p>
+                This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees,
+                case-controls or sporadic samples.</p>
 
-            <p style="font-size:30px;color:white">Try an Example</p>
-
+            <div class="title">Try an Example</div>
             <p class="paragraph">Here you can try all the filtering options and discover the gene affected in a test family.</p>
 
-            <p style="font-size:30px;color:white">Analyze your own families or case-control data</p>
-
+            <div class="title">Analyze your own families or case-control data</div>
             <p class="paragraph">Here you can upload your VCF file containing the exomes to be analyzed. Define the thresholds of allele
                 frequencies, pathogenicity, conservation; the type of variants sought; and define the type of inheritance and the
                 segregation schema along the family.</p>
 
-            <p style="color:white">Supported by</p>
-
-            <p style="text-align:justify;">
+            <div class="title2">Supported by</div>
+            <p>
                 <img style="margin:3px;height:67px;" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"/>
                 <img style="margin:3px;height:67px;" src="http://www2.iib.uam.es/ivarela_lab/imagenes/logo_ciberer.jpg"/>
                 <img style="margin:3px;height:67px;" src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png"/>
@@ -49,8 +57,7 @@
                 <img style="margin:3px;height:67px;" src="http://img2.mailchimp.com/2009/03/25/1efbf9c6a8/LOGO_Micinn_Isciii.jpg"/>
             </p>
 
-            <p style="color:white">Note</p>
-
+            <div class="title2">Note</div>
             <p style="text-align:justify;font-size: 16px">This web application makes an intensive use of new web technologies and standards
                 like HTML5, so browsers that are fully supported for this site are: Chrome 14, Firefox 7, Safari 5 and Opera 11. Older
                 browser like Chrome13-, Firefox 5- or Internet Explorer 9 may rise some errors. Internet Explorer 6 and 7 are no supported
