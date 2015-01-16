@@ -1,6 +1,13 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer-fontawesome/polymer-fontawesome.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-header.html">
+<link rel="import" href="../bower_components/sortable-table/sortable-table.html">
+<link rel="import" href="../bower_components/core-list/core-list.html">
+
+
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-header.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-footer.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-project-browser.html">
+
 <link rel="import" href="bierapp-home.html">
 
 <polymer-element name="bierapp-element">
@@ -9,35 +16,94 @@
             :host {
                 display: block;
                 position: relative;
-                height: 100vh;
-                background-color: #314559;
+                cursor: default;
+                font-size: 13px;
+            }
+
+            .content {
+                background-color: #435f7a;
+                position: relative;
+                /*min-height: calc(100vh - 160px);*/
+            }
+
+            .content > * {
+                min-height: calc(100vh - 160px);
             }
 
             jso-project-browser {
-                height: calc(100vh - 60px);
+                height: calc(100vh - 160px);
             }
         </style>
-        <jso-header selectedOption="{{selectedOption}}" userData="{{userData}}">
-            <span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span>
+        <jso-header id="jsoHeader"
+                    on-session-change="{{handleSessionChange}}"
+                    selectedOption="{{selectedOption}}"
+                    userData="{{userData}}"
+                    showJobs="{{showJobs}}"
+                    options="{{options}}"
+                    studies="{{studies}}"
+                    selectedStudy="{{selectedStudy}}"
+                    allowedTools="{{allowedTools}}"
+                    jobItem="{{jobItem}}"
+                    helpLink="https://github.com/babelomics/babelomics/wiki"
+                    tutorialLink="https://github.com/babelomics/babelomics/wiki/Tutorial"
+                    hideHomeLink="true">
+            <span class="title">BierApp</span>
+            <img class="description" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"/>
         </jso-header>
-
-        <template if="{{ selectedOption == 'home' }}">
-            <bierapp-home></bierapp-home>
-        </template>
-
-        <template if="{{ selectedOption == 'projects' }}">
-            <jso-project-browser userData="{{userData}}"></jso-project-browser>
-        </template>
+        <div class="content">
+            <template if="{{ selectedOption == 'home' || selectedOption == 'none' || selectedOption == ''}}">
+                <bierapp-home></bierapp-home>
+            </template>
+            <template if="{{selectedOption == 'projects'}}">
+                <jso-project-browser userData="{{userData}}" selectedStudy="{{selectedStudy}}" studies="{{studies}}"
+                                     selectedProject="{{selectedProject}}"></jso-project-browser>
+            </template>
+        </div>
+        <jso-footer>
+            BierApp: created by Computational Genomics Department
+            <br>
+            Principe Felipe Research Center
+            <br>
+            2015
+        </jso-footer>
 
     </template>
     <script>
         Polymer({
             created: function () {
                 this.selectedOption = 'home';
-                this.userData;
-            },
-            ready: function () {
+                this.showJobs = true;
+                this.userData = {};
 
+                this.selectedProject;
+                this.selectedStudy;
+                this.studies;
+            },
+            userDataChanged: function (oldValue, newValue) {
+                var me = this;
+                this.selectedProject = this.userData.projects[0];
+
+                OpencgaManager.projects.studies({
+                    id: this.selectedProject.id,
+                    query: {
+                        sid: Cookies("bioinfo_sid")
+                    },
+                    request: {
+                        success: function (response) {
+                            if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
+                                debugger
+                                me.studies = response.response[0].result;
+                                me.selectedStudy = me.studies[0];
+                            } else {
+                                console.log(response.error);
+                                console.log(response.response[0].errorMsg);
+                            }
+                        },
+                        error: function () {
+                            console.log('Server error, try again later.');
+                        }
+                    }
+                })
             }
         });
     </script>
