@@ -7,6 +7,8 @@
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-header.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-footer.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-project-browser.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-biotype.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-job-no-ready.html">
 
 <link rel="import" href="bierapp-home.html">
 
@@ -48,12 +50,14 @@
                     tutorialLink="https://github.com/babelomics/babelomics/wiki/Tutorial"
                     hideHomeLink="true">
             <span class="title">BierApp</span>
-            <img class="description" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"/>
+            <img class="description" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"
+                 height="35px"/>
         </jso-header>
         <div class="content">
             <template if="{{ selectedOption == 'home' || selectedOption == 'none' || selectedOption == ''}}">
                 <bierapp-home></bierapp-home>
             </template>
+            <jso-job-no-ready hidden?="{{selectedOption != 'jobNoReady' }}" jobItem="{{jobItem}}"></jso-job-no-ready>
             <template if="{{selectedOption == 'projects'}}">
                 <jso-project-browser userData="{{userData}}" selectedStudy="{{selectedStudy}}" studies="{{studies}}"
                                      selectedProject="{{selectedProject}}"></jso-project-browser>
@@ -91,7 +95,6 @@
                     request: {
                         success: function (response) {
                             if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
-                                debugger
                                 me.studies = response.response[0].result;
                                 me.selectedStudy = me.studies[0];
                             } else {
