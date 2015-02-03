@@ -1,16 +1,25 @@
 BierApp
 =======
 
+## Download code
+```bash
+git clone https://github.com/babelomics/bierapp.git
+git submodule update --init
+```
+
+
 ## Compiling CSS and JavaScript
 
-BierApp uses [Grunt](http://gruntjs.com/) task runner to build the code and run tests and other convenient tasks. 
-To use it, install the required dependencies as directed and then run some Grunt commands. Grunt runs on top of Node.js, it must be installed first.
+```bash
+cd bierapp-web/
+```
 
 ### Install Node
 To install node click [here.](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
 
 **What is `npm`?** npm stands for [node packaged modules](http://npmjs.org/) is the node dependency manager.
 
+### Install bower components
 
 ```bash
 sudo npm install -g bower
