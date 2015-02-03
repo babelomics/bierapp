@@ -153,14 +153,15 @@
             <br>
             2015
         </jso-footer>
-
     </template>
     <script>
         Polymer({
+            allowedTools: null,
             created: function () {
                 this.selectedOption = 'home';
                 this.showJobs = true;
                 this.userData = {};
+                this.allowedTools = ["opencga-storage.sh"];
 
                 this.selectedProject;
                 this.selectedStudy;
