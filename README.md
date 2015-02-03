@@ -19,7 +19,7 @@ To install node click [here.](https://github.com/joyent/node/wiki/Installing-Nod
 
 **What is `npm`?** npm stands for [node packaged modules](http://npmjs.org/) is the node dependency manager.
 
-### Install bower components
+### Install bower components and npm modules
 
 ```bash
 sudo npm install -g bower
