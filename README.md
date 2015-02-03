@@ -12,12 +12,10 @@ To install node click [here.](https://github.com/joyent/node/wiki/Installing-Nod
 **What is `npm`?** npm stands for [node packaged modules](http://npmjs.org/) is the node dependency manager.
 
 
-Install nodejs and npm.
-https://github.com/joyent/node/wiki/installing-node.js-via-package-manager
-
+```bash
 sudo npm install -g bower
 bower install
 npm install
 npm run build
-
+```
 Minimized files will be located in the `/build` dir.
