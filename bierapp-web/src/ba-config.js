@@ -5,6 +5,8 @@ OPENCGA_HOST = "http://test.babelomics.org/opencga/rest";
 BIERAPP_HOST = "http://ws-beta.bioinfo.cipf.es/bierapp-staging/rest";
 BIERAPP_VERSION = "1.4.1"
 
+STUDY_NAME="WorkSpace";
+
 if (
     window.location.host.indexOf("localhost") != -1 ||
     window.location.host.indexOf("fsalavert") != -1 ||
