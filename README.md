@@ -20,7 +20,6 @@ cd bierapp/bierapp-web/
 sudo npm install -g bower
 npm install
 bower install
-npm run build
 ```
 
 Now install jsorolla submodule npm and bower dependencies:
