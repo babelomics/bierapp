@@ -1,0 +1,11 @@
+{
+  "excludes": {
+    "imports": [
+
+    ],
+    "scripts": [
+      "bierapp-config.js"
+    ]
+  },
+  "strip-excludes": false
+}
