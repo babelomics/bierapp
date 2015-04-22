@@ -4,7 +4,7 @@
 
     ],
     "scripts": [
-      "bierapp-config.js"
+      "conf/"
     ]
   },
   "strip-excludes": false

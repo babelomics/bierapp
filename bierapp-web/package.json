@@ -1,10 +1,10 @@
 {
   "name": "Bierapp",
   "version": "1.5.0",
-    "scripts": {
+  "scripts": {
     "build": "./build.sh"
   },
   "devDependencies": {
-    "vulcanize": "^0.7.10"
+    "vulcanize": "1.2.1"
   }
 }

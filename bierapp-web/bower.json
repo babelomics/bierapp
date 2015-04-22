@@ -16,11 +16,11 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "*",
+    "polymer": "0.8",
     "cookies-js": "~1.1.0",
-    "crypto-js-evanvosberg": "~3.1.2",
+    "crypto-js-evanvosberg": "3.1.4",
     "highcharts-release": "~4.0.4",
-    "polymer-fontawesome": "~1.0.0-beta.2",
+    "fontawesome": "*",
     "core-list": "polymer/core-list#~0.5.5",
     "sortable-table": "~0.11.1",
     "underscore": "~1.7.0",
@@ -28,6 +28,7 @@
     "backbone": "~1.1.2",
     "qtip2": "~2.2.1",
     "core-menu": "polymer/core-menu#~0.5.5",
-    "bowser": "~0.7.2"
+    "bowser": "~0.7.2",
+    "layout": "polymer/layout"
   }
 }

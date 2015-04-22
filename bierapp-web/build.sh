@@ -1,34 +1,52 @@
 #!/bin/sh
-rm -f bierapp.min.html
-rm -f bierapp.min.js
-
+rm -rf build
 mkdir -p build
-rm -rf build/fonts
-rm -rf build/images
-rm -f build/index.html
-rm -f build/bierapp.min.js
-rm -f build/bierapp-config.js
-rm -f build/LICENSE
-rm -f build/README.md
+mkdir -p build/tmp
+mkdir -p build/css
+mkdir -p build/fontawesome
+mkdir -p build/images
+mkdir -p build/fonts
 
-vulcanize bierapp-index.html -o bierapp.min.html --inline --strip --csp --config vulcanize.json
+vulcanize  --inline-scripts --exclude "conf/" bierapp-index.html > build/tmp/index.html
 
-cp -r bower_components/fontawesome/fonts build/
-cp -r src/fonts/*.woff* build/fonts/
-cp -r src/images build/
-cp -r lib/jsorolla/styles/img/* build/images/
-cp bierapp-config.js build/
+#fix config js include
+sed -i 's@<script fix="config"></script>@<script src="conf/config.js"></script>@g' build/tmp/index.html
 
-mv bierapp.min.html build/index.html
-mv bierapp.min.js build/
+#fix paths
+sed -i s@src/fonts/fonts.css@fonts/fonts.css@g build/tmp/index.html
+cp -r src/fonts/* build/fonts/
 
-sed -i s@bower_components/fontawesome/fonts/fontawesome-webfont.@fonts/fontawesome-webfont.@g build/index.html
-sed -i s@src/fonts/@fonts/@g build/index.html
-sed -i s@src/images/@images/@g build/index.html
+sed -i s@bower_components/fontawesome/css/font-awesome.min.css@fontawesome/css/font-awesome.min.css@g build/tmp/index.html
+cp -r bower_components/fontawesome/css build/fontawesome/
+cp -r bower_components/fontawesome/fonts build/fontawesome/
 
-sed -i s@lib/jsorolla/styles/img/@images/@g build/index.html
-sed -i s@lib/jsorolla/styles/fonts/@fonts/@g build/index.html
+sed -i s@lib/jsorolla/src/lib/components/jso-global.css@css/jso-global.css@g build/tmp/index.html
+cp -r lib/jsorolla/src/lib/components/jso-global.css build/css/
+
+sed -i s@lib/jsorolla/src/lib/components/jso-form.css@css/jso-form.css@g build/tmp/index.html
+cp -r lib/jsorolla/src/lib/components/jso-form.css build/css/
+
+sed -i s@src/images/@images/@g build/tmp/index.html
+cp -r src/images/* build/images/
+
+
+sed -i s@bower_components/qtip2/jquery.qtip.css@css/jquery.qtip.css@g build/tmp/index.html
+cp -r bower_components/qtip2/jquery.qtip.css build/css/
+
+
+sed -i s@lib/jsorolla/styles/css/style.css@css/style.css@g build/tmp/index.html
+cp -r lib/jsorolla/styles/css/style.css build/css/
+
+sed -i s@lib/jsorolla/bower_components/fontawesome/css/font-awesome.css@fontawesome/css/font-awesome.min.css@g build/tmp/index.html
+
+cp -r lib/jsorolla/styles/img/ build/
+# end fix paths
 
 
 cp ../LICENSE build/
 cp ../README.md build/
+
+mv build/tmp/index.html build/
+cp -r conf build/
+
+rm -rf build/tmp

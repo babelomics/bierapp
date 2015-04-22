@@ -1,157 +1,204 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/polymer-fontawesome/polymer-fontawesome.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-header.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-footer.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-help-menu.html">
+
+
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-upload-variant-file.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-study.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-project.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/folder/jso-opencga-browser.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-browser.html">
+
+
+<!--<script src="../lib/jsorolla/src/lib/region.js"></script>-->
+
+<link rel="import" href="../lib/jsorolla/src/lib/components/jso-genome-viewer-element.html">
+
+<!--<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/dashboard/jso-dashboard.html">-->
+
+<link rel="import" href="bierapp-home.html">
+<!--
+
 <link rel="import" href="../bower_components/sortable-table/sortable-table.html">
 <link rel="import" href="../bower_components/core-list/core-list.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-menu/core-menu.html">
 <link rel="import" href="../bower_components/core-item/core-item.html">
 
-
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-header.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-footer.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-project-browser.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-bioformat.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-job-no-ready.html">
+
 <link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-component.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-sortable-table-ajax.html">
 
-
-<link rel="import" href="bierapp-home.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-index-view.html">
-<link rel="import" href="bierapp-menu.html">
+-->
 
-<polymer-element name="bierapp-element">
+
+<dom-module id="bierapp-element">
+    <style>
+        :host {
+            display: block;
+            position: relative;
+            cursor: default;
+            font-size: 13px;
+        }
+
+        .menu > div {
+            margin-left: 10px;
+            cursor: pointer;
+            text-align: center;
+            padding: 0 5px;
+        }
+
+        .menu > div:hover {
+            color: #FFFFFF;
+        }
+
+        #content {
+        }
+
+        jso-dashboard {
+            height: calc(100vh - 60px);
+        }
+
+        jso-variant-browser {
+            height: calc(100vh - 60px);
+        }
+
+        jso-opencga-browser {
+            top: 60px;
+        }
+    </style>
     <template>
-        <link rel="stylesheet" href="../lib/jsorolla/src/lib/components/jso-style.css">
-        <link rel="stylesheet" href="../lib/jsorolla/src/lib/components/jso-panel.css">
-        <link rel="stylesheet" href="../lib/jsorolla/src/lib/components/jso-form.css">
-        <link rel="stylesheet" href="../lib/jsorolla/src/lib/components/jso-dropdown.css">
-        <style>
-            :host {
-                display: block;
-                position: relative;
-                cursor: default;
-                font-size: 13px;
-            }
-
-            .content {
-                background-color: #435f7a;
-                /*background-color: #016877;*/
-                position: relative;
-                /*min-height: calc(100vh - 160px);*/
-            }
-
-            .content > * {
-                min-height: calc(100vh - 160px);
-            }
-
-            .a {
-                text-decoration: none;
-                color: #CCCCCC;
-                cursor: pointer;
-            }
-
-            .a:visited {
-                color: #CCCCCC;
-            }
-
-            .a:hover {
-                color: white;
-                /*text-decoration: underline;*/
-            }
-
-            jso-project-browser, jso-variant-index-view, jso-variant-component {
-                height: calc(100vh - 160px);
-            }
-
-            /*jso-header::shadow > .main {*/
-            /*background-color: #01525e;*/
-            /*}*/
-            /*jso-header::shadow > .content {*/
-            /*background-color: #016877;*/
-            /*}*/
-            /*jso-footer {*/
-            /*background-color: #01525e;*/
-            /*}*/
-        </style>
-        <!--<img class="description" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"-->
-        <!--height="35px"/>-->
-
         <jso-header id="jsoHeader"
-                    isLogged="{{isLogged}}"
-                    on-session-change="{{handleSessionChange}}"
-                    selectedOption="{{selectedOption}}"
-                    userData="{{userData}}"
-                    showJobs="{{showJobs}}"
-                    allowJobs="false"
-                    allowBrowse="false"
-                    options="{{options}}"
-                    studies="{{studies}}"
-                    selectedStudy="{{selectedStudy}}"
-                    allowedTools="{{allowedTools}}"
-                    jobItem="{{jobItem}}">
+                    selected-option="{{selectedOption}}"
+                    user-data="{{userData}}"
+                    on-login="handleLogin"
+                    on-logout="handleLogout"
+                    show-menu-on-login>
+            <!--<jso-header id="jsoHeader"-->
+            <!--isLogged="{{isLogged}}"-->
+            <!--on-session-change="{{handleSessionChange}}"-->
+            <!--selectedOption="{{selectedOption}}"-->
+            <!--userData="{{userData}}"-->
+            <!--showJobs="{{showJobs}}"-->
+            <!--allowJobs="false"-->
+            <!--allowBrowse="false"-->
+            <!--options="{{options}}"-->
+            <!--studies="{{studies}}"-->
+            <!--selectedStudy="{{selectedStudy}}"-->
+            <!--allowedTools="{{allowedTools}}"-->
+            <!--jobItem="{{jobItem}}">-->
              <span class="icon">
-                    <img src="images/bier.svg" style="height: 50px;margin: 5px 0px 0 0;">
+                    <img src="images/bier-text.svg" style="height: 50px;margin: 5px 0px 0 0;">
             </span>
-            <span class="title">BierApp</span>
-            <span class="description">
-            </span>
+            <span class="title">BIERapp</span>
+            <span class="description"></span>
 
-            <bierapp-menu class="menu" selectedOption="{{selectedOption}}">
-            </bierapp-menu>
+            <div class="menu horizontal layout">
+                <div on-click="handleToggleCreateProject">
+                    New Project
+                </div>
+
+                <div on-click="handleToggleCreateStudy">
+                    New Study
+                </div>
+                <div on-click="handleToggleUpload">
+                    Upload
+                </div>
+                <!--<div data-option="dashboard" on-click="handleMenu">-->
+                <!--Dashboard-->
+                <!--</div>-->
+                <div on-click="handleToggleBrowser">
+                    Browse
+                </div>
+                <!--<div data-option="variantbrowser" on-click="handleMenu">-->
+                <!--Variant browser-->
+                <!--</div>-->
+            </div>
+
             <jso-help-menu class="helpmenu" selectedOption="{{selectedOption}}">
-                <div class="link">
-                    <font-awesome icon="book"></font-awesome>
-                    <a class="a" href="https://github.com/babelomics/bierapp/wiki"
-                       target="_blank">
-                        &nbsp; Documentation
-                    </a>
-                </div>
-                <div class="link">
-                    <font-awesome icon="compass"></font-awesome>
-                    <a class="a" href="https://github.com/babelomics/bierapp/wiki/Tutorial"
-                       target="_blank">
-                        &nbsp; Tutorial
-                    </a>
-                </div>
-                <div class="link">
-                    <font-awesome icon="github"></font-awesome>
-                    <a class="a" href="https://github.com/babelomics/bierapp/"
-                       target="_blank">
-                        &nbsp; Source code
-                    </a>
-                </div>
+                <a href="https://github.com/babelomics/bierapp/wiki" target="_blank">
+                    <i class="fa fa-book"></i>
+                    &nbsp; Documentation
+                </a>
+                <a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank">
+                    <i class="fa fa-compass"></i>
+                    &nbsp; Tutorial
+                </a>
+                <a href="https://github.com/babelomics/bierapp/" target="_blank">
+                    <i class="fa fa-github"></i>
+                    &nbsp; Source code
+                </a>
             </jso-help-menu>
         </jso-header>
 
+        <div id="content">
+            <bierapp-home
+                    menu-option="home"></bierapp-home>
 
-        <div class="content">
-            <template if="{{ selectedOption == 'home' || selectedOption == 'none' || selectedOption == ''}}">
-                <bierapp-home
-                        on-annonymous="{{annonymousLogin}}"
-                        isLogged="{{isLogged}}"
-                        ></bierapp-home>
-            </template>
-            <jso-job-no-ready hidden?="{{selectedOption != 'jobNoReady' }}" jobItem="{{jobItem}}"></jso-job-no-ready>
-            <template if="{{selectedOption == 'jobReady' }}">
-                <jso-variant-component jobItem="{{jobItem}}"></jso-variant-component>
-            </template>
-            <template if="{{selectedOption == 'projects'}}">
-                <jso-project-browser userData="{{userData}}" selectedStudy="{{selectedStudy}}" studies="{{studies}}"
-                                     selectedProject="{{selectedProject}}"></jso-project-browser>
-            </template>
-            <template if="{{selectedOption == 'view'}}">
-                <jso-variant-index-view
-                        studies="{{studies}}"
-                        selectedProject="{{selectedProject}}"
-                        userData="{{userData}}"
-                        jobItem="{{jobItem}}"
-                        selectedOption="{{selectedOption}}"
-                        selectedStudy="{{selectedStudy}}"
-                        allowedTools="{{allowedTools}}"></jso-variant-index-view>
-            </template>
+            <jso-opencga-create-study
+                    id="createStudy"
+                    hidden$="{{createStudyHidden}}"
+                    on-close="handleCloseCreateStudy"
+                    projects="{{projects}}">
+            </jso-opencga-create-study>
+
+            <jso-opencga-create-project
+                    id="createStudy"
+                    hidden$="{{createProjectHidden}}"
+                    on-close="handleCloseCreateProject"
+                    projects="{{projects}}">
+            </jso-opencga-create-project>
+
+            <jso-upload-variant-file
+                    id="upload"
+                    hidden$="{{uploadHidden}}"
+                    on-close="handleCloseUpload"
+                    projects="{{projects}}"></jso-upload-variant-file>
+
+            <jso-opencga-browser
+                    id="browser"
+                    hidden$="{{browserHidden}}"
+                    on-fileselect="handleFileSelect"
+                    projects="{{projects}}"></jso-opencga-browser>
+
+            <jso-variant-browser
+                    id="variantBrowser"
+                    menu-option="variantbrowser">
+            </jso-variant-browser>
+            <!--<jso-dashboard menu-option="dashboard"-->
+            <!--projects="{{projects}}"></jso-dashboard>-->
         </div>
-        <jso-footer>
+
+        <!--<div class="content jso-bgcolor-main-2">-->
+
+        <!--<jso-job-no-ready hidden?="{{selectedOption != 'jobNoReady' }}" jobItem="{{jobItem}}"></jso-job-no-ready>-->
+        <!--<template if="{{selectedOption == 'jobReady' }}">-->
+        <!--<jso-variant-component jobItem="{{jobItem}}"></jso-variant-component>-->
+        <!--</template>-->
+        <!--<template if="{{selectedOption == 'projects'}}">-->
+        <!--<jso-project-browser userData="{{userData}}" selectedStudy="{{selectedStudy}}" studies="{{studies}}"-->
+        <!--selectedProject="{{selectedProject}}"></jso-project-browser>-->
+        <!--</template>-->
+        <!--<template if="{{selectedOption == 'dashboard'}}">-->
+        <!--<jso-dashboard userData="{{userData}}"></jso-dashboard>-->
+        <!--</template>-->
+        <!--<template if="{{selectedOption == 'view'}}">-->
+        <!--<jso-variant-index-view-->
+        <!--studies="{{studies}}"-->
+        <!--selectedProject="{{selectedProject}}"-->
+        <!--userData="{{userData}}"-->
+        <!--jobItem="{{jobItem}}"-->
+        <!--selectedOption="{{selectedOption}}"-->
+        <!--selectedStudy="{{selectedStudy}}"-->
+        <!--allowedTools="{{allowedTools}}"></jso-variant-index-view>-->
+        <!--</template>-->
+        <!--</div>-->
+        <jso-footer hidden$="{{computeFooter(selectedOption)}}">
             BierApp: created by Computational Genomics Department
             <br>
             Principe Felipe Research Center
@@ -159,50 +206,182 @@
             2015
         </jso-footer>
     </template>
-    <script>
-        Polymer({
-            allowedTools: null,
-            created: function () {
-                this.selectedOption = 'home';
-                this.showJobs = false;
-                this.userData = {};
-                this.allowedTools = ["opencga-storage.sh"];
+</dom-module>
 
-                this.isLogged;
-                this.selectedProject;
-                this.selectedStudy;
-                this.studies;
+<script>
+    Polymer({
+        is: "bierapp-element",
+        properties: {
+            selectedOption: {
+                type: String,
+                value: "home",
+                notify: true,
+                reflectToAttribute: true,
+                observer: 'selectedOptionChanged'
             },
-            domReady: function () {
+            userData: {
+                type: Object,
+                notify: true,
+                observer: 'userDataChanged'
             },
-            userDataChanged: function (oldValue, newValue) {
-                var me = this;
-                this.selectedProject = this.userData.projects[0];
+            projects: {
+                type: Array,
+                notify: true
+            },
+            allowedTools: {
+                type: Array,
+                value: function () {
+                    return ["opencga-storage.sh"];
+                }
+            },
+            browserHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            uploadHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            createStudyHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            createProjectHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            }
+        },
+        ready: function () {
+        },
+        selectedOptionChanged: function (neo, old) {
+            var menuItems = Polymer.dom(this.root).querySelectorAll('[menu-option]');
+            for (var i = 0; i < menuItems.length; i++) {
+                var item = menuItems[i];
+                var currentItemValue = item.getAttribute("menu-option");
+                if (neo == currentItemValue) {
+                    item.removeAttribute("hidden");
+                } else {
+                    item.setAttribute('hidden', '');
+                }
+            }
+        },
+        handleMenu: function (e) {
+            var option = e.currentTarget.dataset['option'];
+            this.setMenu(option);
+        },
+        setMenu: function (option) {
+            if (option) {
+                this.selectedOption = option;
+            }
+        },
 
+        handleToggleBrowser: function (e) {
+            this.browserHidden = !this.browserHidden;
+        },
+        handleCloseBrowser: function (e) {
+            this.browserHidden = true;
+        },
+
+        handleCloseUpload: function (e) {
+            this.uploadHidden = true;
+        },
+        handleToggleUpload: function (e) {
+            this.uploadHidden = !this.uploadHidden;
+        },
+        handleCloseCreateStudy: function (e) {
+            this.createStudyHidden = true;
+        },
+        handleToggleCreateStudy: function (e) {
+            this.createStudyHidden = !this.createStudyHidden;
+        },
+        handleCloseCreateProject: function (e) {
+            this.createProjectHidden = true;
+        },
+        handleToggleCreateProject: function (e) {
+            this.createProjectHidden = !this.createProjectHidden;
+        },
+
+        computeFooter: function (selectedOption) {
+            return selectedOption == 'dashboard' || selectedOption == 'variantbrowser';
+        },
+        handleFileSelect: function (e) {
+            console.log("file");
+            console.log(e.detail);
+            var file = e.detail;
+            if (file.index && file.index.status == 'READY') {
+                this.$.variantBrowser.file = file;
+                this.setMenu('variantbrowser');
+                this.handleCloseBrowser();
+
+            }
+        },
+        handleLogin: function () {
+//            this.browserHidden = false;
+            this.selectedOption = "home";
+        },
+        handleLogout: function () {
+            this.browserHidden = true;
+        },
+
+//            created: function () {
+//                this.selectedOption = '';
+//                this.showJobs = false;
+//                this.userData;
+//                this.allowedTools = ["opencga-storage.sh"];
+//
+//                this.isLogged;
+//                this.selectedProject;
+//                this.selectedStudy;
+//                this.studies;
+//            },
+        userDataChanged: function (neo, old) {
+            var me = this;
+            if (this.userData) {
+                var projectIds = [];
+                for (var i = 0; i < this.userData.projects.length; i++) {
+                    var p = this.userData.projects[i];
+                    projectIds.push(p.id);
+                }
+                var projects = [];
                 OpencgaManager.projects.studies({
-                    id: this.selectedProject.id,
+                    id: projectIds.join(','),
                     query: {
                         sid: Cookies("bioinfo_sid")
                     },
                     request: {
                         success: function (response) {
                             if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
-                                me.studies = response.response[0].result;
-                                me.selectedStudy = me.studies[0];
+                                for (var i = 0; i < response.response.length; i++) {
+                                    var r = response.response[i];
+                                    me.userData.projects[i].studies = r.result;
+                                    projects.push(me.userData.projects[i]);
+                                }
+                                /* update projects property*/
+                                me.projects = projects;
                             } else {
                                 console.log(response.error);
                                 console.log(response.response[0].errorMsg);
                             }
+                            me.loading = false;
                         },
                         error: function () {
                             console.log('Server error, try again later.');
+                            me.loading = false;
                         }
                     }
-                })
-            },
-            annonymousLogin: function () {
-                this.$.jsoHeader.anonymousSign();
+                });
+            } else {
+                console.log("no user data")
+                this.browserHidden = true;
             }
-        });
-    </script>
+        },
+        annonymousLogin: function () {
+            this.$.jsoHeader.anonymousSign();
+        }
+    });
+</script>
 </polymer-element>

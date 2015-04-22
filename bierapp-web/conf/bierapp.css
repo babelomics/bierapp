@@ -1,0 +1,184 @@
+html, body {
+    font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, 'sans-serif' !important;
+}
+
+/********************/
+/* Dark theme    */
+/********************/
+* /deep/ .jso-bgcolor-main-1 {
+    background-color: #162229;
+}
+
+* /deep/ .jso-color-main-1 {
+    color: #ccc;
+}
+
+* /deep/ .jso-color-main-1h:hover {
+    color: #fff;
+    border-color: rgba(120, 120, 120, 0.6);
+    cursor: pointer;
+}
+
+* /deep/ .jso-color-main-1h[selected] {
+    color: #fff;
+    border-color: rgba(104, 180, 255, 0.6);
+    background-color: rgba(104, 180, 255, 0.1);
+    cursor: pointer;
+}
+
+* /deep/ .jso-bgcolor-main-2 {
+    background-color: #202E38;
+}
+
+* /deep/ .jso-color-main-2 {
+    color: #68b4ff;
+}
+
+* /deep/ .jso-bgcolor-main-3 {
+    background-color: #1A2830;
+}
+
+* /deep/ .jso-bgcolor-comp-1 {
+    background-color: #fafafa;
+}
+
+* /deep/ .jso-color-comp-1 {
+    color: #222;
+}
+
+* /deep/ .jso-color-comp-1 /deep/ input {
+    border-color: rgba(120, 120, 120, 0.6);
+    background-color: #FFF;
+}
+
+*/deep/ .jso-shadow{
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+}
+
+* /deep/ .button.action {
+    color: #1e73da;
+    background-color: #FFF;
+}
+
+* /deep/ .button.action:hover {
+    background-color: #f5f5f5;
+}
+
+* /deep/ .button.action:active {
+    background-color: #ebebeb;
+}
+
+
+
+/********************/
+/* Light theme    */
+/********************/
+* /deep/ .jso-bgcolor-main-1 {
+    background-color: #e0e0e0;
+}
+
+* /deep/ .jso-color-main-1 {
+    color: #222;
+}
+
+* /deep/ .jso-color-main-1h:hover {
+    color: #333;
+    border-color: rgba(120, 120, 120, 0.6);
+    cursor: pointer;
+}
+
+* /deep/ .jso-color-main-1h[selected] {
+    color: #fff;
+    border-color: rgba(104, 180, 255, 0.6);
+    background-color: rgba(0, 102, 153, 1);
+    cursor: pointer;
+}
+
+* /deep/ .jso-bgcolor-main-2 {
+    background-color: #FFFFFF;
+}
+
+* /deep/ .jso-color-main-2 {
+    color: #006699;
+}
+
+* /deep/ .jso-bgcolor-main-3 {
+    background-color: #FAFAFA;
+}
+
+* /deep/ .jso-bgcolor-comp-1 {
+    background-color: #fafafa;
+}
+
+* /deep/ .jso-color-comp-1 {
+    color: #222;
+}
+
+* /deep/ .jso-color-comp-1 /deep/ input {
+    border-color: rgba(120, 120, 120, 0.6);
+    background-color: #FFF;
+}
+
+*/deep/ .jso-shadow{
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+}
+
+* /deep/ .button.action {
+    color: #1e73da;
+    background-color: #FFF;
+}
+
+* /deep/ .button.action:hover {
+    background-color: #f5f5f5;
+}
+
+* /deep/ .button.action:active {
+    background-color: #ebebeb;
+}
+
+
+
+
+/*/!********************!/*/
+/*/!* Default theme    *!/*/
+/*/!********************!/*/
+/** /deep/ .jso-bgcolor-main-1 {*/
+/*background-color: #314559;*/
+/*}*/
+
+/** /deep/ .jso-color-main-1 {*/
+/*color: #ccc;*/
+/*}*/
+
+/** /deep/ .jso-color-main-1h:hover {*/
+/*color: #fff;*/
+/*}*/
+
+/** /deep/ .jso-bgcolor-main-2 {*/
+/*background-color: #435F7A;*/
+/*}*/
+
+/** /deep/ .jso-color-main-2 {*/
+/*color: #ffad76;*/
+/*}*/
+
+/** /deep/ .jso-bgcolor-comp-1 {*/
+/*background-color: #fafafa;*/
+/*}*/
+
+/** /deep/ .jso-color-comp-1 {*/
+/*color: #333;*/
+/*}*/
+
+/** /deep/ .button.action {*/
+/*color: #1e73da;*/
+/*background-color: #FFF;*/
+/*}*/
+
+/** /deep/ .button.action:hover {*/
+/*background-color: #f5f5f5;*/
+/*}*/
+
+/** /deep/ .button.action:active {*/
+/*background-color: #ebebeb;*/
+/*}*/
