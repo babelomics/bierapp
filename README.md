@@ -16,7 +16,7 @@ To install node click [here.](https://github.com/joyent/node/wiki/Installing-Nod
 
 ### Install bower components and npm modules after clone
 ```bash
-cd bierapp/bierapp-web/
+cd bierapp/
 sudo npm install -g bower
 npm install
 bower install
@@ -24,7 +24,7 @@ bower install
 
 Now install jsorolla submodule npm and bower dependencies:
 ```bash
-cd bierapp/bierapp-web/lib/jsorolla
+cd bierapp/lib/jsorolla
 npm install
 bower install
 ```
@@ -32,8 +32,8 @@ bower install
 
 ## Compiling CSS and JavaScript
 ```bash
-cd bierapp/bierapp-web/
+cd bierapp/
 npm run build
 ```
 
-Minimized files will be located in the `bierapp/bierapp-web/build` dir.
+Minimized files will be located in the `bierapp/build` dir.

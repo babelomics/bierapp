@@ -43,8 +43,8 @@ cp -r lib/jsorolla/styles/img/ build/
 # end fix paths
 
 
-cp ../LICENSE build/
-cp ../README.md build/
+cp LICENSE build/
+cp README.md build/
 
 mv build/tmp/index.html build/
 cp -r conf build/

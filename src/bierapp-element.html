@@ -7,11 +7,9 @@
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-upload-variant-file.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-study.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-project.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/folder/jso-opencga-browser.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-browser.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-browser.html">
 
-
-<!--<script src="../lib/jsorolla/src/lib/region.js"></script>-->
 
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-genome-viewer-element.html">
 
@@ -44,6 +42,7 @@
             position: relative;
             cursor: default;
             font-size: 13px;
+            background-color: inherit;
         }
 
         .menu > div {
@@ -53,11 +52,13 @@
             padding: 0 5px;
         }
 
-        .menu > div:hover {
-            color: #FFFFFF;
+        jso-header {
+            z-index: 2;
         }
 
         #content {
+            z-index: 1;
+            background-color: inherit;
         }
 
         jso-dashboard {
@@ -99,20 +100,20 @@
             <span class="description"></span>
 
             <div class="menu horizontal layout">
-                <div on-click="handleToggleCreateProject">
+                <div class="hover" on-click="handleToggleCreateProject">
                     New Project
                 </div>
 
-                <div on-click="handleToggleCreateStudy">
+                <div class="hover" on-click="handleToggleCreateStudy">
                     New Study
                 </div>
-                <div on-click="handleToggleUpload">
+                <div class="hover" on-click="handleToggleUpload">
                     Upload
                 </div>
                 <!--<div data-option="dashboard" on-click="handleMenu">-->
                 <!--Dashboard-->
                 <!--</div>-->
-                <div on-click="handleToggleBrowser">
+                <div class="hover" on-click="handleToggleBrowser">
                     Browse
                 </div>
                 <!--<div data-option="variantbrowser" on-click="handleMenu">-->
@@ -160,16 +161,16 @@
                     on-close="handleCloseUpload"
                     projects="{{projects}}"></jso-upload-variant-file>
 
+            <jso-variant-browser
+                    id="variantBrowser"
+                    menu-option="variantbrowser">
+            </jso-variant-browser>
+
             <jso-opencga-browser
                     id="browser"
                     hidden$="{{browserHidden}}"
                     on-fileselect="handleFileSelect"
                     projects="{{projects}}"></jso-opencga-browser>
-
-            <jso-variant-browser
-                    id="variantBrowser"
-                    menu-option="variantbrowser">
-            </jso-variant-browser>
             <!--<jso-dashboard menu-option="dashboard"-->
             <!--projects="{{projects}}"></jso-dashboard>-->
         </div>
@@ -326,18 +327,6 @@
         handleLogout: function () {
             this.browserHidden = true;
         },
-
-//            created: function () {
-//                this.selectedOption = '';
-//                this.showJobs = false;
-//                this.userData;
-//                this.allowedTools = ["opencga-storage.sh"];
-//
-//                this.isLogged;
-//                this.selectedProject;
-//                this.selectedStudy;
-//                this.studies;
-//            },
         userDataChanged: function (neo, old) {
             var me = this;
             if (this.userData) {
