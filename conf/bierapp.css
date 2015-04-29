@@ -7,13 +7,13 @@ html, body {
     color: #ddd;
 }
 
-bierapp-element a {
+jso-header a {
     transition: color 0.1s linear;
     color: #ddd;
     text-decoration: none;
 }
 
-bierapp-element a:hover {
+jso-header a:hover {
     color: #13DEFC;
 }
 
@@ -43,6 +43,13 @@ jso-help-menu {
     background-color: #204854;
 }
 
+jso-panel > .header{
+    background-color: #225e71;
+    color: #FFFFFF;
+
+}
+
+jso-panel,
 jso-login,
 jso-signup,
 jso-profile,
@@ -56,6 +63,8 @@ jso-upload-variant-file {
     color: #222;
     font-weight: normal;
 }
+
+
 
 /********************/
 /* Light theme    */
