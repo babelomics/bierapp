@@ -7,6 +7,18 @@ html, body {
     color: #ddd;
 }
 
+bierapp-element .color-1 {
+    color: #13DEFC;
+}
+
+bierapp-element .color-2 {
+    color: #225e71;
+}
+
+jso-header .hover:hover {
+    color: #fff;
+}
+
 jso-header a {
     transition: color 0.1s linear;
     color: #ddd;
@@ -15,18 +27,6 @@ jso-header a {
 
 jso-header a:hover {
     color: #13DEFC;
-}
-
-bierapp-element .hover:hover {
-    color: #fff;
-}
-
-bierapp-element .color-1 {
-    color: #13DEFC;
-}
-
-bierapp-element .color-2 {
-    color: #225e71;
 }
 
 jso-header {
@@ -46,7 +46,6 @@ jso-help-menu {
 jso-panel > .header{
     background-color: #225e71;
     color: #FFFFFF;
-
 }
 
 jso-panel,
