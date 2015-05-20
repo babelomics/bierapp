@@ -30,10 +30,10 @@ BierApp is an open-source and collaborative project. We appreciate any help and 
 # How to build 
 BierApp is developed in HTML5, therefore it is mainly developed in JavaScript and makes a heavy usage of HTML and CSS. It uses [Bower](http://bower.io/) and [Grunt](http://gruntjs.com/) as building tools. BierApp also requires of [OpenCB JSorolla](https://github.com/opencb/jsorolla) to be built, this is a JavaScript library developed for several OpenCB web-based projects, this can be found as Git submodule in BierApp.
 
-Stable releases are merged and tagged at **_master_** branch, you are encourage to use latest stable release for production. Current active development is carried out at **_develop_** branch, only building is guaranteed and bugs are expected, use this branch for development or for testing new functionalities. The only source code dependency of BierApp from OpenCB is JSorolla. BierApp **_master_** branch depends on stable branches in JSorolla, while **_develop_** branch of Genome Maps depends on JSorolla **_develop_**.
+Stable releases are merged and tagged at **_master_** branch, you are encourage to use latest stable release for production. Current active development is carried out at **_develop_** branch, only building is guaranteed and bugs are expected, use this branch for development or for testing new functionalities. The only source code dependency of BierApp from OpenCB is JSorolla. BierApp **_master_** branch depends on stable branches in JSorolla, while **_develop_** branch of BierApp depends on JSorolla **_develop_**.
 
 ### Prerequisites
-The following technologies are needed to build Genome Maps: [Node.js](https://nodejs.org/), [npm](https://www.npmjs.com/), [Bower](http://bower.io/) and [Grunt](http://gruntjs.com/).
+The following technologies are needed to build BierApp: [Node.js](https://nodejs.org/), [npm](https://www.npmjs.com/), [Bower](http://bower.io/) and [Grunt](http://gruntjs.com/).
 
 ##### Installing Node.js and npm
 To install [Node.js](https://nodejs.org/) you can visit [this link](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager).
@@ -76,14 +76,14 @@ After this, in both cases, you **must** execute the following command to fetch t
 
 
 ### Build
-After install _Node.js_ and _npm_ we have to install _npm_ packages for Genome Maps, from the the root folder execute:
+After install _Node.js_ and _npm_ we have to install _npm_ packages for BierApp, from the the root folder execute:
 
 ```bash
 npm install
 ```
 This will make _npm_ to look at file [package.json](package.json) and install locally all the dependencies listed there.
 
-To install all _Bower_ dependencies for Genome Maps execute from the root folder:
+To install all _Bower_ dependencies for BierApp execute from the root folder:
 
 ```bash
 bower install
@@ -97,7 +97,7 @@ npm install
 bower install
 ```
 
-Finally, to build Genome Maps execute:
+Finally, to build BierApp execute:
 ```bash
 grunt
 ```
