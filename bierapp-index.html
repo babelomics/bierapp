@@ -2,16 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BierApp</title>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- Chrome for Android theme color -->
+    <!--<meta name="theme-color" content="#303F9F">-->
+    <meta name="theme-color" content="#000000">
+
+    <!-- Chrome for Android Theme color -->
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="BierApp">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="BierApp">
+
     <!-- Force Microsoft use latest web tech -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-    <title>BierApp</title>
+
+    <!-- END meta -->
+
 
     <!--Config-->
-    <script src="conf/config.js" fix="config"></script>
+    <script src="conf/config.js"></script>
 
     <!--Fonts-->
     <link href='src/fonts/fonts.css' rel='stylesheet' type='text/css'>
@@ -50,16 +70,10 @@
 
     <link rel="import" href="src/bierapp-element.html">
 
-    <style>
-        html, body {
-            position: relative;
-            margin: 0px;
-        }
-    </style>
-    <link rel="stylesheet" href="conf/bierapp.css">
+    <link rel="import" href="conf/theme.html">
 </head>
 
-<body>
+<body unresolved class="fullbleed">
 
 <bierapp-element></bierapp-element>
 
