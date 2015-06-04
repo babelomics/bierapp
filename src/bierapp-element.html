@@ -1,14 +1,14 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-panel.html">
 
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-header.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-footer.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-help-menu.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-header.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-footer.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/jso-help-menu.html">
 
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-opencga-input-text.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-opencga-button-tooltip.html">
 
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-upload-variant-file.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-upload-file.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-study.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-project.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-browser.html">
@@ -46,7 +46,8 @@
             position: relative;
             cursor: default;
             font-size: 13px;
-            background-color: inherit;
+            height: 100%;
+            background-color: var(--default-primary-color);
         }
 
         .menu > div {
@@ -56,13 +57,20 @@
             padding: 0 5px;
         }
 
-        jso-header {
-            z-index: 2;
+        jso-opencga-header {
+            position: absolute;
+            top: 0;
+        }
+
+        jso-opencga-footer {
+            position: absolute;
+            bottom: 0;
         }
 
         #content {
-            z-index: 1;
-            background-color: inherit;
+            position: absolute;
+            top: 60px;
+            width:100%;
         }
 
         jso-dashboard {
@@ -74,12 +82,21 @@
         }
     </style>
     <template>
-        <jso-header id="jsoHeader"
-                    selected-option="{{selectedOption}}"
-                    user-data="{{userData}}"
-                    on-login="handleLogin"
-                    on-logout="handleLogout"
-                    show-menu-on-login>
+        <div id="content">
+            <bierapp-home
+                    menu-option="home"></bierapp-home>
+            <jso-variant-browser id="variantBrowser" menu-option="variantbrowser"></jso-variant-browser>
+            <!--<jso-dashboard menu-option="dashboard"-->
+            <!--projects="{{projects}}"></jso-dashboard>-->
+        </div>
+
+
+        <jso-opencga-header id="jsoHeader"
+                            selected-option="{{selectedOption}}"
+                            user-data="{{userData}}"
+                            on-login="handleLogin"
+                            on-logout="handleLogout"
+                            show-menu-on-login>
             <!--<jso-header id="jsoHeader"-->
             <!--isLogged="{{isLogged}}"-->
             <!--on-session-change="{{handleSessionChange}}"-->
@@ -135,62 +152,60 @@
                     &nbsp; Source code
                 </a>
             </jso-help-menu>
-        </jso-header>
+        </jso-opencga-header>
 
-        <div id="content">
-            <bierapp-home
-                    menu-option="home"></bierapp-home>
-
-
-            <jso-panel modal movable closable hidden$="{{createProjectHidden}}">
-                <div class="header">Manolo</div>
-                <jso-opencga-create-project class="container"
-                                            id="createStudy"
-                                            on-close="handleCloseCreateProject"
-                                            projects="{{projects}}">
-                </jso-opencga-create-project>
-            </jso-panel>
+        <jso-opencga-footer hidden$="{{computeFooter(selectedOption)}}">
+            BierApp: created by Computational Genomics Department
+            <br>
+            Principe Felipe Research Center
+            <br>
+            2015
+        </jso-opencga-footer>
 
 
-            <jso-panel modal movable closable hidden$="{{createStudyHidden}}">
-                <div class="header">Manolo</div>
-                <jso-opencga-create-study class="container"
-                                          id="createStudy"
-                                          on-close="handleCloseCreateStudy"
-                                          projects="{{projects}}">
-                </jso-opencga-create-study>
-            </jso-panel>
-            <jso-panel modal movable closable hidden$="{{uploadHidden}}">
-                <div class="header">Manolo</div>
-                <div class="container">
-                    <jso-opencga-upload-file
-                            id="upload"
-                            on-close="handleCloseUpload"
-                            projects="{{projects}}"
-                            bioformats="{{bioformats}}">
-
-                    </jso-opencga-upload-file>
-
-                </div>
-            </jso-panel>
-
-            <jso-panel id="browserPanel" modal movable closable hidden$="{{browserHidden}}">
-                <div class="header">jso-opencga-browser</div>
-                <jso-opencga-browser
-                        class="container"
-                        id="browser"
-                        on-fileselect="handleFileSelect"
-                        projects="{{projects}}"
-                        bioformats="{{bioformats}}">
+        <jso-panel modal movable closable hidden$="{{createProjectHidden}}">
+            <div class="header">Manolo</div>
+            <jso-opencga-create-project class="container"
+                                        id="createStudy"
+                                        on-close="handleCloseCreateProject"
+                                        projects="{{projects}}">
+            </jso-opencga-create-project>
+        </jso-panel>
 
 
-                </jso-opencga-browser>
+        <jso-panel modal movable closable hidden$="{{createStudyHidden}}">
+            <div class="header">Manolo</div>
+            <jso-opencga-create-study class="container"
+                                      id="createStudy"
+                                      on-close="handleCloseCreateStudy"
+                                      projects="{{projects}}">
+            </jso-opencga-create-study>
+        </jso-panel>
+        <jso-panel modal movable closable hidden$="{{uploadHidden}}">
+            <div class="header">Manolo</div>
+            <jso-opencga-upload-file
+                    id="upload"
+                    class="container"
+                    on-close="handleCloseUpload"
+                    projects="{{projects}}"
+                    bioformats="{{bioformats}}">
 
-            </jso-panel>
-            <jso-variant-browser id="variantBrowser" menu-option="variantbrowser"></jso-variant-browser>
-            <!--<jso-dashboard menu-option="dashboard"-->
-            <!--projects="{{projects}}"></jso-dashboard>-->
-        </div>
+            </jso-opencga-upload-file>
+        </jso-panel>
+
+        <jso-panel id="browserPanel" modal movable closable hidden$="{{browserHidden}}">
+            <div class="header">jso-opencga-browser</div>
+            <jso-opencga-browser
+                    id="browser"
+                    class="container"
+                    on-fileselect="handleFileSelect"
+                    bioformats="{{bioformats}}"
+                    projects="{{projects}}"
+                    on-need-refresh="handleUserNeedRefresh"></jso-opencga-browser>
+
+
+        </jso-panel>
+
 
         <!--<div class="content jso-bgcolor-main-2">-->
 
@@ -216,13 +231,6 @@
         <!--allowedTools="{{allowedTools}}"></jso-variant-index-view>-->
         <!--</template>-->
         <!--</div>-->
-        <jso-footer hidden$="{{computeFooter(selectedOption)}}">
-            BierApp: created by Computational Genomics Department
-            <br>
-            Principe Felipe Research Center
-            <br>
-            2015
-        </jso-footer>
     </template>
 </dom-module>
 
@@ -350,6 +358,9 @@
         handleLogout: function () {
             this.browserHidden = true;
         },
+        handleUserNeedRefresh: function () {
+            this.$.jsoHeader.getUserInfo(true);
+        },
         userDataChanged: function (neo, old) {
             var me = this;
             if (this.userData) {
@@ -388,7 +399,6 @@
                 });
             } else {
                 console.log("no user data")
-                this.browserHidden = true;
             }
         },
         annonymousLogin: function () {
