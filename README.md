@@ -98,8 +98,9 @@ bower install
 ```
 
 Finally, to build BierApp execute:
+
 ```bash
-grunt
+npm run build
 ```
 
 When completed, all compiled files will be located under the `build` folder.
