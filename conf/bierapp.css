@@ -57,7 +57,7 @@ jso-variant-browser,
 jso-opencga-browser,
 jso-opencga-create-study,
 jso-opencga-create-project,
-jso-upload-variant-file {
+jso-opencga-upload-file {
     background-color: #fafafa;
     color: #222;
     font-weight: normal;

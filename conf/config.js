@@ -1,9 +1,10 @@
 //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
 CELLBASE_HOST = "http://bioinfo.hpc.cam.ac.uk/cellbase/webservices/rest";
 CELLBASE_VERSION = "v3";
-OPENCGA_HOST = "http://test.babelomics.org/opencga/rest";
+//OPENCGA_HOST = "http://test.babelomics.org/opencga/rest";
+OPENCGA_HOST = "http://bioinfoint.hpc.cam.ac.uk/opencga/rest";
 BIERAPP_HOST = "http://ws-beta.bioinfo.cipf.es/bierapp-staging/rest";
-BIERAPP_VERSION = "1.4.1"
+BIERAPP_VERSION = "1.4.1";
 
 STUDY_NAME = "WorkSpace";
 

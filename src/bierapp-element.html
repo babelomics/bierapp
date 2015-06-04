@@ -5,10 +5,12 @@
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-footer.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-help-menu.html">
 
+<link rel="import" href="../lib/jsorolla/src/lib/components/jso-opencga-input-text.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/jso-opencga-button-tooltip.html">
 
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-upload-variant-file.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-study.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-create-project.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-study.html">
+<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-project.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-browser.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-browser.html">
 
@@ -69,10 +71,6 @@
 
         jso-variant-browser {
             height: calc(100vh - 60px);
-        }
-
-        jso-opencga-browser {
-            top: 61px;
         }
     </style>
     <template>
@@ -143,37 +141,53 @@
             <bierapp-home
                     menu-option="home"></bierapp-home>
 
-            <jso-opencga-create-study
-                    id="createStudy"
-                    hidden$="{{createStudyHidden}}"
-                    on-close="handleCloseCreateStudy"
-                    projects="{{projects}}">
-            </jso-opencga-create-study>
 
-            <jso-opencga-create-project
-                    id="createStudy"
-                    hidden$="{{createProjectHidden}}"
-                    on-close="handleCloseCreateProject"
-                    projects="{{projects}}">
-            </jso-opencga-create-project>
+            <jso-panel modal movable closable hidden$="{{createProjectHidden}}">
+                <div class="header">Manolo</div>
+                <jso-opencga-create-project class="container"
+                                            id="createStudy"
+                                            on-close="handleCloseCreateProject"
+                                            projects="{{projects}}">
+                </jso-opencga-create-project>
+            </jso-panel>
 
-            <jso-upload-variant-file
-                    id="upload"
-                    hidden$="{{uploadHidden}}"
-                    on-close="handleCloseUpload"
-                    projects="{{projects}}"></jso-upload-variant-file>
 
-            <jso-variant-browser
-                    id="variantBrowser"
-                    menu-option="variantbrowser">
-            </jso-variant-browser>
+            <jso-panel modal movable closable hidden$="{{createStudyHidden}}">
+                <div class="header">Manolo</div>
+                <jso-opencga-create-study class="container"
+                                          id="createStudy"
+                                          on-close="handleCloseCreateStudy"
+                                          projects="{{projects}}">
+                </jso-opencga-create-study>
+            </jso-panel>
+            <jso-panel modal movable closable hidden$="{{uploadHidden}}">
+                <div class="header">Manolo</div>
+                <div class="container">
+                    <jso-opencga-upload-file
+                            id="upload"
+                            on-close="handleCloseUpload"
+                            projects="{{projects}}"
+                            bioformats="{{bioformats}}">
 
-            <jso-opencga-browser
-                    id="browser"
-                    hidden$="{{browserHidden}}"
-                    on-fileselect="handleFileSelect"
-                    projects="{{projects}}"></jso-opencga-browser>
+                    </jso-opencga-upload-file>
 
+                </div>
+            </jso-panel>
+
+            <jso-panel id="browserPanel" modal movable closable hidden$="{{browserHidden}}">
+                <div class="header">jso-opencga-browser</div>
+                <jso-opencga-browser
+                        class="container"
+                        id="browser"
+                        on-fileselect="handleFileSelect"
+                        projects="{{projects}}"
+                        bioformats="{{bioformats}}">
+
+
+                </jso-opencga-browser>
+
+            </jso-panel>
+            <jso-variant-browser id="variantBrowser" menu-option="variantbrowser"></jso-variant-browser>
             <!--<jso-dashboard menu-option="dashboard"-->
             <!--projects="{{projects}}"></jso-dashboard>-->
         </div>
@@ -257,6 +271,11 @@
                 type: Boolean,
                 value: true,
                 reflectToAttribute: true
+            },
+            bioformats: {
+                type: Array,
+                notify: true,
+                value: ["VARIANT"]
             }
         },
         ready: function () {
@@ -306,6 +325,7 @@
             this.createProjectHidden = true;
         },
         handleToggleCreateProject: function (e) {
+
             this.createProjectHidden = !this.createProjectHidden;
         },
 
@@ -316,7 +336,7 @@
             console.log("file");
             console.log(e.detail);
             var file = e.detail;
-            if (file.index && file.index.status == 'READY') {
+            if (file.index && file.index.status == 'NONE') {
                 this.$.variantBrowser.file = file;
                 this.setMenu('variantbrowser');
                 this.handleCloseBrowser();
