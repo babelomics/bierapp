@@ -285,10 +285,10 @@
                 notify: true,
                 value: [
                     {
-                        title: "VARIANT"
+                        text: "VARIANT"
                     },
                     {
-                        key: "VCF 4.0",
+                        text: "VCF 4.0",
                         value: "VARIANT"
                     }
                 ]
@@ -352,7 +352,7 @@
             console.log("file");
             console.log(e.detail);
             var file = e.detail;
-            if (file.index && file.index.status == 'NONE') {
+            if (file.index && file.index.status == 'READY') {
                 this.$.variantBrowser.file = file;
                 this.setMenu('variantbrowser');
                 this.handleCloseBrowser();
