@@ -117,21 +117,21 @@
             <span class="description"></span>
 
             <div class="menu horizontal layout">
-                <div class="hover" on-click="handleToggleCreateProject">
-                    New Project
-                </div>
+                <!--<div class="hover" on-click="handleToggleCreateProject">-->
+                    <!--New Project-->
+                <!--</div>-->
 
-                <div class="hover" on-click="handleToggleCreateStudy">
-                    New Study
-                </div>
-                <div class="hover" on-click="handleToggleUpload">
-                    Upload
-                </div>
+                <!--<div class="hover" on-click="handleToggleCreateStudy">-->
+                    <!--New Study-->
+                <!--</div>-->
+                <!--<div class="hover" on-click="handleToggleUpload">-->
+                    <!--Upload-->
+                <!--</div>-->
                 <!--<div data-option="dashboard" on-click="handleMenu">-->
                 <!--Dashboard-->
                 <!--</div>-->
                 <div class="hover" on-click="handleToggleBrowser">
-                    Browse
+                    <i class="fa fa-cloud"></i> My data
                 </div>
                 <!--<div data-option="variantbrowser" on-click="handleMenu">-->
                 <!--Variant browser-->
@@ -182,7 +182,7 @@
             </jso-opencga-create-study>
         </jso-panel>
         <jso-panel modal movable closable hidden$="{{uploadHidden}}">
-            <div class="header">Manolo</div>
+            <div class="header">Upload file</div>
             <jso-opencga-upload-file
                     id="upload"
                     class="container"
@@ -194,7 +194,7 @@
         </jso-panel>
 
         <jso-panel id="browserPanel" modal movable closable hidden$="{{browserHidden}}">
-            <div class="header">jso-opencga-browser</div>
+            <div class="header">Browse data</div>
             <jso-opencga-browser
                     id="browser"
                     class="container"
