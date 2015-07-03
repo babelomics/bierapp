@@ -97,19 +97,6 @@
                             on-login="handleLogin"
                             on-logout="handleLogout"
                             show-menu-on-login>
-            <!--<jso-header id="jsoHeader"-->
-            <!--isLogged="{{isLogged}}"-->
-            <!--on-session-change="{{handleSessionChange}}"-->
-            <!--selectedOption="{{selectedOption}}"-->
-            <!--userData="{{userData}}"-->
-            <!--showJobs="{{showJobs}}"-->
-            <!--allowJobs="false"-->
-            <!--allowBrowse="false"-->
-            <!--options="{{options}}"-->
-            <!--studies="{{studies}}"-->
-            <!--selectedStudy="{{selectedStudy}}"-->
-            <!--allowedTools="{{allowedTools}}"-->
-            <!--jobItem="{{jobItem}}">-->
              <span class="icon">
                     <img src="images/bier-text.svg" style="height: 50px;margin: 5px 0px 0 0;">
             </span>
@@ -205,32 +192,6 @@
 
 
         </jso-panel>
-
-
-        <!--<div class="content jso-bgcolor-main-2">-->
-
-        <!--<jso-job-no-ready hidden?="{{selectedOption != 'jobNoReady' }}" jobItem="{{jobItem}}"></jso-job-no-ready>-->
-        <!--<template if="{{selectedOption == 'jobReady' }}">-->
-        <!--<jso-variant-component jobItem="{{jobItem}}"></jso-variant-component>-->
-        <!--</template>-->
-        <!--<template if="{{selectedOption == 'projects'}}">-->
-        <!--<jso-project-browser userData="{{userData}}" selectedStudy="{{selectedStudy}}" studies="{{studies}}"-->
-        <!--selectedProject="{{selectedProject}}"></jso-project-browser>-->
-        <!--</template>-->
-        <!--<template if="{{selectedOption == 'dashboard'}}">-->
-        <!--<jso-dashboard userData="{{userData}}"></jso-dashboard>-->
-        <!--</template>-->
-        <!--<template if="{{selectedOption == 'view'}}">-->
-        <!--<jso-variant-index-view-->
-        <!--studies="{{studies}}"-->
-        <!--selectedProject="{{selectedProject}}"-->
-        <!--userData="{{userData}}"-->
-        <!--jobItem="{{jobItem}}"-->
-        <!--selectedOption="{{selectedOption}}"-->
-        <!--selectedStudy="{{selectedStudy}}"-->
-        <!--allowedTools="{{allowedTools}}"></jso-variant-index-view>-->
-        <!--</template>-->
-        <!--</div>-->
     </template>
 </dom-module>
 
