@@ -15,8 +15,8 @@ if (
     ) {
 
     //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
-    CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
-    OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
+    // CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
+    // OPENCGA_HOST = "http://ws-beta.bioinfo.cipf.es/opencga-staging/rest";
 }
 
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
