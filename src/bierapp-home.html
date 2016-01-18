@@ -7,8 +7,9 @@
             font-size: 22px;
             line-height: 25px;
             font-weight: 300;
-            background-color: var(--default-primary-color);
-            color:var(--text-primary-color);
+            /*background-color: var(--default-primary-color);
+            color:var(--text-primary-color);*/
+            color: #fff;
         }
 
         .main {
@@ -43,7 +44,8 @@
             font-weight: 400;
         }
 
-        a, a:visited {
+        a,
+        a:visited {
             text-decoration: none;
         }
 
@@ -100,9 +102,9 @@
                     <br>
 
                     <!--<div class="megabutton" on-click="annonymousLogin">-->
-                        <!--&lt;!&ndash;<font-awesome icon="hand-o-left"></font-awesome>&ndash;&gt;-->
-                        <!--<font-awesome icon="sign-in"></font-awesome>-->
-                        <!--&nbsp;&nbsp;&nbsp; Try it now-->
+                    <!--&lt;!&ndash;<font-awesome icon="hand-o-left"></font-awesome>&ndash;&gt;-->
+                    <!--<font-awesome icon="sign-in"></font-awesome>-->
+                    <!--&nbsp;&nbsp;&nbsp; Try it now-->
                     <!--</div>-->
 
                 </div>
@@ -111,11 +113,7 @@
 
             <div class="title">Overview</div>
             <div class="paragraph">
-                Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare
-                Diseases).
-                This interactive tool allows finding genes affected by deleterious variants that segregate along family
-                pedigrees,
-                case-controls or sporadic samples.
+                Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
             </div>
 
 
@@ -126,25 +124,22 @@
 
             <div class="title2">Supported by</div>
             <div class="paragraph">
-                <img style="margin:3px;height:67px;"
-                     src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg"/>
-                <img style="margin:3px;height:67px;"
-                     src="http://www2.iib.uam.es/ivarela_lab/imagenes/logo_ciberer.jpg"/>
-                <img style="margin:3px;height:67px;"
-                     src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png"/>
-                <img style="margin:3px;height:67px;" src="images/logoBabelomics_positive_trans.svg"/>
-                <img style="margin:3px;height:67px;"
-                     src="http://img2.mailchimp.com/2009/03/25/1efbf9c6a8/LOGO_Micinn_Isciii.jpg"/>
+                <!-- <img style="margin:3px;height:67px;" src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" />
+                <img style="margin:3px;height:67px;" src="http://www2.iib.uam.es/ivarela_lab/imagenes/logo_ciberer.jpg" />
+                <img style="margin:3px;height:67px;" src="http://www.cipf.es/CIPF_THEME/CIPF_THEME/images/logo_cipf.png" />
+                <img style="margin:3px;height:67px;" src="images/logoBabelomics_positive_trans.svg" />
+                <img style="margin:3px;height:67px;" src="http://img2.mailchimp.com/2009/03/25/1efbf9c6a8/LOGO_Micinn_Isciii.jpg" /> -->
+                <img style="margin:3px;height:35px;" src="images/logobier.jpg"/>
+                <img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg"/>
+                <img style="margin:3px;height:35px;" src="images/logo_cipf.png"/>
+                <img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg"/>
+                <img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg"/>
+                <img style="margin:3px;height:35px;" src="images/logo_inb.png" />
             </div>
 
             <div class="title2">Note:</div>
             <div class="paragraph2">
-                BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web
-                technologies such as
-                Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+,
-                IE
-                10+, Safari 7+
-                and Opera 24+.
+                BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari 7+ and Opera 24+.
             </div>
 
         </div>
@@ -154,7 +149,7 @@
 <script>
     Polymer({
         is: "bierapp-home",
-        annonymousLogin: function () {
+        annonymousLogin: function() {
             this.fire('annonymous');
         }
     })
