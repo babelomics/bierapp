@@ -1,4 +1,3 @@
-
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-application-behavior.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-manager-behavior.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-panel.html">
@@ -325,7 +324,7 @@
         //     var option = e.currentTarget.dataset['option'];
         //     this.setMenu(option);
         // },
-        setMenu: function (option) {
+        setMenu: function(option) {
             if (option) {
                 this.selectedOption = option;
             }
@@ -366,8 +365,41 @@
             console.log("file");
             console.log(e.detail);
             var file = e.detail;
+
+            // browser
+
+            var selectedStudy = this.$.browser.selectedStudy.study;
+
             if (file.index && file.index.status == 'READY') {
+
+                var samples = [];
+
+                OpencgaManager.studies.samples({
+                    id: selectedStudy.id,
+                    query: {
+                        sid: Cookies("bioinfo_sid")
+                    },
+                    request: {
+                        async: false,
+                        success: function(response) {
+                            if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
+                                samples = response.response[0].result;
+                            } else {
+                                console.log(response.error);
+                                console.log(response.response[0].errorMsg);
+                            }
+                        },
+                        error: function() {
+                            console.log('Server error, try again later.');
+                        }
+                    }
+                });
+
+
+                this.$.variantBrowser.study = selectedStudy;
+                this.$.variantBrowser.samples = samples;
                 this.$.variantBrowser.file = file;
+
                 this.setMenu('variantbrowser');
                 // this.handleCloseBrowser();
                 this.$.browserPanel.hidden = true;
@@ -385,7 +417,7 @@
         handleUserNeedRefresh: function() {
             this.$.jsoHeader.getUserInfo(true);
         },
-        userDataChanged: function (neo, old) {
+        userDataChanged: function(neo, old) {
             var me = this;
             if (this.userData) {
                 var projectIds = [];
@@ -400,7 +432,7 @@
                         sid: Cookies("bioinfo_sid")
                     },
                     request: {
-                        success: function (response) {
+                        success: function(response) {
                             if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
                                 for (var i = 0; i < response.response.length; i++) {
                                     var r = response.response[i];
@@ -415,7 +447,7 @@
                             }
                             me.loading = false;
                         },
-                        error: function () {
+                        error: function() {
                             console.log('Server error, try again later.');
                             me.loading = false;
                         }
