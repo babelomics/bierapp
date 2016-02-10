@@ -34,106 +34,106 @@
 <script src="FilterHistory.js"></script>
 
 <dom-module id="bierapp-element">
-  <style>
-    :host {
-      display: block;
-      position: relative;
-      cursor: default;
-      font-size: 13px;
-      background-color: var(--default-primary-color);
-      height: 100%;
-      width: 100%;
-    }
-    /*.menu > div {
+    <style>
+        :host {
+            display: block;
+            position: relative;
+            cursor: default;
+            font-size: 13px;
+            background-color: var(--default-primary-color);
+            height: 100%;
+            width: 100%;
+        }
+        /*.menu > div {
             margin-left: 10px;
             cursor: pointer;
             text-align: center;
             padding: 0 5px;
         }*/
 
-    #menu div.option {
-      box-sizing: border-box;
-      margin-right: 1vw;
-      margin-top: 15px;
-      margin-bottom: 15px;
-      cursor: pointer;
-      text-align: center;
-      line-height: 30px;
-      padding: 0 5px;
-    }
+        #menu div.option {
+            box-sizing: border-box;
+            margin-right: 1vw;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 30px;
+            padding: 0 5px;
+        }
 
-    #menu div.option:hover {
-      border-bottom: 1px solid var(--divider-color);
-    }
+        #menu div.option:hover {
+            border-bottom: 1px solid var(--divider-color);
+        }
 
-    #menu div.option[active] {
-      font-weight: normal;
-      border-bottom: 2px solid var(--accent-color);
-    }
+        #menu div.option[active] {
+            font-weight: normal;
+            border-bottom: 2px solid var(--accent-color);
+        }
 
-    jso-opencga-header {
-      position: absolute;
-      top: 0;
-    }
+        jso-opencga-header {
+            position: absolute;
+            top: 0;
+        }
 
-    jso-opencga-footer {
-      position: absolute;
-      bottom: 0;
-    }
+        jso-opencga-footer {
+            position: absolute;
+            bottom: 0;
+        }
 
-    .content {
-      position: absolute;
-      width: 100%;
-      top: 60px;
-      height: calc(100vh - 60px);
-      /*background-color: transparent;*/
-    }
+        .content {
+            position: absolute;
+            width: 100%;
+            top: 60px;
+            height: calc(100vh - 60px);
+            /*background-color: transparent;*/
+        }
 
-    jso-dashboard {
-      height: calc(100vh - 60px);
-    }
+        jso-dashboard {
+            height: calc(100vh - 60px);
+        }
 
-    jso-variant-browser {
-      /*height: calc(100vh - 60px);*/
-      height: 100%;
-    }
+        jso-variant-browser {
+            /*height: calc(100vh - 60px);*/
+            height: 100%;
+        }
 
-    #browserPanel {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 600px;
-    }
+        #browserPanel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 600px;
+        }
 
-    div.icon {
-      margin-left: 15px;
-    }
+        div.icon {
+            margin-left: 15px;
+        }
 
-    div.menu-button {
-      padding: 0 10px;
-    }
+        div.menu-button {
+            padding: 0 10px;
+        }
 
-    div.menu-button:hover {
-      background-color: rgba(0, 0, 0, 0.20);
-    }
+        div.menu-button:hover {
+            background-color: rgba(0, 0, 0, 0.20);
+        }
 
-    #sampleBrowserPanel {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 600px;
-    }
-  </style>
-  <template>
-    <div class="content" menu-option="home">
-      <bierapp-home data-option="home"></bierapp-home>
-      <!-- <jso-variant-browser id="variantBrowser" menu-option="variantbrowser"></jso-variant-browser> -->
-      <!--<jso-dashboard menu-option="dashboard"-->
-      <!--projects="{{projects}}"></jso-dashboard>-->
-    </div>
+        #sampleBrowserPanel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 600px;
+        }
+    </style>
+    <template>
+        <div class="content" menu-option="home">
+            <bierapp-home data-option="home"></bierapp-home>
+            <!-- <jso-variant-browser id="variantBrowser" menu-option="variantbrowser"></jso-variant-browser> -->
+            <!--<jso-dashboard menu-option="dashboard"-->
+            <!--projects="{{projects}}"></jso-dashboard>-->
+        </div>
 
 
-    <!-- <jso-panel modal movable closable hidden$="{{createProjectHidden}}">
+        <!-- <jso-panel modal movable closable hidden$="{{createProjectHidden}}">
             <div class="header">Manolo</div>
             <jso-opencga-create-project class="container" id="createStudy" on-close="handleCloseCreateProject" projects="{{projects}}">
             </jso-opencga-create-project>
@@ -153,304 +153,227 @@
             </jso-opencga-upload-file>
         </jso-panel> -->
 
-    <div id="content" class="content" menu-option="home,variantbrowser">
-      <jso-panel hidden collapsible closable movable id="browserPanel" on-hidden="handlePanelHidden">
-        <!-- <jso-panel id="browserPanel" modal movable closable hidden$="{{browserHidden}}"> -->
-        <div class="header">
-          <i class="fa fa-folder-open-o"></i> File Browser
+        <div id="content" class="content" menu-option="home,variantbrowser">
+            <jso-panel hidden collapsible closable movable id="browserPanel" on-hidden="handlePanelHidden">
+                <!-- <jso-panel id="browserPanel" modal movable closable hidden$="{{browserHidden}}"> -->
+                <div class="header">
+                    <i class="fa fa-folder-open-o"></i> File Browser
+                </div>
+                <jso-opencga-browser class="container" id="browser" projects="{{projects}}" bioformats="{{bioformats}}" mode="file" on-need-refresh="handleUserNeedRefresh"></jso-opencga-browser>
+            </jso-panel>
+
+
+            <jso-panel hidden collapsible closable movable id="sampleBrowserPanel" on-hidden="handlePanelHidden">
+                <div class="header">
+                    <i class="fa fa-folder-open-o"></i> Sample Browser
+                </div>
+                <jso-opencga-sample-browser enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
+
+            </jso-panel>
         </div>
-        <jso-opencga-browser class="container" id="browser" projects="{{projects}}" bioformats="{{bioformats}}" mode="file" on-fileselect="handleFileSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-browser>
-      </jso-panel>
 
-
-      <jso-panel hidden collapsible closable movable id="sampleBrowserPanel" on-hidden="handlePanelHidden">
-        <div class="header">
-          <i class="fa fa-folder-open-o"></i> Sample Browser
+        <div class="content" menu-option="variantbrowser">
+            <jso-variant-browser id="variantBrowser"></jso-variant-browser>
         </div>
-        <jso-opencga-sample-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}"  on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
 
-      </jso-panel>
-    </div>
-
-    <div class="content" menu-option="variantbrowser">
-      <jso-variant-browser id="variantBrowser"></jso-variant-browser>
-    </div>
-
-    <jso-opencga-header id="jsoHeader" selected-option="{{selectedOption}}" user-data="{{userData}}" on-login="handleLogin" on-logout="handleLogout" hide-jobs hide-browse show-menu-on-login>
-      <span class="icon">
+        <jso-opencga-header id="jsoHeader" selected-option="{{selectedOption}}" user-data="{{userData}}" on-logout="handleLogout" hide-jobs hide-browse show-menu-on-login>
+            <span class="icon">
                 <img src="images/bier-text.svg" style="height: 50px;margin: 5px 0px 0 0;">
             </span>
-      <span class="title">BiERapp</span>
-      <span class="description"></span>
+            <span class="title">BiERapp</span>
+            <span class="description"></span>
 
-      <div id="menu" class="menu horizontal layout flex">
-        <!--<div class="hover" on-click="handleToggleCreateProject">-->
-        <!--New Project-->
-        <!--</div>-->
+            <div id="menu" class="menu horizontal layout flex">
+                <!--<div class="hover" on-click="handleToggleCreateProject">-->
+                <!--New Project-->
+                <!--</div>-->
 
-        <!--<div class="hover" on-click="handleToggleCreateStudy">-->
-        <!--New Study-->
-        <!--</div>-->
-        <!--<div class="hover" on-click="handleToggleUpload">-->
-        <!--Upload-->
-        <!--</div>-->
-        <!--<div data-option="dashboard" on-click="handleMenu">-->
-        <!--Dashboard-->
-        <!--</div>-->
+                <!--<div class="hover" on-click="handleToggleCreateStudy">-->
+                <!--New Study-->
+                <!--</div>-->
+                <!--<div class="hover" on-click="handleToggleUpload">-->
+                <!--Upload-->
+                <!--</div>-->
+                <!--<div data-option="dashboard" on-click="handleMenu">-->
+                <!--Dashboard-->
+                <!--</div>-->
 
-        <div title="Browse my data" class="option" on-click="handleLoggedOnlyMenuPanel" data-panel="browserPanel">
-          <i class="fa fa-cloud"></i>
-          <span class="option-text">My data</span>
-        </div>
+                <div title="Browse my data" class="option" on-click="handleLoggedOnlyMenuPanel" data-panel="browserPanel">
+                    <i class="fa fa-cloud"></i>
+                    <span class="option-text">My data</span>
+                </div>
 
-        <div title="Browse samples" class="option" on-click="handleLoggedOnlyMenuPanel" data-panel="sampleBrowserPanel">
-          <i class="fa fa-users"></i>
-          <span class="option-text">Samples</span>
-        </div>
-        <!-- <div class="hover" on-click="handleToggleBrowser">
+                <div title="Browse samples" class="option" on-click="handleLoggedOnlyMenuPanel" data-panel="sampleBrowserPanel">
+                    <i class="fa fa-users"></i>
+                    <span class="option-text">Samples</span>
+                </div>
+                <!-- <div class="hover" on-click="handleToggleBrowser">
                     <i class="fa fa-cloud"></i> My data
                 </div> -->
 
-        <!--<div data-option="variantbrowser" on-click="handleMenu">-->
-        <!--Variant browser-->
-        <!--</div>-->
-      </div>
+                <!--<div data-option="variantbrowser" on-click="handleMenu">-->
+                <!--Variant browser-->
+                <!--</div>-->
+            </div>
 
-      <jso-help-menu class="helpmenu" selectedOption="{{selectedOption}}">
-        <a href="https://github.com/babelomics/bierapp/wiki" target="_blank">
-          <i class="fa fa-book"></i> &nbsp; Documentation
-        </a>
-        <a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank">
-          <i class="fa fa-compass"></i> &nbsp; Tutorial
-        </a>
-        <a href="https://github.com/babelomics/bierapp/" target="_blank">
-          <i class="fa fa-github"></i> &nbsp; Source code
-        </a>
-      </jso-help-menu>
-    </jso-opencga-header>
+            <jso-help-menu class="helpmenu" selectedOption="{{selectedOption}}">
+                <a href="https://github.com/babelomics/bierapp/wiki" target="_blank">
+                    <i class="fa fa-book"></i> &nbsp; Documentation
+                </a>
+                <a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank">
+                    <i class="fa fa-compass"></i> &nbsp; Tutorial
+                </a>
+                <a href="https://github.com/babelomics/bierapp/" target="_blank">
+                    <i class="fa fa-github"></i> &nbsp; Source code
+                </a>
+            </jso-help-menu>
+        </jso-opencga-header>
 
-    <jso-opencga-footer menu-option="home,loging,singup,profile,remember">
-      <!-- <jso-opencga-footer hidden$="{{computeFooter(selectedOption)}}" > -->
-      BierApp: created by Computational Genomics Department
-      <br> Centro de Investigación Principe Felipe
-      <br> 2015
-    </jso-opencga-footer>
+        <jso-opencga-footer menu-option="home,loging,singup,profile,remember">
+            <!-- <jso-opencga-footer hidden$="{{computeFooter(selectedOption)}}" > -->
+            BierApp: created by Computational Genomics Department
+            <br> Centro de Investigación Principe Felipe
+            <br> 2015
+        </jso-opencga-footer>
 
-  </template>
+    </template>
 </dom-module>
 
 <script>
-  Polymer({
-    is: "bierapp-element",
-    behaviors: [JsoApplicationBehavior],
-    properties: {
-      // selectedOption: {
-      //     type: String,
-      //     value: "home",
-      //     notify: true,
-      //     reflectToAttribute: true,
-      //     observer: 'selectedOptionChanged'
-      // },
-      userData: {
-        type: Object,
-        notify: true,
-        observer: 'userDataChanged'
-      },
-      projects: {
-        type: Array,
-        notify: true,
-        observer: 'projectsChanged'
-      },
-      allowedTools: {
-        type: Array,
-        value: function() {
-          /*return ["opencga-storage.sh"];*/
-          return ["bierapp"];
-        }
-      },
-      browserHidden: {
-        type: Boolean,
-        value: true,
-        reflectToAttribute: true
-      },
-      uploadHidden: {
-        type: Boolean,
-        value: true,
-        reflectToAttribute: true
-      },
-      createStudyHidden: {
-        type: Boolean,
-        value: true,
-        reflectToAttribute: true
-      },
-      createProjectHidden: {
-        type: Boolean,
-        value: true,
-        reflectToAttribute: true
-      },
-      bioformats: {
-        type: Array,
-        notify: true,
-        value: [{
-          text: "VCF 4.0",
-          value: "VARIANT",
-          validator: VCFValidator
-        }]
-      }
-    },
-    ready: function() {},
-    // selectedOptionChanged: function (neo, old) {
-    //     var menuItems = Polymer.dom(this.root).querySelectorAll('[menu-option]');
-    //     for (var i = 0; i < menuItems.length; i++) {
-    //         var item = menuItems[i];
-    //         var currentItemValue = item.getAttribute("menu-option");
-    //         if (neo == currentItemValue) {
-    //             item.removeAttribute("hidden");
-    //         } else {
-    //             item.setAttribute('hidden', '');
-    //         }
-    //     }
-    // },
-    // handleMenu: function (e) {
-    //     var option = e.currentTarget.dataset['option'];
-    //     this.setMenu(option);
-    // },
-    setMenu: function(option) {
-      if (option) {
-        this.selectedOption = option;
-      }
-    },
-
-    projectsChanged: function(neo, old) {},
-    // handleToggleBrowser: function(e) {
-    //     this.browserHidden = !this.browserHidden;
-    // },
-    // handleCloseBrowser: function(e) {
-    //     this.browserHidden = true;
-    // },
-    //
-    // handleCloseUpload: function(e) {
-    //     this.uploadHidden = true;
-    // },
-    // handleToggleUpload: function(e) {
-    //     this.uploadHidden = !this.uploadHidden;
-    // },
-    // handleCloseCreateStudy: function(e) {
-    //     this.createStudyHidden = true;
-    // },
-    // handleToggleCreateStudy: function(e) {
-    //     this.createStudyHidden = !this.createStudyHidden;
-    // },
-    // handleCloseCreateProject: function(e) {
-    //     this.createProjectHidden = true;
-    // },
-    // handleToggleCreateProject: function(e) {
-    //
-    //     this.createProjectHidden = !this.createProjectHidden;
-    // },
-
-    // computeFooter: function(selectedOption) {
-    //     return selectedOption == 'dashboard' || selectedOption == 'variantbrowser';
-    // },
-    handleFileSelect: function(e) {
-      console.log("file");
-      console.log(e.detail);
-      var file = e.detail;
-
-      // browser
-
-      var selectedStudy = this.$.browser.selectedStudy.study;
-
-      if (file.index && file.index.status == 'READY') {
-
-        var samples = [];
-
-        OpencgaManager.studies.samples({
-          id: selectedStudy.id,
-          query: {
-            sid: Cookies("bioinfo_sid")
-          },
-          request: {
-            async: false,
-            success: function(response) {
-              if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
-                samples = response.response[0].result;
-              } else {
-                console.log(response.error);
-                console.log(response.response[0].errorMsg);
-              }
+    Polymer({
+        is: "bierapp-element",
+        behaviors: [JsoApplicationBehavior],
+        properties: {
+            userData: {
+                type: Object,
+                notify: true,
+                observer: 'userDataChanged'
             },
-            error: function() {
-              console.log('Server error, try again later.');
-            }
-          }
-        });
-
-
-        this.$.variantBrowser.study = selectedStudy;
-        this.$.variantBrowser.samples = samples;
-        this.$.variantBrowser.file = file;
-
-        this.setMenu('variantbrowser');
-        // this.handleCloseBrowser();
-        this.$.browserPanel.hidden = true;
-
-      }
-    },
-    handleLogin: function() {
-      //            this.browserHidden = false;
-      // this.selectedOption = "home";
-    },
-    handleLogout: function() {
-      // this.browserHidden = true;
-      this.$.browserPanel.hide();
-    },
-    handleUserNeedRefresh: function() {
-      this.$.jsoHeader.getUserInfo(true);
-    },
-    userDataChanged: function(neo, old) {
-      var me = this;
-      if (this.userData) {
-        var projectIds = [];
-        for (var i = 0; i < this.userData.projects.length; i++) {
-          var p = this.userData.projects[i];
-          projectIds.push(p.id);
-        }
-        var projects = [];
-        OpencgaManager.projects.studies({
-          id: projectIds.join(','),
-          query: {
-            sid: Cookies("bioinfo_sid")
-          },
-          request: {
-            success: function(response) {
-              if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
-                for (var i = 0; i < response.response.length; i++) {
-                  var r = response.response[i];
-                  me.userData.projects[i].studies = r.result;
-                  projects.push(me.userData.projects[i]);
+            projects: {
+                type: Array,
+                notify: true,
+                observer: 'projectsChanged'
+            },
+            allowedTools: {
+                type: Array,
+                value: function() {
+                    return ["bierapp"];
                 }
-                /* update projects property*/
-                me.projects = projects;
-              } else {
-                console.log(response.error);
-                console.log(response.response[0].errorMsg);
-              }
-              me.loading = false;
             },
-            error: function() {
-              console.log('Server error, try again later.');
-              me.loading = false;
+            browserHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            uploadHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            createStudyHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            createProjectHidden: {
+                type: Boolean,
+                value: true,
+                reflectToAttribute: true
+            },
+            bioformats: {
+                type: Array,
+                notify: true,
+                value: [{
+                    text: "VCF 4.0",
+                    value: "VARIANT",
+                    validator: VCFValidator
+                }]
             }
-          }
-        });
-      } else {
-        console.log("no user data")
-      }
-    },
-    annonymousLogin: function() {
-      this.$.jsoHeader.anonymousSign();
-    }
-  });
+        },
+        ready: function() {},
+        setMenu: function(option) {
+            if (option) {
+                this.selectedOption = option;
+            }
+        },
+        projectsChanged: function(neo, old) {},
+
+        handleLogout: function() {
+            this.$.browserPanel.hide();
+        },
+        handleUserNeedRefresh: function() {
+            this.$.jsoHeader.getUserInfo(true);
+        },
+        userDataChanged: function(neo, old) {
+            var me = this;
+            if (this.userData) {
+                var projectIds = [];
+                for (var i = 0; i < this.userData.projects.length; i++) {
+                    var p = this.userData.projects[i];
+                    projectIds.push(p.id);
+                }
+                var projects = [];
+                OpencgaManager.projects.studies({
+                    id: projectIds.join(','),
+                    query: {
+                        sid: Cookies("bioinfo_sid")
+                    },
+                    request: {
+                        success: function(response) {
+                            if (response.response[0].errorMsg === '' || response.response[0].errorMsg == null) {
+                                for (var i = 0; i < response.response.length; i++) {
+                                    var r = response.response[i];
+                                    me.userData.projects[i].studies = r.result;
+                                    projects.push(me.userData.projects[i]);
+                                }
+                                /* update projects property*/
+                                me.projects = projects;
+                            } else {
+                                console.log(response.error);
+                                console.log(response.response[0].errorMsg);
+                            }
+                            me.loading = false;
+                        },
+                        error: function() {
+                            console.log('Server error, try again later.');
+                            me.loading = false;
+                        }
+                    }
+                });
+            } else {
+                console.log("no user data")
+            }
+        },
+        annonymousLogin: function() {
+            this.$.jsoHeader.anonymousSign();
+        },
+        handleSampleSelect: function(e) {
+            var samplesArray = [];
+            var samplesIds = [];
+            var samples = e.currentTarget.querySelectorAll('jso-opencga-sample-list-item[selected]');
+
+            if (samples.length > 0) {
+                for (var i = 0; i < samples.length; i++) {
+                    samplesIds.push(samples[i].sample.id);
+                    samplesArray.push(samples[i].sample);
+                }
+                for (var i = 0; i < samplesArray.length; i++) {
+                    var s = samplesArray[i];
+                    if (s.status != 'READY') {
+                        alert('All selected samples must be READY');
+                        return;
+                    }
+                }
+
+                var selectedStudy = this.$.sampleBrowser.selectedStudy.study;
+
+                this.$.variantBrowser.samples = samplesArray;
+                this.$.variantBrowser.study = selectedStudy;
+                this.$.sampleBrowserPanel.hidden = true;
+
+                this.setMenu('variantbrowser');
+            }
+        }
+    });
 </script>
 </polymer-element>
