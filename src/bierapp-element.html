@@ -167,7 +167,7 @@
                 <div class="header">
                     <i class="fa fa-folder-open-o"></i> Sample Browser
                 </div>
-                <jso-opencga-sample-browser enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
+                <jso-opencga-sample-browser enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
 
             </jso-panel>
         </div>
@@ -288,7 +288,11 @@
                     value: "VARIANT",
                     validator: VCFValidator
                 }]
-            }
+            },
+            samples: {
+                type: Array,
+                observer: "samplesChanged"
+            },
         },
         ready: function() {},
         setMenu: function(option) {
@@ -352,7 +356,10 @@
             var samplesIds = [];
             var samples = e.currentTarget.querySelectorAll('jso-opencga-sample-list-item[selected]');
 
-            if (samples.length > 0) {
+            if (samples.length == 0) {
+                this.$.variantBrowser.samples = this.samples;
+                this.$.variantBrowser.study = this.$.sampleBrowser.selectedStudy.study;
+            } else {
                 for (var i = 0; i < samples.length; i++) {
                     samplesIds.push(samples[i].sample.id);
                     samplesArray.push(samples[i].sample);
@@ -369,12 +376,13 @@
 
                 this.$.variantBrowser.samples = samplesArray;
                 this.$.variantBrowser.study = selectedStudy;
-                this.$.sampleBrowserPanel.hidden = true;
-                this.$.browserPanel.hidden = true;
-
-                this.setMenu('variantbrowser');
             }
-        }
+            this.setMenu('variantbrowser');
+            this.$.sampleBrowserPanel.hidden = true;
+            this.$.browserPanel.hidden = true;
+
+        },
+        samplesChanged: function(neo, old) {}
     });
 </script>
 </polymer-element>
