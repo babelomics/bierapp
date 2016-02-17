@@ -181,22 +181,10 @@
                 <img src="images/bier-text.svg" style="height: 50px;margin: 5px 0px 0 0;">
             </span>
             <span class="title">BiERapp</span>
-            <span class="description"></span>
+            <span class="description">1.5.0</span>
 
             <div id="menu" class="menu horizontal layout flex">
-                <!--<div class="hover" on-click="handleToggleCreateProject">-->
-                <!--New Project-->
-                <!--</div>-->
-
-                <!--<div class="hover" on-click="handleToggleCreateStudy">-->
-                <!--New Study-->
-                <!--</div>-->
-                <!--<div class="hover" on-click="handleToggleUpload">-->
-                <!--Upload-->
-                <!--</div>-->
-                <!--<div data-option="dashboard" on-click="handleMenu">-->
-                <!--Dashboard-->
-                <!--</div>-->
+                <div style="margin-left:2vw;"></div>
 
                 <div title="Browse my data" class="option" on-click="handleLoggedOnlyMenuPanel" data-panel="browserPanel">
                     <i class="fa fa-cloud"></i>
@@ -357,6 +345,13 @@
             var samples = e.currentTarget.querySelectorAll('jso-opencga-sample-list-item[selected]');
 
             if (samples.length == 0) {
+                for (var i = 0; i < this.samples.length; i++) {
+                    var s = this.samples[i];
+                    if (s.status != 'READY') {
+                        alert('All selected samples must be READY');
+                        return;
+                    }
+                }
                 this.$.variantBrowser.samples = this.samples;
                 this.$.variantBrowser.study = this.$.sampleBrowser.selectedStudy.study;
             } else {
