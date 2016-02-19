@@ -167,7 +167,7 @@
                 <div class="header">
                     <i class="fa fa-folder-open-o"></i> Study Browser
                 </div>
-                <jso-opencga-sample-browser enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
+                <jso-opencga-sample-browser enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" filtered-samples="{{filteredSamples}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
 
             </jso-panel>
         </div>
@@ -279,7 +279,17 @@
             },
             samples: {
                 type: Array,
+                value: function(){
+                  return [];
+                },
                 observer: "samplesChanged"
+            },
+            filteredSamples: {
+                type: Array,
+                value: function(){
+                  return [];
+                },
+                observer: "filteredSamplesChanged"
             },
         },
         ready: function() {},
@@ -345,15 +355,21 @@
             var samples = e.currentTarget.querySelectorAll('jso-opencga-sample-list-item[selected]');
 
             if (samples.length == 0) {
-                for (var i = 0; i < this.samples.length; i++) {
-                    var s = this.samples[i];
-                    if (s.status != 'READY') {
-                        alert('All selected samples must be READY');
-                        return;
+                if (this.filteredSamples.length == 0) {
+                    alert('You must select at least one sample');
+                    return;
+                } else {
+                    for (var i = 0; i < this.filteredSamples.length; i++) {
+                        var s = this.filteredSamples[i];
+                        if (s.status != 'READY') {
+                            alert('All selected samples must be READY');
+                            return;
+                        }
                     }
+                    this.$.variantBrowser.samples = this.filteredSamples;
+                    this.$.variantBrowser.study = this.$.sampleBrowser.selectedStudy.study;
                 }
-                this.$.variantBrowser.samples = this.samples;
-                this.$.variantBrowser.study = this.$.sampleBrowser.selectedStudy.study;
+
             } else {
                 for (var i = 0; i < samples.length; i++) {
                     samplesIds.push(samples[i].sample.id);
@@ -377,7 +393,8 @@
             this.$.browserPanel.hidden = true;
 
         },
-        samplesChanged: function(neo, old) {}
+        samplesChanged: function(neo, old) {},
+        filteredSamplesChanged: function(neo,old){}
     });
 </script>
 </polymer-element>
