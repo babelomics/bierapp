@@ -2,25 +2,9 @@ CELLBASE_HOST = "http://bioinfo.hpc.cam.ac.uk/cellbase";
 CELLBASE_VERSION = "v3";
 OPENCGA_HOST = "http://test.babelomics.org/opencga-0.7-dev";
 //OPENCGA_HOST = "http://bioinfoint.hpc.cam.ac.uk/opencga/rest";
-BIERAPP_VERSION = "1.4.1";
+BIERAPP_VERSION = "1.5.0";
 
 STUDY_NAME = "WorkSpace";
-
-if (
-    window.location.host.indexOf("localhost") != -1 ||
-    window.location.host.indexOf("fsalavert") != -1 ||
-    window.location.host.indexOf("rsanchez") != -1 ||
-    window.location.host.indexOf("imedina") != -1 ||
-    window.location.host.indexOf("aaleman") != -1 ||
-    window.location.protocol === "file:"
-) {
-
-    //CELLBASE_HOST = "http://ws.bioinfo.cipf.es/cellbase/rest";
-    //CELLBASE_HOST = "http://www.ebi.ac.uk/cellbase/webservices/rest";
-//    OPENCGA_HOST = "http://localhost:8080/opencga/rest";
-//    OPENCGA_HOST = "http://mem18:8080/opencga/rest";
-}
-
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
 
 
