@@ -2,15 +2,15 @@
 BierApp is the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
 
 ### Documentation
-You can find BierApp documentation and tutorials at: https://github.com/opencb/bierapp/wiki.
+You can find BierApp documentation and tutorials at: https://github.com/babelomics/bierapp/wiki.
 
 ### Issue Tracking
-You can report bugs or request new features at [GitHub issue tracking](https://github.com/opencb/bierapp/issues).
+You can report bugs or request new features at [GitHub issue tracking](https://github.com/babelomics/bierapp/issues).
 
 ### Release Notes and Roadmap
-Releases notes are available at [GitHub releases](https://github.com/opencb/bierapp/releases).
+Releases notes are available at [GitHub releases](https://github.com/babelomics/bierapp/releases).
 
-Roadmap is available at [GitHub milestones](https://github.com/opencb/bierapp/milestones). You can report bugs or request new features at [GitHub issue tracking](https://github.com/opencb/bierapp/issues).
+Roadmap is available at [GitHub milestones](https://github.com/babelomics/bierapp/milestones). You can report bugs or request new features at [GitHub issue tracking](https://github.com/babelomics/bierapp/issues).
 
 ### Versioning
 BierApp is versioned following the rules from [Semantic versioning](http://semver.org/).
