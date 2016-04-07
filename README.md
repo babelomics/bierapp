@@ -5,7 +5,7 @@ BierApp is the gene/variant prioritization tool of the BiER (the Team of BioInfo
 You can find BierApp documentation and tutorials at: https://github.com/babelomics/bierapp/wiki.
 
 ### How to cite BiERapp
-Alemán A, Garcia-Garcia F, Salavert F, Medina I, Dopazo J. A web-based interactive framework to assist in the prioritization of disease candidate genes in whole-exome sequencing studies. Nucleic Acids Res. 2014 Jul;42(Web Server issue):W88-93. doi: 10.1093/nar/gku407. [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/24803668)
+Alemán A, Garcia-Garcia F, Salavert F, Medina I, Dopazo J. A web-based interactive framework to assist in the prioritization of disease candidate genes in whole-exome sequencing studies. Nucleic Acids Res. 2014 Jul;42(Web Server issue):W88-93. doi: 10.1093/nar/gku407. [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/24803668) [NAR](http://nar.oxfordjournals.org/content/42/W1/W88.long) [PMC](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4086071/)
 
 
 ### Issue Tracking
