@@ -1,8 +1,12 @@
 # Overview
-BierApp is the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
+BierApp is the gene/variant prioritization tool of the BiER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples. The tool provides an easy-to-use environment in which heuristic filters can be applied to narrow down a large liste of variants found in whole exome (or genome) experiments.
 
 ### Documentation
 You can find BierApp documentation and tutorials at: https://github.com/babelomics/bierapp/wiki.
+
+### How to cite BiERapp
+Alemán A, Garcia-Garcia F, Salavert F, Medina I, Dopazo J. A web-based interactive framework to assist in the prioritization of disease candidate genes in whole-exome sequencing studies. Nucleic Acids Res. 2014 Jul;42(Web Server issue):W88-93. doi: 10.1093/nar/gku407. [PubMed](http://www.ncbi.nlm.nih.gov/pubmed/24803668)
+
 
 ### Issue Tracking
 You can report bugs or request new features at [GitHub issue tracking](https://github.com/babelomics/bierapp/issues).
@@ -19,9 +23,13 @@ BierApp is versioned following the rules from [Semantic versioning](http://semve
 We recommend to contact BierApp developers by writing to OpenCB mailing list babelomics@cipf.es. The main developers and maintainers are:
 * Joaquin Dopazo (jdopazo@cipf.es) (_Founder and Project Leader_)
 * Ignacio Medina (im411@cam.ac.uk)
-* Roberto Alonso (ralonso@cipf.es)
+* Mercedes Medina (mmedina@cipf.es)
 * Alejandro Aleman (aaleman@cipf.es)
 * Francisco Salavert (fsalavert@cipf.es)
+
+Former contributors
+* Roberto Alonso 
+
 
 ##### Contributing
 BierApp is an open-source and collaborative project. We appreciate any help and feeback from users, you can contribute in many different ways such as simple bug reporting and feature request. Dependending on your skills you are more than welcome to develop client tools, new features or even fixing bugs.
