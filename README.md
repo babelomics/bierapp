@@ -112,6 +112,9 @@ grunt
 
 When completed, all compiled files will be located under the `build` folder.
 
+### Backend
+BIERapp uses _Opencga 0.7_ to process VCF Files.
+
 # Supporters
 JetBrains is supporting this open source project with:
 
