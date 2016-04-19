@@ -102,17 +102,20 @@
         ga('send', 'pageview');
 
         window.addEventListener('WebComponentsReady', function(e) {
-            var speciesReady = false;
             getSpecies(function(s) {
                 AVAILABLE_SPECIES = s;
                 DEFAULT_SPECIES = AVAILABLE_SPECIES.vertebrates[0];
-                speciesReady = true;
-                if (speciesReady) {
-                    init();
-                }
+                HPO_ONTOLOGY = [];
+                GO_ONTOLOGY = [];
+                generateFile('conf/hp_id.txt', HPO_ONTOLOGY, function() {
+                    generateFile('conf/go_id.txt', GO_ONTOLOGY, function() {
+                        init();
+                    });
+                });
             });
         });
-var bierapp;
+        var bierapp;
+
         function init() {
             bierapp = document.createElement('bierapp-element');
             document.body.appendChild(bierapp);
@@ -143,6 +146,39 @@ var bierapp;
             });
         };
 
+        function openRemoteFile(filepath, cb) {
+            var me = this;
+            var request = new XMLHttpRequest();
+            request.onload = function() {
+                cb(this.responseText);
+            };
+            request.onerror = function() {
+                console.log('Error loading remote file');
+            };
+            request.open("GET", filepath);
+            request.send();
+        };
+
+        function generateFile(filepath, file, cb) {
+            openRemoteFile(filepath, function(content) {
+                var lines = content.split("\n");
+                for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].indexOf(":") >= 0) {
+                        var line = lines[i].split(" ");
+                        var id= line[0];
+                        var name="";
+                        for (var j = 1; j < line.length; j++) {
+                          name+=line[j]+" ";
+                        }
+                        file[i] = {
+                            id: id,
+                            name: name
+                        };
+                    }
+                }
+                cb();
+            });
+        }
     </script>
 
 </body>
