@@ -114,13 +114,7 @@
             getSpecies(function(s) {
                 AVAILABLE_SPECIES = s;
                 DEFAULT_SPECIES = AVAILABLE_SPECIES.vertebrates[0];
-                // HPO_ONTOLOGY = [];
-                // GO_ONTOLOGY = [];
-                // generateFile('conf/hp_id.txt', HPO_ONTOLOGY, function() {
-                //     generateFile('conf/go_id.txt', GO_ONTOLOGY, function() {
-                        init();
-                //     });
-                // });
+                init();
             });
         });
         var bierapp;
@@ -168,27 +162,6 @@
             request.send();
         };
 
-        // function generateFile(filepath, file, cb) {
-        //     openRemoteFile(filepath, function(content) {
-        //         var lines = content.split("\n");
-        //         for (var i = 0; i < lines.length; i++) {
-        //             if (lines[i].indexOf(":") >= 0) {
-        //                 var line = lines[i].split(" ");
-        //                 var id = line[0];
-        //                 var name = "";
-        //                 for (var j = 1; j < line.length; j++) {
-        //                     name += line[j] + " ";
-        //                 }
-        //                 file[i] = {
-        //                     _id: id,
-        //                     n: name,
-        //                     f: []
-        //                 };
-        //             }
-        //         }
-        //         cb();
-        //     });
-        // }
     </script>
 
 </body>
