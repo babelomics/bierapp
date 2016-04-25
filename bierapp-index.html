@@ -52,6 +52,8 @@
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
     <link rel="import" href="bower_components/network-viewer/network-viewer.html">
+    <link rel="import" href='bower_components/stevia-components/src/file/stv-folder-tree.html'>
+    <link rel="import" href='bower_components/stevia-components/src/file/stv-folder-tree-item.html'>
 
     <!-- <script src="bower_components/bowser/bowser.min.js"></script> -->
     <!--Libraries-->
@@ -76,6 +78,10 @@
 
 
     <!--Internal-->
+    <script src="conf/hpo_obo.js"></script>
+    <script src="conf/hpo_tree.js"></script>
+    <script src="conf/go_obo.js"></script>
+    <script src="conf/go_tree.js"></script>
     <script src="lib/jsorolla/src/lib/utils.js"></script>
     <script src="lib/jsorolla/src/lib/opencga-manager.js"></script>
     <script src="lib/jsorolla/src/lib/cellbase-manager.js"></script>
@@ -108,13 +114,13 @@
             getSpecies(function(s) {
                 AVAILABLE_SPECIES = s;
                 DEFAULT_SPECIES = AVAILABLE_SPECIES.vertebrates[0];
-                HPO_ONTOLOGY = [];
-                GO_ONTOLOGY = [];
-                generateFile('conf/hp_id.txt', HPO_ONTOLOGY, function() {
-                    generateFile('conf/go_id.txt', GO_ONTOLOGY, function() {
+                // HPO_ONTOLOGY = [];
+                // GO_ONTOLOGY = [];
+                // generateFile('conf/hp_id.txt', HPO_ONTOLOGY, function() {
+                //     generateFile('conf/go_id.txt', GO_ONTOLOGY, function() {
                         init();
-                    });
-                });
+                //     });
+                // });
             });
         });
         var bierapp;
@@ -162,26 +168,27 @@
             request.send();
         };
 
-        function generateFile(filepath, file, cb) {
-            openRemoteFile(filepath, function(content) {
-                var lines = content.split("\n");
-                for (var i = 0; i < lines.length; i++) {
-                    if (lines[i].indexOf(":") >= 0) {
-                        var line = lines[i].split(" ");
-                        var id= line[0];
-                        var name="";
-                        for (var j = 1; j < line.length; j++) {
-                          name+=line[j]+" ";
-                        }
-                        file[i] = {
-                            id: id,
-                            name: name
-                        };
-                    }
-                }
-                cb();
-            });
-        }
+        // function generateFile(filepath, file, cb) {
+        //     openRemoteFile(filepath, function(content) {
+        //         var lines = content.split("\n");
+        //         for (var i = 0; i < lines.length; i++) {
+        //             if (lines[i].indexOf(":") >= 0) {
+        //                 var line = lines[i].split(" ");
+        //                 var id = line[0];
+        //                 var name = "";
+        //                 for (var j = 1; j < line.length; j++) {
+        //                     name += line[j] + " ";
+        //                 }
+        //                 file[i] = {
+        //                     _id: id,
+        //                     n: name,
+        //                     f: []
+        //                 };
+        //             }
+        //         }
+        //         cb();
+        //     });
+        // }
     </script>
 
 </body>
