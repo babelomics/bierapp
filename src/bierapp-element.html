@@ -89,8 +89,13 @@
             position: absolute;
             width: 100%;
             top: 60px;
-            height: calc(100vh - 60px);
+            /*height: calc(100vh - 60px);*/
             /*background-color: transparent;*/
+        }
+        
+        bierapp-home {
+            height: calc(100vh - 160px);
+            overflow-y: auto;
         }
 
         jso-dashboard {
@@ -171,7 +176,8 @@
                 <div class="header">
                     <i class="fa fa-folder-open-o"></i> Study Browser
                 </div>
-                <jso-opencga-sample-browser enable-auto-index enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" filtered-samples="{{filteredSamples}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
+                <jso-opencga-sample-browser enable-auto-index enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" filtered-samples="{{filteredSamples}}" on-viewvariantbrowser="handleSampleSelect"
+                on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
 
             </jso-panel>
         </div>
@@ -283,15 +289,15 @@
             },
             samples: {
                 type: Array,
-                value: function(){
-                  return [];
+                value: function() {
+                    return [];
                 },
                 observer: "samplesChanged"
             },
             filteredSamples: {
                 type: Array,
-                value: function(){
-                  return [];
+                value: function() {
+                    return [];
                 },
                 observer: "filteredSamplesChanged"
             },
@@ -398,7 +404,7 @@
 
         },
         samplesChanged: function(neo, old) {},
-        filteredSamplesChanged: function(neo,old){}
+        filteredSamplesChanged: function(neo, old) {}
     });
 </script>
 </polymer-element>
