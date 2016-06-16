@@ -13,10 +13,21 @@ vulcanize \
     --strip-comments \
     --exclude "conf/config.js" \
     --exclude "conf/theme.html" \
+    --exclude "conf/go_gene.js" \
+    --exclude "conf/go_obo.js" \
+    --exclude "conf/go_obo.sif" \
+    --exclude "conf/go_tree.js" \
+    --exclude "conf/hp_obo.sif" \
+    --exclude "conf/hpo_gene.js" \
+    --exclude "conf/hpo_obo.js" \
+    --exclude "conf/hpo_tree.js" \
     bierapp-index.html \
     | crisper \
     --html build/tmp/index.html \
     --js build/tmp/bierapp.js
+
+
+
 
 uglifyjs build/tmp/bierapp.js > build/tmp/bierapp.min.js
 

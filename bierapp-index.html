@@ -45,15 +45,11 @@
     <link href='lib/jsorolla/src/lib/components/jso-global.css' rel='stylesheet' type='text/css'>
     <link href='lib/jsorolla/src/lib/components/jso-dropdown.css' rel='stylesheet' type='text/css'>
     <link href='lib/jsorolla/src/lib/components/jso-form.css' rel='stylesheet' type='text/css'>
-    <link href='bower_components/stevia-components/css/global.css' rel='stylesheet' type='text/css'>
 
     <!--Web Components-->
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="bower_components/polymer/polymer.html">
-    <link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-    <link rel="import" href="bower_components/network-viewer/network-viewer.html">
-    <link rel="import" href='bower_components/stevia-components/src/file/stv-folder-tree.html'>
-    <link rel="import" href='bower_components/stevia-components/src/file/stv-folder-tree-item.html'>
+
 
     <!-- <script src="bower_components/bowser/bowser.min.js"></script> -->
     <!--Libraries-->
@@ -124,6 +120,7 @@
         function init() {
             bierapp = document.createElement('bierapp-element');
             document.body.appendChild(bierapp);
+            // bierapp.setAttribute("maintenance","Thu Jun 16 2016 15:20:15 GMT+0200 (CEST),Thu Jun 19 2016 09:00:00 GMT+0200 (CEST)");
         };
 
         function getSpecies(callback) {

@@ -1,17 +1,3 @@
-<style>
-    html, body {
-        font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, 'sans-serif' !important;
-    }
-
-    a {
-        transition: color 0.1s linear;
-        text-decoration: none;
-    }
-
-    jso-opencga-header > .main {
-        font-weight: 300;
-    }
-</style>
 <style is="custom-style">
     :root {
       --dark-primary-color: #204854;
@@ -28,5 +14,45 @@
 
       --dark-button-color: #0b9db2;
       --light-button-color: #0fc2dc;
+    }
+</style>
+<style>
+    [hidden] {
+        display: none !important;
+    }
+
+    html,
+    body {
+        font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, 'sans-serif' !important;
+    }
+
+    body.fullbleed {
+        margin: 0;
+        height: 100vh;
+    }
+
+    body[unresolved] {
+        opacity: 0;
+        display: block;
+        overflow: hidden;
+        position: relative;
+    }
+
+    body {
+        transition: opacity ease-in 0.2s;
+    }
+
+    a {
+        transition: color 0.1s linear;
+        text-decoration: none;
+        color: var(--text-primary-color);
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    stv-header > .main {
+        font-weight: 300;
     }
 </style>

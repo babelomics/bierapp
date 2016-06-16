@@ -1,3 +1,5 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-application-behavior.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-manager-behavior.html">
 <link rel="import" href="../lib/jsorolla/src/lib/components/jso-panel.html">
@@ -38,7 +40,7 @@
 <script src="FilterHistory.js"></script>
 
 <dom-module id="bierapp-element">
-    <style>
+    <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
         :host {
             display: block;
             position: relative;
