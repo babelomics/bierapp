@@ -1,63 +1,46 @@
 #!/bin/sh
-rm -rf build
-mkdir -p build
-mkdir -p build/tmp
-#mkdir -p build/css
-mkdir -p build/fonts
-mkdir -p build/fontawesome
-mkdir -p build/images
+NAME="bierapp"
+ELEMENT="bierapp-element"
+BP=build
 
-vulcanize \
-    --inline-scripts \
-    --inline-css \
-    --strip-comments \
-    --exclude "conf/config.js" \
-    --exclude "conf/theme.html" \
-    --exclude "conf/go_gene.js" \
-    --exclude "conf/go_obo.js" \
-    --exclude "conf/go_obo.sif" \
-    --exclude "conf/go_tree.js" \
-    --exclude "conf/hp_obo.sif" \
-    --exclude "conf/hpo_gene.js" \
-    --exclude "conf/hpo_obo.js" \
-    --exclude "conf/hpo_tree.js" \
-    bierapp-index.html \
-    | crisper \
-    --html build/tmp/index.html \
-    --js build/tmp/bierapp.js
+rm -rf $BP
+mkdir -p $BP
+mkdir -p $BP/fontawesome
+mkdir -p $BP/webcomponentsjs
+mkdir -p $BP/fonts
+mkdir -p $BP/fonts
 
+vulcanize --inline-scripts --inline-css --strip-comments $ELEMENT.html > $BP/$ELEMENT.html
 
+cp -r $NAME-index.html $BP/index.html
+cp -r conf/ $BP/
+cp -r images/ $BP/
+cp -r bower_components/fontawesome/css $BP/fontawesome/
+cp -r bower_components/fontawesome/fonts $BP/fontawesome/
+cp -r bower_components/webcomponentsjs/*.min.js $BP/webcomponentsjs/
 
-
-uglifyjs build/tmp/bierapp.js > build/tmp/bierapp.min.js
-
-sed -i s@bierapp.js@bierapp.min.js@g build/tmp/index.html
-
-#fix paths
-sed -i s@lib/jsorolla/styles/fonts/@fonts/@g build/tmp/index.html
+#
+# fix index.html paths
+#
+sed -i s@lib/jsorolla/styles/fonts/@fonts/@g $BP/index.html
+sed -i s@lib/jsorolla/styles/fonts/@fonts/@g $BP/$ELEMENT.html
+sed -i s@lib/jsorolla/styles/img/@images/@g $BP/$ELEMENT.html
+cp -r lib/jsorolla/styles/img/* build/images/
 cp -r lib/jsorolla/styles/fonts/* build/fonts/
 
-sed -i s@lib/jsorolla/bower_components/fontawesome/fonts/@fontawesome/fonts/@g build/tmp/index.html
-sed -i s@bower_components/fontawesome/fonts/@fontawesome/fonts/@g build/tmp/index.html
-cp -r bower_components/fontawesome/css build/fontawesome/
-cp -r bower_components/fontawesome/fonts build/fontawesome/
-
-sed -i s@lib/jsorolla/styles/img/@images/@g build/tmp/index.html
-cp -r lib/jsorolla/styles/img/* build/images/
+sed -i s@lib/jsorolla/src/lib/components/@@g $BP/index.html
+cp -r lib/jsorolla/src/lib/components/jso-global.css build/
+cp -r lib/jsorolla/src/lib/components/jso-dropdown.css build/
+cp -r lib/jsorolla/src/lib/components/jso-form.css build/
 
 
-sed -i s@src/images/@images/@g build/tmp/index.html
-cp -r src/images/* build/images/
-
-
-# end fix paths
-
-#cp LICENSE build/
-cp README.md build/
-
-mv build/tmp/index.html build/
-mv build/tmp/bierapp.js build/
-mv build/tmp/bierapp.min.js build/
-cp -r conf build/
-
-rm -rf build/tmp
+sed -i s@'bower_components/'@@g $BP/index.html
+cp -r bower_components/underscore $BP/
+cp -r bower_components/backbone $BP/
+cp -r bower_components/jquery $BP/
+cp -r bower_components/qtip2 $BP/
+cp -r bower_components/pako $BP/
+cp -r bower_components/highcharts-release $BP/
+cp -r bower_components/crypto-js-evanvosberg $BP/
+cp -r bower_components/cookies-js $BP/
+## end fix paths
