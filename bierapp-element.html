@@ -1,43 +1,48 @@
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<script src="lib/jsorolla/src/lib/utils.js"></script>
+<script src="lib/jsorolla/src/lib/opencga-manager.js"></script>
+<script src="lib/jsorolla/src/lib/cellbase-manager.js"></script>
 
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-application-behavior.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-manager-behavior.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-panel.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-wizard.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-tooltip.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-opencga-input-text.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-select.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-opencga-button-tooltip.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-help-menu.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-genome-viewer-element.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-frequencies-grid.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/table/jso-table.html">
-<link rel="import" href="../lib/jsorolla/src/lib/validator/jso-validator.html">
-<script src="../lib/jsorolla/src/lib/validator/bed-validator.js"></script>
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<!-- <link rel="import" href="bower_components/paper-slider/paper-slider.html"> -->
 
-<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-application-behavior.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/jso-opencga-manager-behavior.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-panel.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-wizard.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-tooltip.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-opencga-input-text.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-select.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-opencga-button-tooltip.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-help-menu.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-genome-viewer-element.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/variant/jso-variant-frequencies-grid.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/table/jso-table.html">
+<link rel="import" href="lib/jsorolla/src/lib/validator/jso-validator.html">
+<script src="lib/jsorolla/src/lib/validator/bed-validator.js"></script>
 
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-header.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/jso-opencga-footer.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-job-browser.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/samples/jso-opencga-sample-browser.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/samples/jso-opencga-sample-browser.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-upload-file.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-study.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-project.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/files/jso-opencga-browser.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/variant/jso-variant-browser.html">
+<link rel="import" href="bower_components/iron-list/iron-list.html">
 
-<link rel="import" href="../lib/jsorolla/src/lib/components/ontology/jso-ontology-tree.html">
-<link rel="import" href="../lib/jsorolla/src/lib/components/ontology/jso-ontology-tree-item.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/jso-opencga-header.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/jso-opencga-footer.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/files/jso-opencga-job-browser.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/samples/jso-opencga-sample-browser.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/files/jso-opencga-upload-file.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-study.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/files/jso-opencga-create-project.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/opencga/files/jso-opencga-browser.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/variant/jso-variant-browser.html">
 
-<link rel="import" href="../lib/jsorolla/src/lib/components/jso-genome-viewer-element.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/ontology/jso-ontology-tree.html">
+<link rel="import" href="lib/jsorolla/src/lib/components/ontology/jso-ontology-tree-item.html">
 
-<!--<link rel="import" href="../lib/jsorolla/src/lib/components/opencga/dashboard/jso-dashboard.html">-->
+<link rel="import" href="lib/jsorolla/src/lib/components/jso-genome-viewer-element.html">
 
-<link rel="import" href="bierapp-home.html">
+<!--<link rel="import" href="/lib/jsorolla/src/lib/components/opencga/dashboard/jso-dashboard.html">-->
 
-<script src="FilterHistory.js"></script>
+<link rel="import" href="src/bierapp-home.html">
+
+<script src="src/FilterHistory.js"></script>
 
 <dom-module id="bierapp-element">
     <style is="custom-style" include="iron-flex iron-flex-reverse iron-flex-alignment iron-flex-factors iron-positioning">
@@ -105,8 +110,8 @@
         }
 
         jso-variant-browser {
-            /*height: calc(100vh - 60px);*/
-            height: 100%;
+            height: calc(100vh - 60px);
+            overflow-y: scroll;
         }
 
         #browserPanel {
@@ -233,7 +238,7 @@
             <!-- <jso-opencga-footer hidden$="{{computeFooter(selectedOption)}}" > -->
             BierApp: created by Computational Genomics Department
             <br> Centro de Investigación Principe Felipe
-            <br> 2015
+            <br> 2016
         </jso-opencga-footer>
 
     </template>
