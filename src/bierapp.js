@@ -8,7 +8,7 @@ function Bierapp(args) {
     this.suiteId = 6;
     this.title = '<span>BierApp<img src="http://bioinfo.cipf.es/bierwiki/lib/tpl/arctic/images/logobier.jpg" height="35px"></span> ';
     this.description = '';
-    this.version = '1.4.2';
+    this.version = '1.5.0';
 
     this.tools = {
         "variant-mongo": true,
