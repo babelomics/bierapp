@@ -6,7 +6,7 @@ CELLBASE_VERSION = "v4";
 
 OPENCGA_HOST = "http://test.babelomics.org/opencga-0.8-dev";
 //OPENCGA_HOST = "http://bioinfoint.hpc.cam.ac.uk/opencga/rest";
-BIERAPP_VERSION = "2.0.0";
+BIERAPP_VERSION = "1.5.0";
 
 STUDY_NAME = "WorkSpace";
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
