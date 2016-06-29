@@ -12,7 +12,7 @@ mkdir -p $BP/fonts
 
 vulcanize --inline-scripts --inline-css --strip-comments $ELEMENT.html > $BP/$ELEMENT.html
 
-cp -r $NAME-index.html $BP/index.html
+cp -r index.html $BP/index.html
 cp -r conf/ $BP/
 cp -r images/ $BP/
 cp -r bower_components/fontawesome/css $BP/fontawesome/

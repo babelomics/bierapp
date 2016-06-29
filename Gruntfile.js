@@ -1,19 +1,22 @@
 /*global module:false*/
 module.exports = function (grunt) {
 
-    // Project configuration.
     grunt.initConfig({
-        // Metadata.
         pkg: grunt.file.readJSON('package.json'),
         jsopkg: grunt.file.readJSON('lib/jsorolla/package.json'),
-        def: {
+        // def: {
+        //     name: 'bierapp',
+        //     build: 'build/<%= pkg.version %>',
+        //     jsorolla: 'lib/jsorolla'
+        // },
+        build: {
             name: 'bierapp',
-            build: 'build/<%= pkg.version %>',
-            jsorolla: 'lib/jsorolla'
+            path: 'build/<%= pkg.version %>',
+            vendor: '<%= build.path %>/vendor'
         },
-        // Task configuration.
-
-        // Task configuration.
+        clean: {
+            dist: ['<%= build.path %>/*']
+        },
         concat: {
             dist: {
                 src: [
@@ -21,39 +24,88 @@ module.exports = function (grunt) {
                     'src/bierapp-effect-grid.js',
                     'src/bierapp-manager.js',
                     'src/bierapp-stats-grid.js',
-                    'src/bierapp.js'
+                    'src/FilterHistory.js','src/bierapp.js'
                 ],
-                dest: '<%= def.build %>/<%= def.name %>.js'
+                dest: '<%= build.path %>/<%= build.name %>.js'
             }
         },
         uglify: {
             options: {
-                banner: '/*! <%= def.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+                banner: '/*! <%= build.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
             },
             dist: {
                 files: {
-                    '<%= def.build %>/<%= def.name %>.min.js': ['<%= concat.dist.dest %>']
+                    '<%= build.path %>/<%= build.name %>.min.js': ['<%= concat.dist.dest %>']
                 }
             }
         },
         copy: {
             build: {
                 files: [
-                    {   expand: true, cwd: './src', src: ['ba-config.js'], dest: '<%= def.build %>' },
-                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['vendor/**'], dest: '<%= def.build %>/'  },
-                    {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>/'  },
-                    {   expand: true, cwd: './<%= def.jsorolla %>/src/lib', src: ['worker*'], dest: '<%= def.build %>/' },
-                    {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer/', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' }
+                    {expand: true, cwd: '.', src: ['index.html'], dest: '<%= build.path %>'},
+                    {expand: true, cwd: '.', src: ['conf/**'], dest: '<%= build.path %>'},
+                    {expand: true, cwd: '.', src: ['images/**'], dest: '<%= build.path %>'},
+                    {expand: true, cwd: './lib/jsorolla/styles/img', src: ['**'], dest: '<%= build.path %>/images'},
+                    {expand: true, cwd: './lib/jsorolla/styles', src: ['fonts/**'], dest: '<%= build.path %>'},
+                    {expand: true, cwd: './bower_components', src: ['fontawesome/css/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['fontawesome/fonts/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['webcomponentsjs/*.min.js'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['underscore/*min.js'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['backbone/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['highcharts-release/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['jquery/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['cookies-js/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['qtip2/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['crypto-js-evanvosberg/**'], dest: '<%= build.path %>/bower_components'},
+                    {expand: true, cwd: './bower_components', src: ['pako/**'], dest: '<%= build.path %>/bower_components'},
+                    // { expand: true, cwd: '.', src: ['conf/theme.html'], dest: '<%= build.path %>' },
+
+                    { expand: true, cwd: './', src: ['LICENSE'], dest: '<%= build.path %>/' },
+                    { expand: true, cwd: './', src: ['README.md'], dest: '<%= build.path %>/' },
+
+                    {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-global.css'], dest: '<%= build.path %>'},
+                    {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-dropdown.css'], dest: '<%= build.path %>'},
+                    {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-form.css'], dest: '<%= build.path %>'},
+                    // {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>/'  },
+                    // {   expand: true, cwd: './<%= def.jsorolla %>/src/lib', src: ['worker*'], dest: '<%= def.build %>/' },
+                    // {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer/', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' }
+                    {   expand: true, cwd: './lib', src: ['jsorolla/**'], dest: '<%= build.path %>/lib' },
+                    {   expand: true, cwd: './src', src: ['FilterHistory.js'], dest: '<%= build.path %>/src' }
                 ]
             }
         },
-        clean: {
-            dist: ["<%= def.build %>/"]
+        processhtml: {
+            options: {
+                strip: true
+            },
+            dist: {
+                files: {
+                    '<%= build.path %>/index.html': ['src/index.html']
+                }
+            }
+        },
+        vulcanize: {
+            default: {
+                options: {
+                    // Task-specific options go here.
+                    stripComments: true,
+                    inlineScripts: true,
+                    inlineCss: true
+                },
+                files: {
+                    // Target-specific file lists and/or options go here.
+                    '<%= build.path %>/bierapp-element.html': 'bierapp-element.html'
+                }
+            }
+        },
+        watch: {
+            files: ['<%= jshint.files %>'],
+            tasks: ['jshint']
         },
         htmlbuild: {
             build: {
-                src: 'src/<%= def.name %>.html',
-                dest: '<%= def.build %>/',
+                src: 'src/<%= build.name %>.html',
+                dest: '<%= build.path %>/',
                 options: {
                     beautify: true,
                     styles: {
@@ -91,23 +143,31 @@ module.exports = function (grunt) {
                 }
             }
         },
-        'curl-dir': {
-
-        },
-
-        rename: {
-            dist: {
-                files: [
-                    {
-                        src: ['<%= def.build %>/<%= def.name %>.html'],
-                        dest: '<%= def.build %>/index.html'}
-                ]
-            }
-        },
+        'curl-dir': {},
         hub: {
             'genome-viewer': {
                 src: ['lib/jsorolla/Gruntfile.js'],
                 tasks: ['gv']
+            }
+        },
+        replace: {
+            dist: {
+                options: {
+                    patterns: [
+                        {
+                            match: /lib\/jsorolla\/styles\/fonts/g,
+                            replacement: 'fonts'
+                        },
+                        {
+                            match: /lib\/jsorolla\/src\/lib\/components\//g,
+                            replacement: ''
+                        }
+                    ]
+                },
+                files: [
+                    { expand: true, flatten: true, src: ['<%= build.path %>/index.html'], dest: '<%= build.path %>' },
+                    { expand: true, flatten: true, src: ['<%= build.path %>/bierapp-element.html'], dest: '<%= build.path %>' }
+                ]
             }
         }
 
@@ -119,16 +179,17 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-rename');
     grunt.loadNpmTasks('grunt-html-build');
     grunt.loadNpmTasks('grunt-curl');
     grunt.loadNpmTasks('grunt-hub');
+    grunt.loadNpmTasks('grunt-vulcanize');
+    grunt.loadNpmTasks('grunt-replace');
 
     grunt.registerTask('log-deploy', 'Deploy path info', function (version) {
         grunt.log.writeln("DEPLOY COMMAND: rsync -avz --no-whole-file -e ssh build/" + grunt.config.data.pkg.version + " cafetero@mem16:/httpd/bioinfo/www-apps/" + grunt.config.data.def.name + "/");
     });
 
 
-    // Default task.
-    grunt.registerTask('default', ['hub', 'clean', 'concat', 'uglify', 'copy', 'htmlbuild', 'rename', 'log-deploy']);
+    // Default task.   'htmlbuild', 'log-deploy'
+    grunt.registerTask('default', ['hub', 'clean', 'concat', 'uglify', 'copy', 'vulcanize', 'replace']);
 };
