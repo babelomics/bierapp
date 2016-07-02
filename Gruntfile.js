@@ -4,11 +4,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         jsopkg: grunt.file.readJSON('lib/jsorolla/package.json'),
-        // def: {
-        //     name: 'bierapp',
-        //     build: 'build/<%= pkg.version %>',
-        //     jsorolla: 'lib/jsorolla'
-        // },
         build: {
             name: 'bierapp',
             path: 'build/<%= pkg.version %>',
@@ -42,22 +37,22 @@ module.exports = function (grunt) {
         copy: {
             build: {
                 files: [
-                    {expand: true, cwd: '.', src: ['index.html'], dest: '<%= build.path %>'},
-                    {expand: true, cwd: '.', src: ['conf/**'], dest: '<%= build.path %>'},
+                    // {expand: true, cwd: '.', src: ['index.html'], dest: '<%= build.path %>'},
+                    // {expand: true, cwd: '.', src: ['conf/**'], dest: '<%= build.path %>'},
                     {expand: true, cwd: '.', src: ['images/**'], dest: '<%= build.path %>'},
                     {expand: true, cwd: './lib/jsorolla/styles/img', src: ['**'], dest: '<%= build.path %>/images'},
                     {expand: true, cwd: './lib/jsorolla/styles', src: ['fonts/**'], dest: '<%= build.path %>'},
-                    {expand: true, cwd: './bower_components', src: ['fontawesome/css/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['fontawesome/fonts/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['webcomponentsjs/*.min.js'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['underscore/*min.js'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['backbone/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['highcharts-release/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['jquery/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['cookies-js/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['qtip2/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['crypto-js-evanvosberg/**'], dest: '<%= build.path %>/bower_components'},
-                    {expand: true, cwd: './bower_components', src: ['pako/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['fontawesome/css/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['fontawesome/fonts/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['webcomponentsjs/*.min.js'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['underscore/*min.js'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['backbone/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['highcharts-release/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['jquery/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['cookies-js/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['qtip2/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['crypto-js-evanvosberg/**'], dest: '<%= build.path %>/bower_components'},
+                    // {expand: true, cwd: './bower_components', src: ['pako/**'], dest: '<%= build.path %>/bower_components'},
                     // { expand: true, cwd: '.', src: ['conf/theme.html'], dest: '<%= build.path %>' },
 
                     { expand: true, cwd: './', src: ['LICENSE'], dest: '<%= build.path %>/' },
@@ -69,7 +64,7 @@ module.exports = function (grunt) {
                     // {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>/'  },
                     // {   expand: true, cwd: './<%= def.jsorolla %>/src/lib', src: ['worker*'], dest: '<%= def.build %>/' },
                     // {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer/', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' }
-                    {   expand: true, cwd: './lib', src: ['jsorolla/**'], dest: '<%= build.path %>/lib' },
+                    // {   expand: true, cwd: './lib', src: ['jsorolla/**'], dest: '<%= build.path %>/lib' },
                     {   expand: true, cwd: './src', src: ['FilterHistory.js'], dest: '<%= build.path %>/src' }
                 ]
             }
@@ -94,7 +89,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     // Target-specific file lists and/or options go here.
-                    '<%= build.path %>/bierapp-element.html': 'bierapp-element.html'
+                    '<%= build.path %>/bierapp-web.html': 'bierapp-web.html'
                 }
             }
         },
@@ -181,6 +176,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-html-build');
     grunt.loadNpmTasks('grunt-curl');
+    grunt.loadNpmTasks('grunt-processhtml');
     grunt.loadNpmTasks('grunt-hub');
     grunt.loadNpmTasks('grunt-vulcanize');
     grunt.loadNpmTasks('grunt-replace');
@@ -191,5 +187,6 @@ module.exports = function (grunt) {
 
 
     // Default task.   'htmlbuild', 'log-deploy'
-    grunt.registerTask('default', ['hub', 'clean', 'concat', 'uglify', 'copy', 'vulcanize', 'replace']);
+    grunt.registerTask('clean', ['clean']);
+    grunt.registerTask('default', ['clean', 'concat', 'uglify', 'copy', 'processhtml', 'vulcanize', 'replace']);
 };

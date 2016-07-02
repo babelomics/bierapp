@@ -1,0 +1,343 @@
+<!--
+  ~ Copyright 2015 OpenCB
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+
+<link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
+
+<link rel="import" href="components/opencga-login.html">
+<link rel="import" href="jso-styles.html">
+
+<dom-module id="bierapp-web">
+
+    <template>
+        <style is="custom-style" include="jso-styles"></style>
+        <style>
+            .center {
+                margin: auto;
+                width: 98%;
+            }
+        </style>
+
+        <div>
+            <div style="height: 60px;">
+                <nav class="navbar navbar-inverse navbar-fixed-top ">
+                    <div class="container-fluid">
+
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header bierapp-menu">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a href="#home1" class="navbar-brand" style="padding-top: 5px">
+                                <img src="../images/bier-text.svg" width="40px">
+                            </a>
+                            <a class="navbar-brand" href="#home1"><b>BiERapp v2.0.0</b></a>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <!-- Controls aligned to the LEFT -->
+                            <ul class="nav navbar-nav">
+                                <!--<li class="dropdown">-->
+                                <!--<a href="#home1"><span class="fa fa-home" aria-hidden="true"></span></a>-->
+                                <!--</li>-->
+
+                                <li class="bierapp-menu"><a href="#bierappPanel" role="button">Variant Browser</a></li>
+
+                                <li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">Genome Browser</a></li>
+                            </ul>
+
+
+                            <!-- Controls aligned to the RIGHT: settings and about-->
+                            <ul class="nav navbar-nav navbar-right">
+
+                                <template is="dom-if" if="{{logged}}">
+                                    <li><a href="#" role="button">Logged as '{{userId}}'</a></li>
+
+                                    <!-- About dropdown menu-->
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <template is="dom-repeat" items="{{projects}}">
+                                                <li on-click="selectProject"><a href="#" data-id="{{item.id}}">{{item.name}}</a></li>
+                                            </template>
+                                        </ul>
+                                    </li>
+
+                                    <li><a href="#" role="button">My Data</a></li>
+
+                                    <li class="bierapp-menu-vertical-right"><a href="#bierappPanel" role="button">Upload data</a></li>
+                                    <li class="divider-vertical"></li>
+
+                                </template>
+
+
+                                <!-- Setting modal window -->
+                                <li>
+                                    <a href="#" data-toggle="modal" role="button" data-placement="bottom" data-target="#myModal" title="Settings ...">
+                                        <i class="fa fa-cog"></i>
+                                    </a>
+                                </li>
+
+                                <!-- About dropdown menu-->
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="https://github.com/babelomics/bierapp/wiki" target="_blank"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a></li>
+                                        <li><a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank"> Tutorial</a></li>
+                                        <li><a href="https://github.com/babelomics/bierapp" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> Source code</a></li>
+                                        <li><a href="#"><i class="fa fa-envelope" aria-hidden="true"></i> Contact</a></li>
+                                        <li><a href="#">FAQ</a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Login/Logout button -->
+                                <li class="bierapp-menu">
+                                    <a href="#login" data-toggle="modal" role="button" data-placement="bottom" data-target="#ModalLogin" title="Login ...">
+                                        <i class="fa fa-sign-in fa-lg"></i> Login
+                                    </a>
+                                    <a href="#logout" on-click="logout" style="display: none;">
+                                        <i class="fa fa-sign-out fa-lg"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div> <!-- End of navigation bar -->
+
+
+
+            <!-- This is where main application is rendered -->
+            <div class="center">
+                <div class="collapse content" id="home1">
+                    <div style="align-content: center" style="width: 60%">
+                        <div>
+                            <img src="../images/bier-text.svg">
+                            <h2>BiERapp v2.0.0</h2>
+                        </div>
+                        <h2>Overview</h2>
+                        Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases).
+                        This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
+                    </div>
+
+                    <p></p>
+                    <div>Supported by</div>
+                    <div>
+                        <img style="margin:3px;height:35px;" src="../images/logobier.jpg"/>
+                        <img style="margin:3px;height:35px;" src="../images/logo_ciberer.jpg"/>
+                        <img style="margin:3px;height:35px;" src="../images/logo_cipf.png"/>
+                        <img style="margin:3px;height:35px;" src="../images/logoBabelomics_positive_trans.svg"/>
+                        <img style="margin:3px;height:35px;" src="../images/LOGO_Micinn_Isciii.jpg"/>
+                        <img style="margin:3px;height:35px;" src="../images/logo_inb.png" />
+                    </div>
+
+                    <div>Note:</div>
+                    <div>
+                        BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari 7+ and Opera 24+.
+                    </div>
+
+                </div>
+
+                <div class="collapse content" id="bierappPanel">
+                    <variant-browser host="{{host}}" project="{{project}}" studies="{{studies}}" opencga-client="{{opencgaClient}}"></variant-browser>
+                </div>
+
+                <div class="collapse content" id="genomeBrowserPanel">
+                    no yet  :-(
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <!-- Login modal window -->
+        <div class="center">
+            <div class="collapse content" id="login">
+                <div class="modal fade" id="ModalLogin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLogin">Login</h4>
+                            </div>
+                            <div class="modal-body">
+                                <opencga-login on-login="login" opencga-client="{{opencgaClient}}" opencga-client-config="{{config}}"
+                                               login-text="Sign in"></opencga-login>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal dialog for Settings -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Settings</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p></p>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="opencga-host">OpenCGA</span>
+                            <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" value="http://bioinfo.hpc.cam.ac.uk/opencga">
+                        </div>
+                        <p></p>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="cellbase-host">CellBase </span>
+                            <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" value="http://bioinfo.hpc.cam.ac.uk/cellbase">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'bierapp-web',
+            properties: {
+                cellbaseClient: {
+                    type: Object
+                },
+                host: {
+                    type: String,
+                    value: "http://bioinfodev.hpc.cam.ac.uk/hgva"
+                },
+                userId: {
+                    type: String,
+                    value: ""
+                },
+                project: {
+                    type: String,
+                    value: ""
+                },
+                studies: {
+                    type: Array,
+                    value: []
+                },
+                logged: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+            ready: function () {
+                this.enableClick();
+                this.config = new OpenCGAClientConfig(OPENCGA_HOST, OPENCGA_VERSION, OPENCGA_COOKIE_SESSION_ID, OPENCGA_COOKIE_USER_NAME);
+//                this.tmpHost = OPENCGA_HOST;
+//                let tmpClient = new OpenCGAClient(this.config);
+//                this.studies = ["A", "B"];
+                this.opencgaClient = new OpenCGAClient(this.config);
+//                tmpClient.users().info()
+//                        .then(function() {
+//                            // We are logged in. Show home.
+//                            console.log("We are logged in.");
+//                            this.opencgaClient = new OpenCGAClient(this.config);
+//                            $('#home1').show();
+//                            this.showLogout();
+//                        }.bind(this))
+//                        .catch(function() {
+//                            // We are not logged in. Show login.
+//                            console.log("We are not logged in.");
+//                            $('#login').show();
+//                            this.disableClick();
+//                        }.bind(this));
+
+                $('#home1').show();
+            },
+            enableClick: function() {
+                $(".bierapp-menu a").on('click', function (e) {
+                    e.preventDefault(); // stops link form loading
+                    $('.content').hide(); // hides all content divs
+                    $( $(this).attr('href') ).show(); //get the href and use it find which div to show
+                });
+            },
+            disableClick: function() {
+                $(".bierapp-menu a").off('click');
+            },
+            showLogin: function() {
+                $(".bierapp-menu a[href='#logout']").hide();
+                $(".bierapp-menu a[href='#login']").removeAttr("style");
+            },
+            showLogout: function() {
+                $(".bierapp-menu a[href='#login']").hide();
+                $(".bierapp-menu a[href='#logout']").removeAttr("style");
+            },
+            login: function(e) {
+                this.enableClick();
+//                $(".bierapp-menu a[href='#home1']").trigger("click");
+                this.showLogout();
+                $('#home1').show();
+
+                this.userId = e.detail.userId;
+                this.sessionId = e.detail.sessionId;
+
+                this.logged = true;
+                console.log(this.sessionId)
+                this.opencgaClient._config.sessionId = this.sessionId;
+
+                var _this = this;
+                this.opencgaClient.users().projects(this.userId).then(function(response) {
+                    _this.projects = response.response[0].result;
+                    _this.selectProject(_this.projects[0].name);
+                });
+
+            },
+            selectProject: function(e) {
+                if (typeof e.target === "undefined") {
+                    this.project = e;
+                } else {
+                    this.project = e.target.innerText;
+                }
+                this.studies = [];
+                for (let i = 0; i < this.projects.length; i++) {
+                    if (this.projects[i].name == this.project) {
+                        for (let j = 0; j < this.projects[i].studies.length; j++) {
+                            this.push('studies', this.projects[i].studies[j]);
+                        }
+                    }
+                }
+            },
+            logout: function() {
+                var _this = this;
+                this.opencgaClient.users().logout().then(function() {
+                    _this.showLogin();
+//                    $(".bierapp-menu a[href='#login']").trigger("click");
+                    $('#home1').show();
+//                    _this.disableClick();
+                    _this.opencgaClient = undefined;
+                    this.userId = "";
+                    this.logged = false;
+                });
+            }
+        });
+    </script>
+</dom-module>
