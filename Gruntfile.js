@@ -15,13 +15,11 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
-                    'src/variant-index-form.js',
-                    'src/bierapp-effect-grid.js',
-                    'src/bierapp-manager.js',
-                    'src/bierapp-stats-grid.js',
-                    'src/FilterHistory.js','src/bierapp.js'
+                    'bower_components/webcomponentsjs/webcomponents-lite.js',
+                    'bower_components/underscore/underscore.js',
+                    'bower_components/backbone/backbone.js'
                 ],
-                dest: '<%= build.path %>/<%= build.name %>.js'
+                dest: '<%= build.path %>/vendors.js'
             }
         },
         uglify: {
@@ -30,7 +28,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 files: {
-                    '<%= build.path %>/<%= build.name %>.min.js': ['<%= concat.dist.dest %>']
+                    '<%= build.path %>/vendors.min.js': ['<%= concat.dist.dest %>']
                 }
             }
         },
@@ -56,16 +54,16 @@ module.exports = function (grunt) {
                     // { expand: true, cwd: '.', src: ['conf/theme.html'], dest: '<%= build.path %>' },
 
                     { expand: true, cwd: './', src: ['LICENSE'], dest: '<%= build.path %>/' },
-                    { expand: true, cwd: './', src: ['README.md'], dest: '<%= build.path %>/' },
+                    { expand: true, cwd: './', src: ['README.md'], dest: '<%= build.path %>/' }
 
-                    {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-global.css'], dest: '<%= build.path %>'},
-                    {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-dropdown.css'], dest: '<%= build.path %>'},
-                    {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-form.css'], dest: '<%= build.path %>'},
+                    // {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-global.css'], dest: '<%= build.path %>'},
+                    // {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-dropdown.css'], dest: '<%= build.path %>'},
+                    // {expand: true, cwd: './lib/jsorolla/src/lib/components/', src: ['jso-form.css'], dest: '<%= build.path %>'},
                     // {   expand: true, cwd: './<%= def.jsorolla %>', src: ['styles/**'], dest: '<%= def.build %>/'  },
                     // {   expand: true, cwd: './<%= def.jsorolla %>/src/lib', src: ['worker*'], dest: '<%= def.build %>/' },
                     // {   expand: true, cwd: './<%= def.jsorolla %>/build/<%= jsopkg.version %>/genome-viewer/', src: ['genome-viewer*.js', 'gv-config.js'], dest: '<%= def.build %>/' }
                     // {   expand: true, cwd: './lib', src: ['jsorolla/**'], dest: '<%= build.path %>/lib' },
-                    {   expand: true, cwd: './src', src: ['FilterHistory.js'], dest: '<%= build.path %>/src' }
+                    // {   expand: true, cwd: './src', src: ['FilterHistory.js'], dest: '<%= build.path %>/src' }
                 ]
             }
         },
@@ -89,7 +87,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     // Target-specific file lists and/or options go here.
-                    '<%= build.path %>/bierapp-web.html': 'bierapp-web.html'
+                    '<%= build.path %>/bierapp-web.html': 'src/bierapp-web.html'
                 }
             }
         },
