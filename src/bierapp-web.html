@@ -29,7 +29,15 @@
         <style>
             .center {
                 margin: auto;
-                width: 98%;
+                text-align: justify;
+                width: 50%;
+                font-size: 18px;
+                color: #797979;
+            }
+
+            .footer {
+                text-align: center;
+                color: #9d9d9d;
             }
         </style>
 
@@ -122,39 +130,37 @@
                         </div>
                     </div>
                 </nav>
-            </div> <!-- End of navigation bar -->
+            </div>
+            <!-- End of navigation bar -->
 
 
 
             <!-- This is where main application is rendered -->
             <div class="center">
                 <div class="collapse content" id="home1">
-                    <div style="align-content: center" style="width: 60%">
-                        <div>
-                            <img src="../images/bier-text.svg">
-                            <h2>BiERapp v2.0.0</h2>
-                        </div>
-                        <h2>Overview</h2>
-                        Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases).
-                        This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
-                    </div>
-
-                    <p></p>
-                    <div>Supported by</div>
-                    <div>
-                        <img style="margin:3px;height:35px;" src="../images/logobier.jpg"/>
-                        <img style="margin:3px;height:35px;" src="../images/logo_ciberer.jpg"/>
-                        <img style="margin:3px;height:35px;" src="../images/logo_cipf.png"/>
-                        <img style="margin:3px;height:35px;" src="../images/logoBabelomics_positive_trans.svg"/>
-                        <img style="margin:3px;height:35px;" src="../images/LOGO_Micinn_Isciii.jpg"/>
+                    <br>
+                    <img src="../images/bier-text.svg">
+                    <span style="font-size:50px;">BiERapp v2.0.0</span>
+                    <h2>Overview</h2>
+                    <p>
+                        Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
+                    </p>
+                    <br>
+                    <p>
+                        <div>Supported by</div>
+                        <img style="margin:3px;height:35px;" src="../images/logobier.jpg" />
+                        <img style="margin:3px;height:35px;" src="../images/logo_ciberer.jpg" />
+                        <img style="margin:3px;height:35px;" src="../images/logo_cipf.png" />
+                        <img style="margin:3px;height:35px;" src="../images/logoBabelomics_positive_trans.svg" />
+                        <img style="margin:3px;height:35px;" src="../images/LOGO_Micinn_Isciii.jpg" />
                         <img style="margin:3px;height:35px;" src="../images/logo_inb.png" />
-                    </div>
-
+                    </p>
+                    <br>
                     <div>Note:</div>
-                    <div>
-                        BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari 7+ and Opera 24+.
-                    </div>
-
+                    <span style="font-size:13px">{{versionNav}}
+                    <br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari
+                    7+ and Opera 24+.
+                    </span>
                 </div>
 
                 <div class="collapse content" id="bierappPanel">
@@ -162,10 +168,17 @@
                 </div>
 
                 <div class="collapse content" id="genomeBrowserPanel">
-                    no yet  :-(
+                    no yet :-(
                 </div>
             </div>
-
+            <nav class="footer navbar navbar-inverse navbar-fixed-bottom">
+                <div class="bierapp-menu">
+                    <br> BierApp: created by Computational Genomics Department
+                    <br> Centro de Investigación Principe Felipe
+                    <br> 2016
+                    <br>
+                </div>
+            </nav>
         </div>
 
 
@@ -181,8 +194,7 @@
                                 <h4 class="modal-title" id="myModalLogin">Login</h4>
                             </div>
                             <div class="modal-body">
-                                <opencga-login on-login="login" opencga-client="{{opencgaClient}}" opencga-client-config="{{config}}"
-                                               login-text="Sign in"></opencga-login>
+                                <opencga-login on-login="login" opencga-client="{{opencgaClient}}" opencga-client-config="{{config}}" login-text="Sign in"></opencga-login>
                             </div>
                         </div>
                     </div>
@@ -249,35 +261,36 @@
                     value: false
                 }
             },
-            ready: function () {
+            ready: function() {
+                this._checkVersion();
                 this.enableClick();
                 this.config = new OpenCGAClientConfig(OPENCGA_HOST, OPENCGA_VERSION, OPENCGA_COOKIE_SESSION_ID, OPENCGA_COOKIE_USER_NAME);
-//                this.tmpHost = OPENCGA_HOST;
-//                let tmpClient = new OpenCGAClient(this.config);
-//                this.studies = ["A", "B"];
+                //                this.tmpHost = OPENCGA_HOST;
+                //                let tmpClient = new OpenCGAClient(this.config);
+                //                this.studies = ["A", "B"];
                 this.opencgaClient = new OpenCGAClient(this.config);
-//                tmpClient.users().info()
-//                        .then(function() {
-//                            // We are logged in. Show home.
-//                            console.log("We are logged in.");
-//                            this.opencgaClient = new OpenCGAClient(this.config);
-//                            $('#home1').show();
-//                            this.showLogout();
-//                        }.bind(this))
-//                        .catch(function() {
-//                            // We are not logged in. Show login.
-//                            console.log("We are not logged in.");
-//                            $('#login').show();
-//                            this.disableClick();
-//                        }.bind(this));
+                //                tmpClient.users().info()
+                //                        .then(function() {
+                //                            // We are logged in. Show home.
+                //                            console.log("We are logged in.");
+                //                            this.opencgaClient = new OpenCGAClient(this.config);
+                //                            $('#home1').show();
+                //                            this.showLogout();
+                //                        }.bind(this))
+                //                        .catch(function() {
+                //                            // We are not logged in. Show login.
+                //                            console.log("We are not logged in.");
+                //                            $('#login').show();
+                //                            this.disableClick();
+                //                        }.bind(this));
 
                 $('#home1').show();
             },
             enableClick: function() {
-                $(".bierapp-menu a").on('click', function (e) {
+                $(".bierapp-menu a").on('click', function(e) {
                     e.preventDefault(); // stops link form loading
                     $('.content').hide(); // hides all content divs
-                    $( $(this).attr('href') ).show(); //get the href and use it find which div to show
+                    $($(this).attr('href')).show(); //get the href and use it find which div to show
                 });
             },
             disableClick: function() {
@@ -293,7 +306,7 @@
             },
             login: function(e) {
                 this.enableClick();
-//                $(".bierapp-menu a[href='#home1']").trigger("click");
+                //                $(".bierapp-menu a[href='#home1']").trigger("click");
                 this.showLogout();
                 $('#home1').show();
 
@@ -330,13 +343,45 @@
                 var _this = this;
                 this.opencgaClient.users().logout().then(function() {
                     _this.showLogin();
-//                    $(".bierapp-menu a[href='#login']").trigger("click");
+                    //                    $(".bierapp-menu a[href='#login']").trigger("click");
                     $('#home1').show();
-//                    _this.disableClick();
+                    //                    _this.disableClick();
                     _this.opencgaClient = undefined;
                     this.userId = "";
                     this.logged = false;
                 });
+            },
+            _checkVersion: function() {
+                this.versionNav = "You are currently using ";
+                var nav = navigator.userAgent.toLowerCase();
+                if (/opr\/(\d+\.?)+/.test(nav)) {
+                    var aux = /opr\/((\d+\.?)+)/.exec(nav);
+                    this.versionNav += aux[0].replace("opr", "Opera");
+                } else if (/firefox\/(\d+\.?)+/.test(nav)) {
+                    var aux = /firefox\/((\d+\.?)+)/.exec(nav);
+                    this.versionNav += aux[0];
+                } else if (/msie (\d+\.?)+/.test(nav) || /rv\:(\d+\.?)+/.test(nav)) {
+                    var aux = /msie ((\d+\.?)+)/.exec(nav);
+                    if (aux == null) {
+                        aux = /rv\:((\d+\.?)+)/.exec(nav);
+                        this.versionNav += aux[0].replace("rv:", "Internet Explorer");
+                    } else {
+                        this.versionNav += aux[0].replace("msie", "Internet Explorer");
+                    }
+                } else if (/safari\/(\d+\.?)+/.test(nav) && nav.indexOf("chrome") == -1) {
+                    var aux = /safari\/((\d+\.?)+)/.exec(nav);
+                    this.versionNav += aux[0];
+                } else if (/chrome\/(\d+\.?)+/.test(nav)) {
+                    var aux = /chrome\/((\d+\.?)+)/.exec(nav);
+                    this.versionNav += aux[0];
+                } else {
+                    this.versionNav = "You are currently using an unsupported browser";
+                }
+                if (nav.indexOf("_64") >= 0) {
+                    this.versionNav += " (64-bits)"
+                } else if (nav.indexOf("_32") >= 0) {
+                    this.versionNav += " (32-bits)"
+                }
             }
         });
     </script>
