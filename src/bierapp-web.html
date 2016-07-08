@@ -166,21 +166,19 @@
             </div>
             <div class="">
                 <div class="collapse content" id="bierappPanel">
-                    <variant-browser host="{{host}}" project="{{project}}" studies="{{studies}}" opencga-client="{{opencgaClient}}"></variant-browser>
+                    <variant-browser host="{{host}}" project="{{project}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
                 </div>
 
                 <div class="collapse content" id="genomeBrowserPanel">
                     no yet :-(
                 </div>
             </div>
-            <nav class="footer navbar navbar-inverse navbar-fixed-bottom">
-                <div class="bierapp-menu">
-                    <br> BierApp: created by Computational Genomics Department
-                    <br> Centro de Investigación Principe Felipe
-                    <br> 2016
-                    <br>
-                </div>
-            </nav>
+            <!--<nav class="footer navbar navbar-inverse navbar-fixed-bottom">-->
+                <!--<div class="bierapp-menu">-->
+                    <!--<br> BierApp: created by the Computational Genomics Department-->
+                    <!--<br> Centro de Investigación Principe Felipe, Valencia 2016-->
+                <!--</div>-->
+            <!--</nav>-->
         </div>
 
 
@@ -286,6 +284,8 @@
                 //                            this.disableClick();
                 //                        }.bind(this));
 
+                this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
+                this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
                 $('#home1').show();
             },
             enableClick: function() {
