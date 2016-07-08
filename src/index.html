@@ -11,9 +11,7 @@
     <!-- Favicon -->
     <!-- <link rel="icon" href="src/images/favicon.ico"> -->
 
-
     <!-- Chrome for Android theme color -->
-    <!--<meta name="theme-color" content="#303F9F">-->
     <meta name="theme-color" content="#000000">
 
     <!-- Chrome for Android Theme color -->
@@ -36,18 +34,20 @@
     <!-- Load BierApp configuration file, this must be located in the same folder -->
     <script src="config.js"></script>
 
+    <!-- Load BierApp CSS styles -->
+    <!-- build:css css/font-awesome.min.css -->
     <link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.min.css">
+    <!-- /build -->
+
+    <!-- build:css css/jquery.qtip.min.css -->
     <link rel="stylesheet" href="../bower_components/qtip2/jquery.qtip.min.css">
+    <!-- /build -->
 
+    <!-- build:css css/style.css -->
+    <link rel="stylesheet" href="../lib/jsorolla/styles/css/style.css">
+    <!-- /build -->
 
-    <!--Fonts-->
-    <!--<link href='../lib/jsorolla/styles/fonts/fonts.css' rel='stylesheet' type='text/css'>-->
-    <!--<link href='../bower_components/fontawesome/css/font-awesome.min.css' rel='stylesheet' type='text/css'>-->
-    <!--<link href='../lib/jsorolla/src/lib/components/jso-global.css' rel='stylesheet' type='text/css'>-->
-    <!--<link href='../lib/jsorolla/src/lib/components/jso-dropdown.css' rel='stylesheet' type='text/css'>-->
-    <!--<link href='../lib/jsorolla/src/lib/components/jso-form.css' rel='stylesheet' type='text/css'>-->
-
-
+    <!-- Load BierApp Javascript dependencies -->
     <!-- build:js vendors.min.js -->
     <script type="text/javascript" src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script type="text/javascript" src="../bower_components/underscore/underscore.js"></script>
@@ -59,36 +59,6 @@
     <script type="text/javascript" src="../bower_components/cookies-js/src/cookies.js"></script>
     <!-- /build -->
 
-
-    <!-- External -->
-    <!--<script src="../bower_components/cookies-js/dist/cookies.min.js"></script>-->
-    <!--<script src="../bower_components/crypto-js-evanvosberg/core.js"></script>-->
-    <!--<script src="../bower_components/crypto-js-evanvosberg/sha1.js"></script>-->
-    <!--<script src="../bower_components/highcharts-release/adapters/standalone-framework.js"></script>-->
-    <!--<script src="../bower_components/highcharts-release/highcharts.js"></script>-->
-    <!--<script src="../bower_components/highcharts-release/highcharts-more.js"></script>-->
-    <!--<script src="../bower_components/highcharts-release/modules/exporting.js"></script>-->
-    <!--<script src="../bower_components/jquery/dist/jquery.min.js"></script>-->
-    <!--<script src="../bower_components/underscore/underscore-min.js"></script>-->
-    <!--<script src="../bower_components/backbone/backbone.js"></script>-->
-    <!--<script src="../bower_components/qtip2/jquery.qtip.min.js"></script>-->
-    <!--<script src="../bower_components/pako/dist/pako.min.js"></script>-->
-
-    <!-- Internal -->
-    <!--<script src="../conf/hpo_obo.js"></script>-->
-    <!--<script src="../conf/hpo_tree.js"></script>-->
-    <!--<script src="../conf/hpo_gene.js"></script>-->
-    <!--<script src="../conf/go_obo.js"></script>-->
-    <!--<script src="../conf/go_tree.js"></script>-->
-    <!--<script src="../conf/go_gene.js"></script>-->
-
-    <!--<link rel="import" href="../conf/theme.html">-->
-
-    <!--<meta http-equiv="X-UA-Compatible" content="chrome=1">-->
-    <!--<link rel="stylesheet" href="../lib/ChemDoodle/ChemDoodleWeb.css" type="text/css">-->
-    <!--<script type="text/javascript" src="../lib/ChemDoodle/ChemDoodleWeb.js"></script>-->
-
-
     <!-- Load dependencies for Boostrap and Table -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -96,20 +66,22 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.js"></script>
 
     <!-- New REST clients are implemented with Javascript 6, this cannot be minified yet -->
+    <!-- build:js jsorolla-clients.js -->
     <script type="text/javascript" src="../lib/jsorolla/src/lib/cache/indexeddb-cache.js"></script>
     <script type="text/javascript" src="../lib/jsorolla/src/lib/clients/cellbase-client-config.js"></script>
     <script type="text/javascript" src="../lib/jsorolla/src/lib/clients/cellbase-client.js"></script>
     <script type="text/javascript" src="../lib/jsorolla/src/lib/clients/opencga-client-config.js"></script>
     <script type="text/javascript" src="../lib/jsorolla/src/lib/clients/opencga-client.js"></script>
     <script type="text/javascript" src="../lib/jsorolla/src/lib/clients/rest-client.js"></script>
+    <!-- /build -->
 
     <!-- We load the dependencies for displaying Genome Maps -->
-    <link rel="stylesheet" href="../lib/jsorolla/styles/css/style.css">
+    <!-- build:js genome-viewer.js -->
     <script type="text/javascript" src="../lib/jsorolla/build/1.1.9/genome-viewer/gv-config.js"></script>
     <script type="text/javascript" src="../lib/jsorolla/build/1.1.9/genome-viewer/genome-viewer.js"></script>
+    <!-- /build -->
 
-    <!-- Loading Polymer lib and bierapp web component -->
-    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <!-- Loading bierapp-web component -->
     <link rel="import" href="bierapp-web.html">
 
 </head>
