@@ -1,10 +1,12 @@
 {
-  "name": "Bierapp",
-  "version": "1.5.0",
-  "scripts": {
-    "build": "./build.sh"
-  },
-  "devDependencies": {
-    "vulcanize": "1.14.8"
-  }
+    "name": "Bierapp",
+    "version": "1.5.0",
+    "scripts": {
+        "build": "node ./build.js"
+    },
+    "devDependencies": {
+        "async": "^2.0.0-rc.6",
+        "shelljs": "^0.7.0",
+        "vulcanize": "^1.14.8"
+    }
 }
