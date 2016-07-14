@@ -16,6 +16,8 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 
 <link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
 
@@ -54,10 +56,10 @@
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <a href="#home1" class="navbar-brand" style="padding-top: 5px">
+                            <a href="#home" class="navbar-brand" style="padding-top: 5px">
                                 <img src="images/bier-text.svg" width="40px">
                             </a>
-                            <a class="navbar-brand" href="#home1"><b>BiERapp v2.0.0</b></a>
+                            <a class="navbar-brand" href="#home"><b>BiERapp v2.0.0</b></a>
                         </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -65,10 +67,30 @@
                             <!-- Controls aligned to the LEFT -->
                             <ul class="nav navbar-nav">
                                 <!--<li class="dropdown">-->
-                                <!--<a href="#home1"><span class="fa fa-home" aria-hidden="true"></span></a>-->
+                                <!--<a href="#home"><span class="fa fa-home" aria-hidden="true"></span></a>-->
                                 <!--</li>-->
 
-                                <li class="bierapp-menu"><a href="#bierappPanel" role="button">Variant Browser</a></li>
+                                <li class="bierapp-menu"><a href="#" role="button">Home</a></li>
+
+                                <li class="bierapp-menu"><a href="#browser" role="button">Variant Browser</a></li>
+
+                                <li class="bierapp-menu"><a href="#prioritization" role="button">Prioritization</a></li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Diagnose <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li on-click=""><a href="#" data-id="sample">Sample</a></li>
+                                        <li on-click=""><a href="#" data-id="family">Family</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li on-click=""><a href="#" data-id="sample">IBS</a></li>
+                                        <li on-click=""><a href="#" data-id="family">Export</a></li>
+                                    </ul>
+                                </li>
 
                                 <li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">Genome Browser</a></li>
                             </ul>
@@ -92,7 +114,7 @@
 
                                     <li><a href="#" role="button">My Data</a></li>
 
-                                    <li class="bierapp-menu-vertical-right"><a href="#bierappPanel" role="button">Upload data</a></li>
+                                    <li class="bierapp-menu-vertical-right"><a href="#browser" role="button">Upload data</a></li>
                                     <li class="divider-vertical"></li>
 
                                 </template>
@@ -137,7 +159,7 @@
 
             <!-- This is where main application is rendered -->
             <div class="center">
-                <div class="collapse content" id="home1">
+                <div class="collapse content" id="home">
                     <br>
                     <img src="images/bier-text.svg">
                     <span style="font-size:50px;">BiERapp v2.0.0</span>
@@ -147,13 +169,13 @@
                     </p>
                     <br>
                     <p>
-                        <div>Supported by</div>
-                        <img style="margin:3px;height:35px;" src="images/logobier.jpg" />
-                        <img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />
-                        <img style="margin:3px;height:35px;" src="images/logo_cipf.png" />
-                        <img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />
-                        <img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />
-                        <img style="margin:3px;height:35px;" src="images/logo_inb.png" />
+                    <div>Supported by</div>
+                    <img style="margin:3px;height:35px;" src="images/logobier.jpg" />
+                    <img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />
+                    <img style="margin:3px;height:35px;" src="images/logo_cipf.png" />
+                    <img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />
+                    <img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />
+                    <img style="margin:3px;height:35px;" src="images/logo_inb.png" />
                     </p>
                     <br>
                     <div>Note:</div>
@@ -165,8 +187,12 @@
 
             </div>
             <div class="">
-                <div class="collapse content" id="bierappPanel">
-                    <variant-browser host="{{host}}" project="{{project}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
+                <div class="collapse content" id="browser">
+                    <variant-browser title="browser" host="{{host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
+                </div>
+
+                <div class="collapse content" id="prioritization">
+                    <variant-browser title="prioritization" host="{{host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
                 </div>
 
                 <div class="collapse content" id="genomeBrowserPanel">
@@ -174,10 +200,10 @@
                 </div>
             </div>
             <!--<nav class="footer navbar navbar-inverse navbar-fixed-bottom">-->
-                <!--<div class="bierapp-menu">-->
-                    <!--<br> BierApp: created by the Computational Genomics Department-->
-                    <!--<br> Centro de Investigación Principe Felipe, Valencia 2016-->
-                <!--</div>-->
+            <!--<div class="bierapp-menu">-->
+            <!--<br> BierApp: created by the Computational Genomics Department-->
+            <!--<br> Centro de Investigación Principe Felipe, Valencia 2016-->
+            <!--</div>-->
             <!--</nav>-->
         </div>
 
@@ -252,6 +278,9 @@
                     type: String,
                     value: ""
                 },
+                study: {
+                    type: Object
+                },
                 studies: {
                     type: Array,
                     value: []
@@ -262,6 +291,8 @@
                 }
             },
             ready: function() {
+                window.addEventListener('popstate', this.listener(this));
+
                 this._checkVersion();
                 this.enableClick();
                 this.config = new OpenCGAClientConfig(OPENCGA_HOST, OPENCGA_VERSION, OPENCGA_COOKIE_SESSION_ID, OPENCGA_COOKIE_USER_NAME);
@@ -274,7 +305,7 @@
                 //                            // We are logged in. Show home.
                 //                            console.log("We are logged in.");
                 //                            this.opencgaClient = new OpenCGAClient(this.config);
-                //                            $('#home1').show();
+                //                            $('#home').show();
                 //                            this.showLogout();
                 //                        }.bind(this))
                 //                        .catch(function() {
@@ -286,7 +317,44 @@
 
                 this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
                 this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
-                $('#home1').show();
+
+                var sid = Cookies.get("opencga_sId");
+                if (typeof sid !== "undefined" && sid != "") {
+                    this.userId = Cookies.get("opencga_userId");
+                    this.sessionId = sid;
+                    this.startApp();
+                    this.showLogout()
+                }
+
+                // if has exist use hash, else go to #home
+                if (window.location.hash != "") {
+                    var arr = window.location.hash.split('/');
+                    if (arr.length > 0) {
+                        this.project = arr[1];
+                        if (arr.length > 1) {
+                            this.study = {name: arr[2]};
+                        }
+                    }
+                    $('.content').hide();
+                    $(arr[0]).show();
+                } else {
+                    $('#home').show();
+                }
+            },
+            listener: function (ctx) {
+                console.log("ctx")
+                console.log(ctx)
+                var arr= window.location.hash.split('/');
+                console.log("arr", arr)
+                if (arr.length > 0) {
+                    console.log("come on!!!")
+                    ctx.project = arr[1];
+                    if (arr.length > 0) {
+                        ctx.study = arr[2];
+                    }
+                }
+                $('.content').hide();
+                $(arr[0]).show();
             },
             enableClick: function() {
                 $(".bierapp-menu a").on('click', function(e) {
@@ -308,13 +376,16 @@
             },
             login: function(e) {
                 this.enableClick();
-                //                $(".bierapp-menu a[href='#home1']").trigger("click");
+                //                $(".bierapp-menu a[href='#home']").trigger("click");
                 this.showLogout();
-                $('#home1').show();
+                $('#home').show();
 
                 this.userId = e.detail.userId;
                 this.sessionId = e.detail.sessionId;
 
+                this.startApp();
+            },
+            startApp: function() {
                 this.logged = true;
                 console.log(this.sessionId)
                 this.opencgaClient._config.sessionId = this.sessionId;
@@ -324,7 +395,6 @@
                     _this.projects = response.response[0].result;
                     _this.selectProject(_this.projects[0].name);
                 });
-
             },
             selectProject: function(e) {
                 if (typeof e.target === "undefined") {
@@ -332,6 +402,7 @@
                 } else {
                     this.project = e.target.innerText;
                 }
+                console.log("seelctProjects")
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == this.project) {
@@ -342,11 +413,12 @@
                 }
             },
             logout: function() {
+                console.log("LOG OUT!!!!!")
                 var _this = this;
                 this.opencgaClient.users().logout().then(function() {
                     _this.showLogin();
                     //                    $(".bierapp-menu a[href='#login']").trigger("click");
-                    $('#home1').show();
+                    $('#home').show();
                     //                    _this.disableClick();
                     _this.opencgaClient = undefined;
                     this.userId = "";
