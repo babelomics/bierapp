@@ -291,6 +291,7 @@
                 }
             },
             ready: function() {
+//                window.addEventListener("hashchange", this.listener(this), false);
                 window.addEventListener('popstate', this.listener(this));
 
                 this._checkVersion();
@@ -342,17 +343,17 @@
                 }
             },
             listener: function (ctx) {
-                console.log("ctx")
-                console.log(ctx)
+                console.log("ctx", ctx)
                 var arr= window.location.hash.split('/');
                 console.log("arr", arr)
                 if (arr.length > 0) {
-                    console.log("come on!!!")
                     ctx.project = arr[1];
                     if (arr.length > 0) {
                         ctx.study = arr[2];
                     }
                 }
+                console.log('ctx.project', ctx.project)
+                console.log('ctx.study', ctx.study)
                 $('.content').hide();
                 $(arr[0]).show();
             },
@@ -361,6 +362,7 @@
                     e.preventDefault(); // stops link form loading
                     $('.content').hide(); // hides all content divs
                     $($(this).attr('href')).show(); //get the href and use it find which div to show
+                    window.location.hash = $(this).attr('href'); // changes the hash value in the address bar
                 });
             },
             disableClick: function() {
@@ -379,6 +381,7 @@
                 //                $(".bierapp-menu a[href='#home']").trigger("click");
                 this.showLogout();
                 $('#home').show();
+                window.location.hash = 'home'; // Setting the hash value in the address bar to home after login
 
                 this.userId = e.detail.userId;
                 this.sessionId = e.detail.sessionId;
@@ -402,7 +405,6 @@
                 } else {
                     this.project = e.target.innerText;
                 }
-                console.log("seelctProjects")
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == this.project) {
@@ -413,16 +415,16 @@
                 }
             },
             logout: function() {
-                console.log("LOG OUT!!!!!")
                 var _this = this;
                 this.opencgaClient.users().logout().then(function() {
                     _this.showLogin();
                     //                    $(".bierapp-menu a[href='#login']").trigger("click");
                     $('#home').show();
                     //                    _this.disableClick();
+                    window.location.hash = 'home'; // Setting the hash value in the address bar to home after logout
                     _this.opencgaClient = undefined;
-                    this.userId = "";
-                    this.logged = false;
+                    _this.userId = "";
+                    _this.logged = false;
                 });
             },
             _checkVersion: function() {
