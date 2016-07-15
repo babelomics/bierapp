@@ -16,8 +16,8 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
+<!--<link rel="import" href="../bower_components/app-route/app-location.html">-->
+<!--<link rel="import" href="../bower_components/app-route/app-route.html">-->
 
 <link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
 
@@ -58,7 +58,7 @@
                                 <span class="icon-bar"></span>
                             </button>
                             <a href="#home" class="navbar-brand" style="padding-top: 5px">
-                                <img src="images/bier-text.svg" width="40px">
+                                <img src="{{config.logo}}" width="40px">
                             </a>
                             <a class="navbar-brand" href="#home"><b>{{config.title}} {{config.version}}</b></a>
                         </div>
@@ -79,26 +79,32 @@
                                 </template>
 
                                 <template is="dom-if" if="{{isPrioritizationVisible}}">
-                                    <li class="bierapp-menu"><a href="#prioritization" role="button">Prioritization</a></li>
+                                    <li class="bierapp-menu"><a href="#prioritization" role="button">{{config.menu.prioritization.title}}</a></li>
                                 </template>
 
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Diagnose <span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li on-click=""><a href="#" data-id="sample">Sample</a></li>
-                                        <li on-click=""><a href="#" data-id="family">Family</a></li>
-                                    </ul>
-                                </li>
+                                <template is="dom-if" if="{{isDiagnoseVisible}}">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.diagnose.title}} <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li on-click=""><a href="#" data-id="sample">Sample</a></li>
+                                            <li on-click=""><a href="#" data-id="family">Family</a></li>
+                                        </ul>
+                                    </li>
+                                </template>
 
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li on-click=""><a href="#" data-id="sample">IBS</a></li>
-                                        <li on-click=""><a href="#" data-id="family">Export</a></li>
-                                    </ul>
-                                </li>
+                                <template is="dom-if" if="{{isToolsVisible}}">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.tools.title}} <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li on-click=""><a href="#" data-id="sample">IBS</a></li>
+                                            <li on-click=""><a href="#" data-id="family">Export</a></li>
+                                        </ul>
+                                    </li>
+                                </template>
 
-                                <li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">Genome Browser</a></li>
+                                <template is="dom-if" if="{{isGenomeBrowserVisible}}">
+                                    <li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">{{config.menu.genomeBrowser.title}} </a></li>
+                                </template>
                             </ul>
 
 
@@ -127,21 +133,26 @@
 
 
                                 <!-- Setting modal window -->
-                                <li>
-                                    <a href="#" data-toggle="modal" role="button" data-placement="bottom" data-target="#myModal" title="Settings ...">
-                                        <i class="fa fa-cog"></i>
-                                    </a>
-                                </li>
+                                <template is="dom-if" if="{{config.settings_show}}">
+                                    <li>
+                                        <a href="#" data-toggle="modal" role="button" data-placement="bottom" data-target="#myModal" title="Settings ...">
+                                            <i class="fa fa-cog"></i>
+                                        </a>
+                                    </li>
+                                </template>
 
                                 <!-- About dropdown menu-->
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="https://github.com/babelomics/bierapp/wiki" target="_blank"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a></li>
-                                        <li><a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank"> Tutorial</a></li>
-                                        <li><a href="https://github.com/babelomics/bierapp" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> Source code</a></li>
-                                        <li><a href="#"><i class="fa fa-envelope" aria-hidden="true"></i> Contact</a></li>
-                                        <li><a href="#">FAQ</a></li>
+                                        <template is="dom-repeat" items="{{config.about}}">
+                                            <li><a href="{{item.url}}" target="_blank"><i class="{{item.icon}}" aria-hidden="true"></i> {{item.name}}</a></li>
+                                        </template>
+                                        <!--<li><a href="https://github.com/babelomics/bierapp/wiki" target="_blank"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a></li>-->
+                                        <!--<li><a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank"> Tutorial</a></li>-->
+                                        <!--<li><a href="https://github.com/babelomics/bierapp" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> Source code</a></li>-->
+                                        <!--<li><a href="#"><i class="fa fa-envelope" aria-hidden="true"></i> Contact</a></li>-->
+                                        <!--<li><a href="#"> FAQ</a></li>-->
                                     </ul>
                                 </li>
 
@@ -189,8 +200,10 @@
                 <!--<br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari-->
                 <!--7+ and Opera 24+.-->
                 <!--</span>-->
-                <welcome-web></welcome-web>
                 <!--</div>-->
+                <div class="collapse content" id="home">
+                    <welcome-web></welcome-web>
+                </div>
             </div>
 
 
@@ -205,6 +218,41 @@
 
                 <div class="collapse content" id="genomeBrowserPanel">
                     no yet :-(
+                </div>
+
+                <!--BreadCrumb reference-->
+                <div class="collapse content" id="projectList">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Studies</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <template is="dom-repeat" items="{{projects}}">
+                            <tr>
+                                <td on-click="showProjectSummary">{{item.name}}</td>
+                                <td>
+                                    <template is="dom-repeat" items="{{item.studies}}" as="study">
+                                        {{study.name}}<br>
+                                    </template></td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="collapse content" id="projectSummary">
+                    <h4><b>Project:</b> {{selectedProject.name}}</h4> <br>
+                    <b>Studies:</b> <br>
+                    <template is="dom-repeat" items="{{selectedProject.studies}}" as="study">
+                        {{study.name}}<br>
+                    </template>
+                    <b>Alias:</b> {{selectedProject.alias}} <br>
+                    <b>ID:</b> {{selectedProject.id}} <br>
+                    <b>Creation Date:</b> {{selectedProject.creationDate}}<br>
+                    <b>Organization:</b> {{selectedProject.organization}}
                 </div>
             </div>
             <!--<nav class="footer navbar navbar-inverse navbar-fixed-bottom">-->
@@ -228,7 +276,7 @@
                                 <h4 class="modal-title" id="myModalLogin">Login</h4>
                             </div>
                             <div class="modal-body">
-                                <opencga-login on-login="login" opencga-client="{{opencgaClient}}" opencga-client-config="{{config}}" login-text="Sign in"></opencga-login>
+                                <opencga-login on-login="login" opencga-client="{{opencgaClient}}" opencga-client-config="{{opencgaClientConfig}}" login-text="Sign in"></opencga-login>
                             </div>
                         </div>
                     </div>
@@ -343,37 +391,53 @@
             },
             listener: function (ctx) {
                 var arr = window.location.hash.split('/');
-                let isBlock = $(arr[0])[0].style.display == 'block';
-                if (!isBlock) {
-                    if (arr.length > 0) {
-                        ctx.project = arr[1];
-                        if (arr.length > 1) {
-                            ctx.study = {id: arr[2], name: arr[2]};
+                if (typeof $(arr[0])[0] !== "undefined") {
+                    let isBlock = $(arr[0])[0].style.display == 'block';
+                    if (!isBlock) {
+                        if (arr.length > 0) {
+                            ctx.project = arr[1];
+                            if (arr.length > 1) {
+                                ctx.study = {id: arr[2], name: arr[2]};
+                            }
                         }
+                        console.log('ctx.project', ctx.project)
+                        console.log('ctx.study', ctx.study)
+                        $('.content').hide();
+                        $(arr[0]).show();
                     }
-                    console.log('ctx.project', ctx.project)
-                    console.log('ctx.study', ctx.study)
-                    $('.content').hide();
-                    $(arr[0]).show();
                 }
             },
             _setVisibleMenuItems: function () {
-                let menuItems = ['browser', 'prioritization'];
-                for (var i in menuItems) {
-                    let visibility = this.config.menu[menuItems[i]].visibility;
+                let menuItems = this.config.menu;
+                for (var item in menuItems) {
+                    let visibility = menuItems[item].visibility;
                     let visible = false;
-                    if (visibility == 'public') {
-                        visible = true;
+                    switch(visibility) {
+                        case 'public':
+                            visible = true;
+                            break;
+                        case 'private':
+                            visible = false;
+                            break;
+                        case 'never':
+                            visible = false;
+                            break;
                     }
-//                    switch(visibility) {
-//
-//                    }
-                    switch(menuItems[i]) {
+                    switch(item) {
                         case 'browser':
                             this.isBrowserVisible = visible;
                             break;
                         case 'prioritization':
                             this.isPrioritizationVisible = visible;
+                            break;
+                        case 'diagnose':
+                            this.isDiagnoseVisible = visible;
+                            break;
+                        case 'tools':
+                            this.isToolsVisible = visible;
+                            break;
+                        case 'genomeBrowser':
+                            this.isGenomeBrowserVisible = visible;
                             break;
                     }
                 }
@@ -412,7 +476,11 @@
             },
             startApp: function() {
                 this.logged = true;
+                // Making the private menu items visible after login
+                this.isPrioritizationVisible = true;
+                this.isDiagnoseVisible = true;
                 console.log(this.sessionId)
+                console.log(this.opencgaClient)
                 this.opencgaClient._config.sessionId = this.sessionId;
 
                 var _this = this;
@@ -433,8 +501,14 @@
                         for (let j = 0; j < this.projects[i].studies.length; j++) {
                             this.push('studies', this.projects[i].studies[j]);
                         }
+                        this.selectedProject = this.projects[i];
                     }
                 }
+            },
+            showProjectSummary: function (e) {
+                e.preventDefault();
+                $('.content').hide();
+                $('#projectSummary').show();
             },
             logout: function() {
                 var _this = this;
@@ -447,6 +521,8 @@
                     _this.opencgaClient = undefined;
                     _this.userId = "";
                     _this.logged = false;
+                    _this.isPrioritizationVisible = false;
+                    _this.isDiagnoseVisible = false;
                 });
             },
             _checkVersion: function() {

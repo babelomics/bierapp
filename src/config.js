@@ -13,7 +13,7 @@ OPENCGA_COOKIE_USER_NAME = "opencga_userId";
 
 var application = {
     title: "BiERapp",
-    logo: "",
+    logo: "images/bier-text.svg",
     version: "v2.0.0",
     menu: {
         browser: {
@@ -21,10 +21,28 @@ var application = {
             visibility: "public"
         },
         prioritization: {
+            title: "Prioritization",
             visibility: "private"
+        },
+        diagnose: {
+            title: "Diagnose",
+            visibility: "private"
+        },
+        tools: {
+            title: "Tools",
+            visibility: "public"
+        },
+        genomeBrowser: {
+            title: "Genome Browser",
+            visibility: "public"
         }
-    }
-
+    },
+    settings_show: "true",
+    about: [{"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
+        {"name": "Tutorial", "url": "https://github.com/babelomics/bierapp/wiki/Tutorial", "icon": ""},
+        {"name": "Source code", "url": "https://github.com/babelomics/bierapp", "icon": "fa fa-github"},
+        {"name": "Contact",  "url": "", "icon": "fa fa-envelope"},
+        {"name": "FAQ",  "url": "", "icon": ""}]
 };
 
 
