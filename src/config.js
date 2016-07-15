@@ -9,6 +9,25 @@ OPENCGA_HOST = "bioinfodev.hpc.cam.ac.uk/hgva";
 OPENCGA_VERSION = "v1";
 OPENCGA_COOKIE_SESSION_ID = "opencga_sId";
 OPENCGA_COOKIE_USER_NAME = "opencga_userId";
+
+
+var application = {
+    title: "BiERapp",
+    logo: "",
+    version: "v2.0.0",
+    menu: {
+        browser: {
+            title: "Variant Browser",
+            visibility: "public"
+        },
+        prioritization: {
+            visibility: "private"
+        }
+    }
+
+};
+
+
 BIERAPP_VERSION = "2.0.0";
 
 STUDY_NAME = "WorkSpace";

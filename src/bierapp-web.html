@@ -60,7 +60,7 @@
                             <a href="#home" class="navbar-brand" style="padding-top: 5px">
                                 <img src="images/bier-text.svg" width="40px">
                             </a>
-                            <a class="navbar-brand" href="#home"><b>BiERapp v2.0.0</b></a>
+                            <a class="navbar-brand" href="#home"><b>{{config.title}} {{config.version}}</b></a>
                         </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -71,11 +71,16 @@
                                 <!--<a href="#home"><span class="fa fa-home" aria-hidden="true"></span></a>-->
                                 <!--</li>-->
 
-                                <li class="bierapp-menu"><a href="#" role="button">Home</a></li>
+                                <li class="bierapp-menu"><a href="#home" role="button">Home</a></li>
 
-                                <li class="bierapp-menu"><a href="#browser" role="button">Variant Browser</a></li>
+                                <template is="dom-if" if="{{isBrowserVisible}}">
+                                    <!--<li class="bierapp-menu"><a href="#browser" role="button">Variant Browser</a></li>-->
+                                    <li class="bierapp-menu"><a href="#browser" role="button">{{config.menu.browser.title}}</a></li>
+                                </template>
 
-                                <li class="bierapp-menu"><a href="#prioritization" role="button">Prioritization</a></li>
+                                <template is="dom-if" if="{{isPrioritizationVisible}}">
+                                    <li class="bierapp-menu"><a href="#prioritization" role="button">Prioritization</a></li>
+                                </template>
 
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Diagnose <span class="caret"></span></a>
@@ -161,29 +166,29 @@
             <!-- This is where main application is rendered -->
             <div class="center">
                 <!--<div class="collapse content" id="home">-->
-                    <!--<br>-->
-                    <!--<img src="images/bier-text.svg">-->
-                    <!--<span style="font-size:50px;">BiERapp v2.0.0</span>-->
-                    <!--<h2>Overview</h2>-->
-                    <!--<p>-->
-                        <!--Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.-->
-                    <!--</p>-->
-                    <!--<br>-->
-                    <!--<p>-->
-                    <!--<div>Supported by</div>-->
-                    <!--<img style="margin:3px;height:35px;" src="images/logobier.jpg" />-->
-                    <!--<img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />-->
-                    <!--<img style="margin:3px;height:35px;" src="images/logo_cipf.png" />-->
-                    <!--<img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />-->
-                    <!--<img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />-->
-                    <!--<img style="margin:3px;height:35px;" src="images/logo_inb.png" />-->
-                    <!--</p>-->
-                    <!--<br>-->
-                    <!--<div>Note:</div>-->
-                    <!--<span style="font-size:13px">{{versionNav}}-->
-                    <!--<br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari-->
-                    <!--7+ and Opera 24+.-->
-                    <!--</span>-->
+                <!--<br>-->
+                <!--<img src="images/bier-text.svg">-->
+                <!--<span style="font-size:50px;">BiERapp v2.0.0</span>-->
+                <!--<h2>Overview</h2>-->
+                <!--<p>-->
+                <!--Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.-->
+                <!--</p>-->
+                <!--<br>-->
+                <!--<p>-->
+                <!--<div>Supported by</div>-->
+                <!--<img style="margin:3px;height:35px;" src="images/logobier.jpg" />-->
+                <!--<img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />-->
+                <!--<img style="margin:3px;height:35px;" src="images/logo_cipf.png" />-->
+                <!--<img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />-->
+                <!--<img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />-->
+                <!--<img style="margin:3px;height:35px;" src="images/logo_inb.png" />-->
+                <!--</p>-->
+                <!--<br>-->
+                <!--<div>Note:</div>-->
+                <!--<span style="font-size:13px">{{versionNav}}-->
+                <!--<br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari-->
+                <!--7+ and Opera 24+.-->
+                <!--</span>-->
                 <welcome-web></welcome-web>
                 <!--</div>-->
             </div>
@@ -294,35 +299,19 @@
                 }
             },
             ready: function() {
-//                window.addEventListener('popstate', this.listener(this));
+                this.config = application;
+                console.log(this.config)
 
                 var _this = this;
                 window.onhashchange = function () {
                     _this.listener(_this);
-                }
-
+                };
 
                 this._checkVersion();
                 this.enableClick();
-                this.config = new OpenCGAClientConfig(OPENCGA_HOST, OPENCGA_VERSION, OPENCGA_COOKIE_SESSION_ID, OPENCGA_COOKIE_USER_NAME);
-                //                this.tmpHost = OPENCGA_HOST;
-                //                let tmpClient = new OpenCGAClient(this.config);
-                //                this.studies = ["A", "B"];
-                this.opencgaClient = new OpenCGAClient(this.config);
-                //                tmpClient.users().info()
-                //                        .then(function() {
-                //                            // We are logged in. Show home.
-                //                            console.log("We are logged in.");
-                //                            this.opencgaClient = new OpenCGAClient(this.config);
-                //                            $('#home').show();
-                //                            this.showLogout();
-                //                        }.bind(this))
-                //                        .catch(function() {
-                //                            // We are not logged in. Show login.
-                //                            console.log("We are not logged in.");
-                //                            $('#login').show();
-                //                            this.disableClick();
-                //                        }.bind(this));
+
+                this.opencgaClientConfig = new OpenCGAClientConfig(OPENCGA_HOST, OPENCGA_VERSION, OPENCGA_COOKIE_SESSION_ID, OPENCGA_COOKIE_USER_NAME);
+                this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
 
                 this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
                 this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
@@ -349,29 +338,53 @@
                 } else {
                     $('#home').show();
                 }
+
+                this._setVisibleMenuItems();
             },
             listener: function (ctx) {
-                console.log("Listener")
-//                var ctx = this._this;
-                console.log(ctx)
                 var arr = window.location.hash.split('/');
-                console.log("arr", arr)
-                if (arr.length > 0) {
-                    ctx.project = arr[1];
-                    if (arr.length > 1) {
-                        console.log("come on!!!")
-//                        ctx.study = arr[2];
-                        ctx.study = {id: arr[2], name: arr[2]};
+                let isBlock = $(arr[0])[0].style.display == 'block';
+                if (!isBlock) {
+                    if (arr.length > 0) {
+                        ctx.project = arr[1];
+                        if (arr.length > 1) {
+                            ctx.study = {id: arr[2], name: arr[2]};
+                        }
+                    }
+                    console.log('ctx.project', ctx.project)
+                    console.log('ctx.study', ctx.study)
+                    $('.content').hide();
+                    $(arr[0]).show();
+                }
+            },
+            _setVisibleMenuItems: function () {
+                let menuItems = ['browser', 'prioritization'];
+                for (var i in menuItems) {
+                    let visibility = this.config.menu[menuItems[i]].visibility;
+                    let visible = false;
+                    if (visibility == 'public') {
+                        visible = true;
+                    }
+//                    switch(visibility) {
+//
+//                    }
+                    switch(menuItems[i]) {
+                        case 'browser':
+                            this.isBrowserVisible = visible;
+                            break;
+                        case 'prioritization':
+                            this.isPrioritizationVisible = visible;
+                            break;
                     }
                 }
-                $('.content').hide();
-                $(arr[0]).show();
             },
             enableClick: function() {
+                let _this = this;
                 $(".bierapp-menu a").on('click', function(e) {
                     e.preventDefault(); // stops link form loading
                     $('.content').hide(); // hides all content divs
                     $($(this).attr('href')).show(); //get the href and use it find which div to show
+                    window.location.hash = $(this).attr('href') + "/" + _this.project; // changes the hash value in the address bar
                 });
             },
             disableClick: function() {
@@ -390,6 +403,7 @@
                 //                $(".bierapp-menu a[href='#home']").trigger("click");
                 this.showLogout();
                 $('#home').show();
+                window.location.hash = 'home'; // Setting the hash value in the address bar to home after login
 
                 this.userId = e.detail.userId;
                 this.sessionId = e.detail.sessionId;
@@ -413,7 +427,6 @@
                 } else {
                     this.project = e.target.innerText;
                 }
-                console.log("seelctProjects")
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == this.project) {
@@ -424,16 +437,16 @@
                 }
             },
             logout: function() {
-                console.log("LOG OUT!!!!!")
                 var _this = this;
                 this.opencgaClient.users().logout().then(function() {
                     _this.showLogin();
                     //                    $(".bierapp-menu a[href='#login']").trigger("click");
                     $('#home').show();
                     //                    _this.disableClick();
+                    window.location.hash = 'home'; // Setting the hash value in the address bar to home after logout
                     _this.opencgaClient = undefined;
-                    this.userId = "";
-                    this.logged = false;
+                    _this.userId = "";
+                    _this.logged = false;
                 });
             },
             _checkVersion: function() {
