@@ -22,6 +22,7 @@
 <link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
 
 <link rel="import" href="components/opencga-login.html">
+<link rel="import" href="welcome.html">
 <link rel="import" href="jso-styles.html">
 
 <dom-module id="bierapp-web">
@@ -32,7 +33,7 @@
             .center {
                 margin: auto;
                 text-align: justify;
-                width: 50%;
+                width: 60%;
                 font-size: 18px;
                 color: #797979;
             }
@@ -159,33 +160,35 @@
 
             <!-- This is where main application is rendered -->
             <div class="center">
-                <div class="collapse content" id="home">
-                    <br>
-                    <img src="images/bier-text.svg">
-                    <span style="font-size:50px;">BiERapp v2.0.0</span>
-                    <h2>Overview</h2>
-                    <p>
-                        Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.
-                    </p>
-                    <br>
-                    <p>
-                    <div>Supported by</div>
-                    <img style="margin:3px;height:35px;" src="images/logobier.jpg" />
-                    <img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />
-                    <img style="margin:3px;height:35px;" src="images/logo_cipf.png" />
-                    <img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />
-                    <img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />
-                    <img style="margin:3px;height:35px;" src="images/logo_inb.png" />
-                    </p>
-                    <br>
-                    <div>Note:</div>
-                    <span style="font-size:13px">{{versionNav}}
-                    <br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari
-                    7+ and Opera 24+.
-                    </span>
-                </div>
-
+                <!--<div class="collapse content" id="home">-->
+                    <!--<br>-->
+                    <!--<img src="images/bier-text.svg">-->
+                    <!--<span style="font-size:50px;">BiERapp v2.0.0</span>-->
+                    <!--<h2>Overview</h2>-->
+                    <!--<p>-->
+                        <!--Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.-->
+                    <!--</p>-->
+                    <!--<br>-->
+                    <!--<p>-->
+                    <!--<div>Supported by</div>-->
+                    <!--<img style="margin:3px;height:35px;" src="images/logobier.jpg" />-->
+                    <!--<img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />-->
+                    <!--<img style="margin:3px;height:35px;" src="images/logo_cipf.png" />-->
+                    <!--<img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />-->
+                    <!--<img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />-->
+                    <!--<img style="margin:3px;height:35px;" src="images/logo_inb.png" />-->
+                    <!--</p>-->
+                    <!--<br>-->
+                    <!--<div>Note:</div>-->
+                    <!--<span style="font-size:13px">{{versionNav}}-->
+                    <!--<br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari-->
+                    <!--7+ and Opera 24+.-->
+                    <!--</span>-->
+                <welcome-web></welcome-web>
+                <!--</div>-->
             </div>
+
+
             <div class="">
                 <div class="collapse content" id="browser">
                     <variant-browser title="browser" host="{{host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
@@ -291,7 +294,13 @@
                 }
             },
             ready: function() {
-                window.addEventListener('popstate', this.listener(this));
+//                window.addEventListener('popstate', this.listener(this));
+
+                var _this = this;
+                window.onhashchange = function () {
+                    _this.listener(_this);
+                }
+
 
                 this._checkVersion();
                 this.enableClick();
@@ -342,15 +351,17 @@
                 }
             },
             listener: function (ctx) {
-                console.log("ctx")
+                console.log("Listener")
+//                var ctx = this._this;
                 console.log(ctx)
-                var arr= window.location.hash.split('/');
+                var arr = window.location.hash.split('/');
                 console.log("arr", arr)
                 if (arr.length > 0) {
-                    console.log("come on!!!")
                     ctx.project = arr[1];
-                    if (arr.length > 0) {
-                        ctx.study = arr[2];
+                    if (arr.length > 1) {
+                        console.log("come on!!!")
+//                        ctx.study = arr[2];
+                        ctx.study = {id: arr[2], name: arr[2]};
                     }
                 }
                 $('.content').hide();
