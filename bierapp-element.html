@@ -90,6 +90,7 @@
         jso-opencga-footer {
             position: absolute;
             bottom: 0;
+            height: 60px;
         }
 
         .content {
@@ -143,31 +144,7 @@
     <template>
         <div class="content" menu-option="home">
             <bierapp-home data-option="home"></bierapp-home>
-            <!-- <jso-variant-browser id="variantBrowser" menu-option="variantbrowser"></jso-variant-browser> -->
-            <!--<jso-dashboard menu-option="dashboard"-->
-            <!--projects="{{projects}}"></jso-dashboard>-->
         </div>
-
-
-        <!-- <jso-panel modal movable closable hidden$="{{createProjectHidden}}">
-            <div class="header">Manolo</div>
-            <jso-opencga-create-project class="container" id="createStudy" on-close="handleCloseCreateProject" projects="{{projects}}">
-            </jso-opencga-create-project>
-        </jso-panel>
-
-
-        <jso-panel modal movable closable hidden$="{{createStudyHidden}}">
-            <div class="header">Manolo</div>
-            <jso-opencga-create-study class="container" id="createStudy" on-close="handleCloseCreateStudy" projects="{{projects}}">
-            </jso-opencga-create-study>
-        </jso-panel>
-
-        <jso-panel modal movable closable hidden$="{{uploadHidden}}">
-            <div class="header">Upload file</div>
-            <jso-opencga-upload-file id="upload" class="container" on-close="handleCloseUpload" projects="{{projects}}" bioformats="{{bioformats}}">
-
-            </jso-opencga-upload-file>
-        </jso-panel> -->
 
         <div id="content" class="content" menu-option="home,variantbrowser">
             <jso-panel hidden collapsible closable movable id="browserPanel" on-hidden="handlePanelHidden">
@@ -177,7 +154,6 @@
                 </div>
                 <jso-opencga-browser enable-auto-index class="container" id="browser" projects="{{projects}}" bioformats="{{bioformats}}" mode="file" on-need-refresh="handleUserNeedRefresh"></jso-opencga-browser>
             </jso-panel>
-
 
             <jso-panel hidden collapsible closable movable id="sampleBrowserPanel" on-hidden="handlePanelHidden">
                 <div class="header">
@@ -211,13 +187,6 @@
                     <i class="fa fa-users"></i>
                     <span class="option-text">Study Browser</span>
                 </div>
-                <!-- <div class="hover" on-click="handleToggleBrowser">
-                    <i class="fa fa-cloud"></i> My data
-                </div> -->
-
-                <!--<div data-option="variantbrowser" on-click="handleMenu">-->
-                <!--Variant browser-->
-                <!--</div>-->
             </div>
 
             <jso-help-menu class="helpmenu" selectedOption="{{selectedOption}}">
@@ -234,10 +203,8 @@
         </jso-opencga-header>
 
         <jso-opencga-footer menu-option="home,loging,singup,profile,remember">
-            <!-- <jso-opencga-footer hidden$="{{computeFooter(selectedOption)}}" > -->
-            BierApp: created by Computational Genomics Department
-            <br> Centro de Investigación Principe Felipe
-            <br> 2016
+            BierApp 2016
+            <br> Created by <b>Computational Genomics Department</b> at <b>Centro de Investigación Principe Felipe</b>
         </jso-opencga-footer>
 
     </template>
