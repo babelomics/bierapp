@@ -41,7 +41,7 @@ var application = {
             visibility: "public"
         }
     },
-    settings_show: "true",
+    settingsShow: "true",
     about: [
         {"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
         {"name": "Tutorial", "url": "https://github.com/babelomics/bierapp/wiki/Tutorial", "icon": ""},

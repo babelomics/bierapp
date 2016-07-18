@@ -137,7 +137,7 @@
 
 
                                 <!-- Setting modal window -->
-                                <template is="dom-if" if="{{config.settings_show}}">
+                                <template is="dom-if" if="{{config.settingsShow}}">
                                     <li>
                                         <a href="#" data-toggle="modal" role="button" data-placement="bottom" data-target="#myModal" title="Settings ...">
                                             <i class="fa fa-cog"></i>
@@ -150,7 +150,7 @@
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <template is="dom-repeat" items="{{config.about}}">
-                                            <li><a href="{{item.url}}" target="_blank"><i class="{{item.icon}}" aria-hidden="true"></i> {{item.name}}</a></li>
+                                            <li><a href="{{item.url}}" target="_blank"><i class$="{{item.icon}}" aria-hidden="true"></i> {{item.name}}</a></li>
                                         </template>
                                         <!--<li><a href="https://github.com/babelomics/bierapp/wiki" target="_blank"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a></li>-->
                                         <!--<li><a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank"> Tutorial</a></li>-->
