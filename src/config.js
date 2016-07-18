@@ -22,11 +22,15 @@ var application = {
         },
         prioritization: {
             title: "Prioritization",
-            visibility: "private"
+            visibility: "public"
         },
         diagnose: {
             title: "Diagnose",
-            visibility: "private"
+            visibility: "public"
+        },
+        beacon: {
+            title: "Beacon",
+            visibility: "public"
         },
         tools: {
             title: "Tools",
@@ -38,11 +42,13 @@ var application = {
         }
     },
     settings_show: "true",
-    about: [{"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
+    about: [
+        {"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
         {"name": "Tutorial", "url": "https://github.com/babelomics/bierapp/wiki/Tutorial", "icon": ""},
         {"name": "Source code", "url": "https://github.com/babelomics/bierapp", "icon": "fa fa-github"},
         {"name": "Contact",  "url": "", "icon": "fa fa-envelope"},
-        {"name": "FAQ",  "url": "", "icon": ""}]
+        {"name": "FAQ",  "url": "", "icon": ""}
+    ]
 };
 
 
