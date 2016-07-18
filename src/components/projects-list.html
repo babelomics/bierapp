@@ -1,0 +1,58 @@
+
+<dom-module id="projects-list">
+    <template>
+        <style is="custom-style" include="jso-styles"></style>
+
+        <div>
+            <ol class="breadcrumb">
+                <li class="active">
+                    Projects
+                </li>
+            </ol>
+
+            <table class="table table-bordered add-top-margin">
+                <thead>
+                <tr class="table-header">
+                    <th>Project</th>
+                    <th>Studies</th>
+                </tr>
+                </thead>
+                <tbody>
+                <template is="dom-repeat" items="{{projects}}">
+                    <tr>
+                        <td>
+                            <a href="#projectInfo" on-click="fireSelectProject">{{item.name}}</a>
+                        </td>
+                        <td>
+                            <ul class="list-unstyled">
+                                <template is="dom-repeat" items="{{item.studies}}" as="study">
+                                    <li>
+                                        <a href="#studyInfo" on-click="fireSelectStudy">{{study.name}}</a>
+                                    </li>
+                                </template>
+                            </ul>
+                        </td>
+                    </tr>
+                </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'projects-list',
+            properties: {
+                projects: {
+                    type: Array,
+                    value: []
+                }
+            },
+            fireSelectProject: function (e) {
+                this.fire('project', {project: e.target.innerHTML});
+            },
+            fireSelectStudy: function (e) {
+                this.fire('study', {study: e.target.innerHTML});
+            }
+        });
+    </script>
+</dom-module>

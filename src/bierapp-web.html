@@ -16,10 +16,11 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
-<!--<link rel="import" href="../bower_components/app-route/app-location.html">-->
-<!--<link rel="import" href="../bower_components/app-route/app-route.html">-->
-
 <link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
+
+<link rel="import" href="components/projects-list.html">
+<link rel="import" href="components/project-info.html">
+<link rel="import" href="components/study-info.html">
 
 <link rel="import" href="components/opencga-login.html">
 <link rel="import" href="welcome.html">
@@ -118,7 +119,10 @@
                                 <template is="dom-if" if="{{logged}}">
                                     <li><a href="#" role="button">Logged as '{{userId}}'</a></li>
 
-                                    <!-- About dropdown menu-->
+                                    <!--Project menu-->
+                                    <li><a href="#projectList" role="button">Project</a></li>
+
+                                     <!--Project dropdown menu-->
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
@@ -225,38 +229,49 @@
                 </div>
 
                 <!--BreadCrumb reference-->
-                <div class="collapse content" id="projectList">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Project</th>
-                            <th>Studies</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <template is="dom-repeat" items="{{projects}}">
-                            <tr>
-                                <td on-click="showProjectSummary">{{item.name}}</td>
-                                <td>
-                                    <template is="dom-repeat" items="{{item.studies}}" as="study">
-                                        {{study.name}}<br>
-                                    </template></td>
-                            </tr>
-                        </template>
-                        </tbody>
-                    </table>
-                </div>
+                <!--<div class="collapse content" id="projectList1">-->
+                    <!--<table class="table table-hover">-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th>Project</th>-->
+                            <!--<th>Studies</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--<template is="dom-repeat" items="{{projects}}">-->
+                            <!--<tr>-->
+                                <!--<td on-click="showProjectSummary">{{item.name}}</td>-->
+                                <!--<td>-->
+                                    <!--<template is="dom-repeat" items="{{item.studies}}" as="study">-->
+                                        <!--{{study.name}}<br>-->
+                                    <!--</template>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                        <!--</template>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
+                <!--</div>-->
 
-                <div class="collapse content" id="projectSummary">
-                    <h4><b>Project:</b> {{selectedProject.name}}</h4> <br>
-                    <b>Studies:</b> <br>
-                    <template is="dom-repeat" items="{{selectedProject.studies}}" as="study">
-                        {{study.name}}<br>
-                    </template>
-                    <b>Alias:</b> {{selectedProject.alias}} <br>
-                    <b>ID:</b> {{selectedProject.id}} <br>
-                    <b>Creation Date:</b> {{selectedProject.creationDate}}<br>
-                    <b>Organization:</b> {{selectedProject.organization}}
+                <!--<div class="collapse content" id="projectSummary1">-->
+                    <!--<h4><b>Project:</b> {{selectedProject.name}}</h4> <br>-->
+                    <!--<b>Studies:</b> <br>-->
+                    <!--<template is="dom-repeat" items="{{selectedProject.studies}}" as="study">-->
+                        <!--{{study.name}}<br>-->
+                    <!--</template>-->
+                    <!--<b>Alias:</b> {{selectedProject.alias}} <br>-->
+                    <!--<b>ID:</b> {{selectedProject.id}} <br>-->
+                    <!--<b>Creation Date:</b> {{selectedProject.creationDate}}<br>-->
+                    <!--<b>Organization:</b> {{selectedProject.organization}}-->
+                <!--</div>-->
+
+                <div class="collapse content" id="projectList">
+                    <projects-list projects="{{projects}}" on-project="updateProject" on-study="updateStudy"></projects-list>
+                </div>
+                <div class="collapse content" id="projectInfo">
+                    <project-info project="{{selectedProject}}"></project-info>
+                </div>
+                <div class="collapse content" id="studyInfo">
+                    <study-info project="{{selectedProject}}" study="{{study}}"></study-info>
                 </div>
             </div>
             <!--<nav class="footer navbar navbar-inverse navbar-fixed-bottom">-->
@@ -357,8 +372,6 @@
             },
             ready: function() {
                 this.config = application;
-                console.log(this.config)
-
                 var _this = this;
                 window.onhashchange = function () {
                     _this.listener(_this);
@@ -378,7 +391,7 @@
                     this.userId = Cookies.get("opencga_userId");
                     this.sessionId = sid;
                     this.startApp();
-                    this.showLogout()
+                    this.showLogout();
                     this.logged = true;
                 }
 
@@ -401,10 +414,7 @@
             },
             listener: function (ctx) {
                 var arr = window.location.hash.split('/');
-                console.log("listener")
-                console.log(arr)
                 if (typeof $(arr[0])[0] !== "undefined") {
-                    console.log("in the if")
                     let isBlock = $(arr[0])[0].style.display == 'block';
                     if (!isBlock) {
                         if (arr.length > 1) {
@@ -476,25 +486,16 @@
                 });
             },
             studyChanged: function () {
-                console.log('study changed', this.study)
-                console.log('window.location.hash1', window.location.hash)
-//                window.location.hash += '/' + this.study.name;
-
                 let hashFrag = this.tool + "/" + this.project;
                 if (typeof this.study !== "undefined" && typeof this.study.name !== "undefined") {
                     hashFrag += "/" + this.study.name;
                 }
-                console.log("studyChanged, setting has value")
                 window.location.hash = hashFrag;
-                console.log('window.location.hash2', window.location.hash)
             },
             disableClick: function() {
                 $(".bierapp-menu a").off('click');
             },
             startApp: function() {
-                // Making the private menu items visible after login
-//                this.isPrioritizationVisible = true;
-//                this.isDiagnoseVisible = true;
                 console.log(this.sessionId)
                 console.log(this.opencgaClient)
                 this.opencgaClient._config.sessionId = this.sessionId;
@@ -518,18 +519,29 @@
                         for (let j = 0; j < this.projects[i].studies.length; j++) {
                             this.push('studies', this.projects[i].studies[j]);
                         }
-                    }
-                }
-            },
-            showProjectSummary: function (e) {
-                for (let i = 0; i < this.projects.length; i++) {
-                    if (this.projects[i].name == e.target.innerHTML) { // getting the selected project from projects array
                         this.selectedProject = this.projects[i];
                     }
                 }
-                e.preventDefault();
-                $('.content').hide();
-                $('#projectSummary').show();
+            },
+//            showProjectSummary: function (e) {
+//                for (let i = 0; i < this.projects.length; i++) {
+//                    if (this.projects[i].name == e.target.innerHTML) { // getting the selected project from projects array
+//                        this.selectedProject = this.projects[i];
+//                    }
+//                }
+//                e.preventDefault();
+//                $('.content').hide();
+//                $('#projectSummary').show();
+//            },
+            updateProject: function (e) {
+                for (let i = 0; i < this.projects.length; i++) {
+                    if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
+                        this.selectedProject = this.projects[i];
+                    }
+                }
+            },
+            updateStudy: function (e) {
+                this.study['name'] = e.detail.study;
             },
             showLogin: function() {
                 $(".bierapp-menu a[href='#logout']").hide();
@@ -562,8 +574,6 @@
                     _this.opencgaClient = undefined;
                     _this.userId = "";
                     _this.logged = false;
-//                    _this.isPrioritizationVisible = false;
-//                    _this.isDiagnoseVisible = false;
                 });
 
             },

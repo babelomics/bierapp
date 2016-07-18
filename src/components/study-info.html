@@ -1,0 +1,42 @@
+
+<dom-module id="study-info">
+    <template>
+        <style is="custom-style" include="jso-styles"></style>
+
+        <div>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="#projectList">Project</a>
+                </li>
+                <li>
+                    <a href="#projectInfo">{{project.name}}</a>
+                </li>
+                <li class="active">
+                    {{study.name}}
+                </li>
+            </ol>
+
+            <h1>{{study.name}}</h1>
+
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'study-info',
+            properties: {
+                project: {
+                    type: Object,
+                    value: []
+                },
+                study: {
+                    type: Object,
+                    observer: 'studyChanged'
+                }
+            },
+            studyChanged: function (neo, old) {
+                // TODO study not passed properly. 
+                console.log("studyChanged", this.study)
+            }
+        });
+    </script>
+</dom-module>
