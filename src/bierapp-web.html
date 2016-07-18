@@ -339,7 +339,8 @@
                     value: ""
                 },
                 study: {
-                    type: Object
+                    type: Object,
+                    observer: 'studyChanged'
                 },
                 studies: {
                     type: Array,
@@ -379,9 +380,9 @@
                 // if has exist use hash, else go to #home
                 if (window.location.hash != "") {
                     var arr = window.location.hash.split('/');
-                    if (arr.length > 0) {
+                    if (arr.length > 1) {
                         this.project = arr[1];
-                        if (arr.length > 1) {
+                        if (arr.length > 2) {
                             this.study = {name: arr[2]};
                         }
                     }
@@ -398,9 +399,9 @@
                 if (typeof $(arr[0])[0] !== "undefined") {
                     let isBlock = $(arr[0])[0].style.display == 'block';
                     if (!isBlock) {
-                        if (arr.length > 0) {
+                        if (arr.length > 1) {
                             ctx.project = arr[1];
-                            if (arr.length > 1) {
+                            if (arr.length > 2) {
                                 ctx.study = {id: arr[2], name: arr[2]};
                             }
                         }
@@ -458,6 +459,12 @@
                     window.location.hash = $(this).attr('href') + "/" + _this.project; // changes the hash value in the address bar
                 });
             },
+            studyChanged: function () {
+              console.log('study changed', this.study)
+                console.log('window.location.hash', window.location.hash)
+                window.location.hash += '/' + this.study.name;
+                console.log('window.location.hash', window.location.hash)
+            },
             disableClick: function() {
                 $(".bierapp-menu a").off('click');
             },
@@ -508,11 +515,15 @@
                         for (let j = 0; j < this.projects[i].studies.length; j++) {
                             this.push('studies', this.projects[i].studies[j]);
                         }
-                        this.selectedProject = this.projects[i];
                     }
                 }
             },
             showProjectSummary: function (e) {
+                for (let i = 0; i < this.projects.length; i++) {
+                    if (this.projects[i].name == e.target.innerHTML) { // getting the selected project from projects array
+                        this.selectedProject = this.projects[i];
+                    }
+                }
                 e.preventDefault();
                 $('.content').hide();
                 $('#projectSummary').show();

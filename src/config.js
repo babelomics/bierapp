@@ -34,7 +34,7 @@ var application = {
         },
         tools: {
             title: "Tools",
-            visibility: "public"
+            visibility: "private"
         },
         genomeBrowser: {
             title: "Genome Browser",
