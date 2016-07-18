@@ -349,6 +349,10 @@
                 logged: {
                     type: Boolean,
                     value: false
+                },
+                tool: {
+                    type: String,
+                    value: "home"
                 }
             },
             ready: function() {
@@ -375,6 +379,7 @@
                     this.sessionId = sid;
                     this.startApp();
                     this.showLogout()
+                    this.logged = true;
                 }
 
                 // if has exist use hash, else go to #home
@@ -396,7 +401,10 @@
             },
             listener: function (ctx) {
                 var arr = window.location.hash.split('/');
+                console.log("listener")
+                console.log(arr)
                 if (typeof $(arr[0])[0] !== "undefined") {
+                    console.log("in the if")
                     let isBlock = $(arr[0])[0].style.display == 'block';
                     if (!isBlock) {
                         if (arr.length > 1) {
@@ -456,43 +464,37 @@
                     e.preventDefault(); // stops link form loading
                     $('.content').hide(); // hides all content divs
                     $($(this).attr('href')).show(); //get the href and use it find which div to show
-                    window.location.hash = $(this).attr('href') + "/" + _this.project; // changes the hash value in the address bar
+
+                    // Update Hash Fragment: changes the hash value in the address bar
+                    let hashFrag = $(this).attr('href') + "/" + _this.project;
+                    if (typeof _this.study !== "undefined" && typeof _this.study.name !== "undefined") {
+                        hashFrag += "/" + _this.study.name;
+                    }
+                    window.location.hash = hashFrag;
+
+                    _this.tool = $(this).attr('href');
                 });
             },
             studyChanged: function () {
-              console.log('study changed', this.study)
-                console.log('window.location.hash', window.location.hash)
-                window.location.hash += '/' + this.study.name;
-                console.log('window.location.hash', window.location.hash)
+                console.log('study changed', this.study)
+                console.log('window.location.hash1', window.location.hash)
+//                window.location.hash += '/' + this.study.name;
+
+                let hashFrag = this.tool + "/" + this.project;
+                if (typeof this.study !== "undefined" && typeof this.study.name !== "undefined") {
+                    hashFrag += "/" + this.study.name;
+                }
+                console.log("studyChanged, setting has value")
+                window.location.hash = hashFrag;
+                console.log('window.location.hash2', window.location.hash)
             },
             disableClick: function() {
                 $(".bierapp-menu a").off('click');
             },
-            showLogin: function() {
-                $(".bierapp-menu a[href='#logout']").hide();
-                $(".bierapp-menu a[href='#login']").removeAttr("style");
-            },
-            showLogout: function() {
-                $(".bierapp-menu a[href='#login']").hide();
-                $(".bierapp-menu a[href='#logout']").removeAttr("style");
-            },
-            login: function(e) {
-                this.enableClick();
-                //                $(".bierapp-menu a[href='#home']").trigger("click");
-                this.showLogout();
-                $('#home').show();
-                window.location.hash = 'home'; // Setting the hash value in the address bar to home after login
-
-                this.userId = e.detail.userId;
-                this.sessionId = e.detail.sessionId;
-
-                this.startApp();
-            },
             startApp: function() {
-                this.logged = true;
                 // Making the private menu items visible after login
-                this.isPrioritizationVisible = true;
-                this.isDiagnoseVisible = true;
+//                this.isPrioritizationVisible = true;
+//                this.isDiagnoseVisible = true;
                 console.log(this.sessionId)
                 console.log(this.opencgaClient)
                 this.opencgaClient._config.sessionId = this.sessionId;
@@ -501,6 +503,7 @@
                 this.opencgaClient.users().projects(this.userId).then(function(response) {
                     _this.projects = response.response[0].result;
                     _this.selectProject(_this.projects[0].name);
+                    _this.logged = true;
                 });
             },
             selectProject: function(e) {
@@ -528,6 +531,26 @@
                 $('.content').hide();
                 $('#projectSummary').show();
             },
+            showLogin: function() {
+                $(".bierapp-menu a[href='#logout']").hide();
+                $(".bierapp-menu a[href='#login']").removeAttr("style");
+            },
+            showLogout: function() {
+                $(".bierapp-menu a[href='#login']").hide();
+                $(".bierapp-menu a[href='#logout']").removeAttr("style");
+            },
+            login: function(e) {
+                this.enableClick();
+                //                $(".bierapp-menu a[href='#home']").trigger("click");
+                this.showLogout();
+                $('#home').show();
+                window.location.hash = 'home'; // Setting the hash value in the address bar to home after login
+
+                this.userId = e.detail.userId;
+                this.sessionId = e.detail.sessionId;
+
+                this.startApp();
+            },
             logout: function() {
                 var _this = this;
                 this.opencgaClient.users().logout().then(function() {
@@ -539,9 +562,10 @@
                     _this.opencgaClient = undefined;
                     _this.userId = "";
                     _this.logged = false;
-                    _this.isPrioritizationVisible = false;
-                    _this.isDiagnoseVisible = false;
+//                    _this.isPrioritizationVisible = false;
+//                    _this.isDiagnoseVisible = false;
                 });
+
             },
             _checkVersion: function() {
                 this.versionNav = "You are currently using ";
