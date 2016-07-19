@@ -68,49 +68,69 @@
                         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <!-- Controls aligned to the LEFT -->
                             <ul class="nav navbar-nav">
+
+                                <!-- This code parse the config menu arrays a nd creates a custom menu taken into account visibility -->
+                                <template is="dom-repeat" items="{{config.menu}}" filter="isMenuItemVisible" as="menuItem">
+                                    <!-- If there is not submenu we just display a button -->
+                                    <template is="dom-if" if="{{!menuItem.submenu}}">
+                                        <li class="bierapp-menu"><a href="#{{menuItem.id}}" role="button">{{menuItem.title}}</a></li>
+                                    </template>
+
+                                    <!-- If there is a submney we create a dropdown menu item -->
+                                    <template is="dom-if" if="{{menuItem.submenu}}">
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{menuItem.title}} <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <template is="dom-repeat" items="{{menuItem.submenu}}" filter="isMenuItemVisible" >
+                                                    <li on-click=""><a href="#{{menuItem.id}}" data-id="{{item.id}}">{{item.title}}</a></li>
+                                                </template>
+                                            </ul>
+                                        </li>
+                                    </template>
+                                </template>
+
+
+                                <!--<li class="bierapp-menu"><a href="#home" role="button">Home</a></li>-->
+
+                                <!--<template is="dom-if" if="{{isBrowserVisible}}">-->
+                                <!--&lt;!&ndash;<li class="bierapp-menu"><a href="#browser" role="button">Variant Browser</a></li>&ndash;&gt;-->
+                                <!--<li class="bierapp-menu"><a href="#browser" role="button">{{config.menu.browser.title}}</a></li>-->
+                                <!--</template>-->
+
+                                <!--<template is="dom-if" if="{{isPrioritizationVisible}}">-->
+                                <!--<li class="bierapp-menu"><a href="#prioritization" role="button">{{config.menu.prioritization.title}}</a></li>-->
+                                <!--</template>-->
+
+                                <!--<template is="dom-if" if="{{isDiagnoseVisible}}">-->
                                 <!--<li class="dropdown">-->
-                                <!--<a href="#home"><span class="fa fa-home" aria-hidden="true"></span></a>-->
+                                <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.diagnose.title}} <span class="caret"></span></a>-->
+                                <!--<ul class="dropdown-menu">-->
+                                <!--<li on-click=""><a href="#" data-id="sample">Sample</a></li>-->
+                                <!--<li on-click=""><a href="#" data-id="family">Family</a></li>-->
+                                <!--</ul>-->
                                 <!--</li>-->
+                                <!--</template>-->
 
-                                <li class="bierapp-menu"><a href="#home" role="button">Home</a></li>
+                                <!--<template is="dom-if" if="{{isBeaconVisible}}">-->
+                                <!--<li class="bierapp-menu"><a href="#beacon" role="button">Beacon</a></li>-->
+                                <!--</template>-->
 
-                                <template is="dom-if" if="{{isBrowserVisible}}">
-                                    <!--<li class="bierapp-menu"><a href="#browser" role="button">Variant Browser</a></li>-->
-                                    <li class="bierapp-menu"><a href="#browser" role="button">{{config.menu.browser.title}}</a></li>
-                                </template>
+                                <!--<template is="dom-if" if="{{isToolsVisible}}">-->
+                                <!--<li class="dropdown">-->
+                                <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.tools.title}} <span class="caret"></span></a>-->
+                                <!--<ul class="dropdown-menu">-->
+                                <!--<li on-click=""><a href="#" data-id="sample">IBS</a></li>-->
+                                <!--<li on-click=""><a href="#" data-id="family">Export</a></li>-->
+                                <!--</ul>-->
+                                <!--</li>-->
+                                <!--</template>-->
 
-                                <template is="dom-if" if="{{isPrioritizationVisible}}">
-                                    <li class="bierapp-menu"><a href="#prioritization" role="button">{{config.menu.prioritization.title}}</a></li>
-                                </template>
-
-                                <template is="dom-if" if="{{isDiagnoseVisible}}">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.diagnose.title}} <span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li on-click=""><a href="#" data-id="sample">Sample</a></li>
-                                            <li on-click=""><a href="#" data-id="family">Family</a></li>
-                                        </ul>
-                                    </li>
-                                </template>
-
-                                <template is="dom-if" if="{{isBeaconVisible}}">
-                                    <li class="bierapp-menu"><a href="#beacon" role="button">Beacon</a></li>
-                                </template>
-
-                                <template is="dom-if" if="{{isToolsVisible}}">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.tools.title}} <span class="caret"></span></a>
-                                        <ul class="dropdown-menu">
-                                            <li on-click=""><a href="#" data-id="sample">IBS</a></li>
-                                            <li on-click=""><a href="#" data-id="family">Export</a></li>
-                                        </ul>
-                                    </li>
-                                </template>
-
-                                <template is="dom-if" if="{{isGenomeBrowserVisible}}">
-                                    <li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">{{config.menu.genomeBrowser.title}} </a></li>
-                                </template>
+                                <!--<template is="dom-if" if="{{isGenomeBrowserVisible}}">-->
+                                <!--<li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">{{config.menu.genomeBrowser.title}} </a></li>-->
+                                <!--</template>-->
                             </ul>
+
+
 
 
                             <!-- Controls aligned to the RIGHT: settings and about-->
@@ -122,7 +142,7 @@
                                     <!--Project menu-->
                                     <li><a href="#projectList" role="button">Project</a></li>
 
-                                     <!--Project dropdown menu-->
+                                    <!--Project dropdown menu-->
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
@@ -224,44 +244,44 @@
                     <variant-browser title="prioritization" host="{{host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
                 </div>
 
-                <div class="collapse content" id="genomeBrowserPanel">
+                <div class="collapse content" id="genomeBrowser">
                     no yet :-(
                 </div>
 
                 <!--BreadCrumb reference-->
                 <!--<div class="collapse content" id="projectList1">-->
-                    <!--<table class="table table-hover">-->
-                        <!--<thead>-->
-                        <!--<tr>-->
-                            <!--<th>Project</th>-->
-                            <!--<th>Studies</th>-->
-                        <!--</tr>-->
-                        <!--</thead>-->
-                        <!--<tbody>-->
-                        <!--<template is="dom-repeat" items="{{projects}}">-->
-                            <!--<tr>-->
-                                <!--<td on-click="showProjectSummary">{{item.name}}</td>-->
-                                <!--<td>-->
-                                    <!--<template is="dom-repeat" items="{{item.studies}}" as="study">-->
-                                        <!--{{study.name}}<br>-->
-                                    <!--</template>-->
-                                <!--</td>-->
-                            <!--</tr>-->
-                        <!--</template>-->
-                        <!--</tbody>-->
-                    <!--</table>-->
+                <!--<table class="table table-hover">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                <!--<th>Project</th>-->
+                <!--<th>Studies</th>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<template is="dom-repeat" items="{{projects}}">-->
+                <!--<tr>-->
+                <!--<td on-click="showProjectSummary">{{item.name}}</td>-->
+                <!--<td>-->
+                <!--<template is="dom-repeat" items="{{item.studies}}" as="study">-->
+                <!--{{study.name}}<br>-->
+                <!--</template>-->
+                <!--</td>-->
+                <!--</tr>-->
+                <!--</template>-->
+                <!--</tbody>-->
+                <!--</table>-->
                 <!--</div>-->
 
                 <!--<div class="collapse content" id="projectSummary1">-->
-                    <!--<h4><b>Project:</b> {{selectedProject.name}}</h4> <br>-->
-                    <!--<b>Studies:</b> <br>-->
-                    <!--<template is="dom-repeat" items="{{selectedProject.studies}}" as="study">-->
-                        <!--{{study.name}}<br>-->
-                    <!--</template>-->
-                    <!--<b>Alias:</b> {{selectedProject.alias}} <br>-->
-                    <!--<b>ID:</b> {{selectedProject.id}} <br>-->
-                    <!--<b>Creation Date:</b> {{selectedProject.creationDate}}<br>-->
-                    <!--<b>Organization:</b> {{selectedProject.organization}}-->
+                <!--<h4><b>Project:</b> {{selectedProject.name}}</h4> <br>-->
+                <!--<b>Studies:</b> <br>-->
+                <!--<template is="dom-repeat" items="{{selectedProject.studies}}" as="study">-->
+                <!--{{study.name}}<br>-->
+                <!--</template>-->
+                <!--<b>Alias:</b> {{selectedProject.alias}} <br>-->
+                <!--<b>ID:</b> {{selectedProject.id}} <br>-->
+                <!--<b>Creation Date:</b> {{selectedProject.creationDate}}<br>-->
+                <!--<b>Organization:</b> {{selectedProject.organization}}-->
                 <!--</div>-->
 
                 <div class="collapse content" id="projectList">
@@ -369,6 +389,13 @@
                     type: String,
                     value: "home"
                 }
+            },
+            isMenuItemVisible: function(item) {
+                console.log(item)
+                if(item.visibility == "none") {
+                    return false;
+                }
+                return true;
             },
             ready: function() {
                 this.config = application;

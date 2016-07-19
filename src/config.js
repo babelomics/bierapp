@@ -15,32 +15,60 @@ var application = {
     title: "BiERapp",
     logo: "images/bier-text.svg",
     version: "v2.0.0",
-    menu: {
-        browser: {
+    menu: [
+        {
+            id: "browser",
             title: "Variant Browser",
             visibility: "public"
         },
-        prioritization: {
+        {
+            id: "prioritization",
             title: "Prioritization",
             visibility: "public"
         },
-        diagnose: {
+        {
+            id: "diagnose",
             title: "Diagnose",
-            visibility: "public"
+            visibility: "public",
+            submenu: [
+                {
+                    id: "diagnose:sample",
+                    title: "Sample",
+                    visibility: "none"
+                },
+                {
+                    id: "diagnose:family",
+                    title: "Family",
+                    visibility: "public"
+                }]
         },
-        beacon: {
+        {
+            id: "beacon",
             title: "Beacon",
             visibility: "public"
         },
-        tools: {
+        {
+            id: "tools",
             title: "Tools",
-            visibility: "private"
+            visibility: "public",
+            submenu: [
+                {
+                    id: "ibs",
+                    title: "IBS",
+                    visibility: "public"
+                },
+                {
+                    id: "exporter",
+                    title: "Exporter",
+                    visibility: "public"
+                }]
         },
-        genomeBrowser: {
+        {
+            id: "genomeBrowser",
             title: "Genome Browser",
             visibility: "public"
         }
-    },
+    ],
     settingsShow: "true",
     about: [
         {"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
