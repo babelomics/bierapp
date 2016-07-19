@@ -27,11 +27,13 @@
                 project: {
                     type: Object,
                     value: []
-                },
-                study: {
-                    type: Object,
-                    observer: 'studyChanged'
                 }
+//                ,
+//                study: {
+//                    type: Object,
+//                    observer: 'studyChanged',
+//                    notify: true
+//                }
             },
             studyChanged: function (neo, old) {
                 // TODO study not passed properly. 

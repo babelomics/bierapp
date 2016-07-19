@@ -533,15 +533,15 @@
 //                $('.content').hide();
 //                $('#projectSummary').show();
 //            },
-            updateProject: function (e) {
+            updateProject: function(e) {
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
                         this.selectedProject = this.projects[i];
                     }
                 }
             },
-            updateStudy: function (e) {
-                this.study['name'] = e.detail.study;
+            updateStudy: function(e) {
+                this.study = {name: e.detail.study};
             },
             showLogin: function() {
                 $(".bierapp-menu a[href='#logout']").hide();
