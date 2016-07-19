@@ -18,9 +18,9 @@
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
 
-<link rel="import" href="components/projects-list.html">
-<link rel="import" href="components/project-info.html">
-<link rel="import" href="components/study-info.html">
+<link rel="import" href="components/opencga-projects.html">
+<link rel="import" href="components/opencga-project.html">
+<link rel="import" href="components/opencga-study.html">
 
 <link rel="import" href="components/opencga-login.html">
 <link rel="import" href="welcome.html">
@@ -88,50 +88,7 @@
                                         </li>
                                     </template>
                                 </template>
-
-
-                                <!--<li class="bierapp-menu"><a href="#home" role="button">Home</a></li>-->
-
-                                <!--<template is="dom-if" if="{{isBrowserVisible}}">-->
-                                <!--&lt;!&ndash;<li class="bierapp-menu"><a href="#browser" role="button">Variant Browser</a></li>&ndash;&gt;-->
-                                <!--<li class="bierapp-menu"><a href="#browser" role="button">{{config.menu.browser.title}}</a></li>-->
-                                <!--</template>-->
-
-                                <!--<template is="dom-if" if="{{isPrioritizationVisible}}">-->
-                                <!--<li class="bierapp-menu"><a href="#prioritization" role="button">{{config.menu.prioritization.title}}</a></li>-->
-                                <!--</template>-->
-
-                                <!--<template is="dom-if" if="{{isDiagnoseVisible}}">-->
-                                <!--<li class="dropdown">-->
-                                <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.diagnose.title}} <span class="caret"></span></a>-->
-                                <!--<ul class="dropdown-menu">-->
-                                <!--<li on-click=""><a href="#" data-id="sample">Sample</a></li>-->
-                                <!--<li on-click=""><a href="#" data-id="family">Family</a></li>-->
-                                <!--</ul>-->
-                                <!--</li>-->
-                                <!--</template>-->
-
-                                <!--<template is="dom-if" if="{{isBeaconVisible}}">-->
-                                <!--<li class="bierapp-menu"><a href="#beacon" role="button">Beacon</a></li>-->
-                                <!--</template>-->
-
-                                <!--<template is="dom-if" if="{{isToolsVisible}}">-->
-                                <!--<li class="dropdown">-->
-                                <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{config.menu.tools.title}} <span class="caret"></span></a>-->
-                                <!--<ul class="dropdown-menu">-->
-                                <!--<li on-click=""><a href="#" data-id="sample">IBS</a></li>-->
-                                <!--<li on-click=""><a href="#" data-id="family">Export</a></li>-->
-                                <!--</ul>-->
-                                <!--</li>-->
-                                <!--</template>-->
-
-                                <!--<template is="dom-if" if="{{isGenomeBrowserVisible}}">-->
-                                <!--<li class="bierapp-menu"><a href="#genomeBrowserPanel" role="button">{{config.menu.genomeBrowser.title}} </a></li>-->
-                                <!--</template>-->
                             </ul>
-
-
-
 
                             <!-- Controls aligned to the RIGHT: settings and about-->
                             <ul class="nav navbar-nav navbar-right">
@@ -156,9 +113,7 @@
 
                                     <li class="bierapp-menu-vertical-right"><a href="#browser" role="button">Upload data</a></li>
                                     <li class="divider-vertical"></li>
-
                                 </template>
-
 
                                 <!-- Setting modal window -->
                                 <template is="dom-if" if="{{config.settingsShow}}">
@@ -176,11 +131,6 @@
                                         <template is="dom-repeat" items="{{config.about}}">
                                             <li><a href="{{item.url}}" target="_blank"><i class$="{{item.icon}}" aria-hidden="true"></i> {{item.name}}</a></li>
                                         </template>
-                                        <!--<li><a href="https://github.com/babelomics/bierapp/wiki" target="_blank"><i class="fa fa-book" aria-hidden="true"></i> Documentation</a></li>-->
-                                        <!--<li><a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank"> Tutorial</a></li>-->
-                                        <!--<li><a href="https://github.com/babelomics/bierapp" target="_blank"><i class="fa fa-github" aria-hidden="true"></i> Source code</a></li>-->
-                                        <!--<li><a href="#"><i class="fa fa-envelope" aria-hidden="true"></i> Contact</a></li>-->
-                                        <!--<li><a href="#"> FAQ</a></li>-->
                                     </ul>
                                 </li>
 
@@ -201,34 +151,21 @@
             <!-- End of navigation bar -->
 
 
-
             <!-- This is where main application is rendered -->
+            <div>
+                <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
+                    <li><a href="#" on-click="showProjects">Projects</a></li>
+                    <li><a href="#" on-click="showProject">{{project}}</a></li>
+                    <template is="dom-if" if="{{study.name != ''}}">
+                        <li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>
+                        <!--Study samples-->
+                        <template is="dom-if" if="{{samples.length != 0}}">
+                            <li class="active">{{samples}}</li>
+                        </template>
+                    </template>
+                </ol>
+            </div>
             <div class="center">
-                <!--<div class="collapse content" id="home">-->
-                <!--<br>-->
-                <!--<img src="images/bier-text.svg">-->
-                <!--<span style="font-size:50px;">BiERapp v2.0.0</span>-->
-                <!--<h2>Overview</h2>-->
-                <!--<p>-->
-                <!--Welcome to the gene/variant prioritization tool of the BIER (the Team of BioInformatic for Rare Diseases). This interactive tool allows finding genes affected by deleterious variants that segregate along family pedigrees, case-controls or sporadic samples.-->
-                <!--</p>-->
-                <!--<br>-->
-                <!--<p>-->
-                <!--<div>Supported by</div>-->
-                <!--<img style="margin:3px;height:35px;" src="images/logobier.jpg" />-->
-                <!--<img style="margin:3px;height:35px;" src="images/logo_ciberer.jpg" />-->
-                <!--<img style="margin:3px;height:35px;" src="images/logo_cipf.png" />-->
-                <!--<img style="margin:3px;height:35px;" src="images/logoBabelomics_positive_trans.svg" />-->
-                <!--<img style="margin:3px;height:35px;" src="images/LOGO_Micinn_Isciii.jpg" />-->
-                <!--<img style="margin:3px;height:35px;" src="images/logo_inb.png" />-->
-                <!--</p>-->
-                <!--<br>-->
-                <!--<div>Note:</div>-->
-                <!--<span style="font-size:13px">{{versionNav}}-->
-                <!--<br> BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari-->
-                <!--7+ and Opera 24+.-->
-                <!--</span>-->
-                <!--</div>-->
                 <div class="collapse content" id="home">
                     <welcome-web></welcome-web>
                 </div>
@@ -249,49 +186,14 @@
                 </div>
 
                 <!--BreadCrumb reference-->
-                <!--<div class="collapse content" id="projectList1">-->
-                <!--<table class="table table-hover">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                <!--<th>Project</th>-->
-                <!--<th>Studies</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<template is="dom-repeat" items="{{projects}}">-->
-                <!--<tr>-->
-                <!--<td on-click="showProjectSummary">{{item.name}}</td>-->
-                <!--<td>-->
-                <!--<template is="dom-repeat" items="{{item.studies}}" as="study">-->
-                <!--{{study.name}}<br>-->
-                <!--</template>-->
-                <!--</td>-->
-                <!--</tr>-->
-                <!--</template>-->
-                <!--</tbody>-->
-                <!--</table>-->
-                <!--</div>-->
-
-                <!--<div class="collapse content" id="projectSummary1">-->
-                <!--<h4><b>Project:</b> {{selectedProject.name}}</h4> <br>-->
-                <!--<b>Studies:</b> <br>-->
-                <!--<template is="dom-repeat" items="{{selectedProject.studies}}" as="study">-->
-                <!--{{study.name}}<br>-->
-                <!--</template>-->
-                <!--<b>Alias:</b> {{selectedProject.alias}} <br>-->
-                <!--<b>ID:</b> {{selectedProject.id}} <br>-->
-                <!--<b>Creation Date:</b> {{selectedProject.creationDate}}<br>-->
-                <!--<b>Organization:</b> {{selectedProject.organization}}-->
-                <!--</div>-->
-
                 <div class="collapse content" id="projectList">
-                    <projects-list projects="{{projects}}" on-project="updateProject" on-study="updateStudy"></projects-list>
+                    <opencga-projects projects="{{projects}}" on-project="updateProject" on-study="updateStudy"></opencga-projects>
                 </div>
                 <div class="collapse content" id="projectInfo">
-                    <project-info project="{{selectedProject}}"></project-info>
+                    <opencga-project project="{{selectedProject}}" on-study="updateStudy"></opencga-project>
                 </div>
                 <div class="collapse content" id="studyInfo">
-                    <study-info project="{{selectedProject}}" study="{{study}}"></study-info>
+                    <opencga-study project="{{selectedProject}}" study="{{study}}"></opencga-study>
                 </div>
             </div>
             <!--<nav class="footer navbar navbar-inverse navbar-fixed-bottom">-->
@@ -301,8 +203,6 @@
             <!--</div>-->
             <!--</nav>-->
         </div>
-
-
 
         <!-- Login modal window -->
         <div class="center">
@@ -391,7 +291,6 @@
                 }
             },
             isMenuItemVisible: function(item) {
-                console.log(item)
                 if(item.visibility == "none") {
                     return false;
                 }
@@ -436,8 +335,6 @@
                 } else {
                     $('#home').show();
                 }
-
-                this._setVisibleMenuItems();
             },
             listener: function (ctx) {
                 var arr = window.location.hash.split('/');
@@ -454,44 +351,6 @@
                         console.log('ctx.study', ctx.study)
                         $('.content').hide();
                         $(arr[0]).show();
-                    }
-                }
-            },
-            _setVisibleMenuItems: function () {
-                let menuItems = this.config.menu;
-                for (var item in menuItems) {
-                    let visibility = menuItems[item].visibility;
-                    let visible = false;
-                    switch(visibility) {
-                        case 'public':
-                            visible = true;
-                            break;
-                        case 'private':
-                            visible = false;
-                            break;
-                        case 'never':
-                            visible = false;
-                            break;
-                    }
-                    switch(item) {
-                        case 'browser':
-                            this.isBrowserVisible = visible;
-                            break;
-                        case 'prioritization':
-                            this.isPrioritizationVisible = visible;
-                            break;
-                        case 'diagnose':
-                            this.isDiagnoseVisible = visible;
-                            break;
-                        case 'beacon':
-                            this.isBeaconVisible = visible;
-                            break;
-                        case 'tools':
-                            this.isToolsVisible = visible;
-                            break;
-                        case 'genomeBrowser':
-                            this.isGenomeBrowserVisible = visible;
-                            break;
                     }
                 }
             },
@@ -550,25 +409,35 @@
                     }
                 }
             },
-//            showProjectSummary: function (e) {
-//                for (let i = 0; i < this.projects.length; i++) {
-//                    if (this.projects[i].name == e.target.innerHTML) { // getting the selected project from projects array
-//                        this.selectedProject = this.projects[i];
-//                    }
-//                }
-//                e.preventDefault();
-//                $('.content').hide();
-//                $('#projectSummary').show();
-//            },
             updateProject: function(e) {
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
                         this.selectedProject = this.projects[i];
                     }
                 }
+                $('.content').hide();
+                $('#projectInfo').show();
             },
             updateStudy: function(e) {
-                this.study = {name: e.detail.study};
+                this.study = {name: e.detail.studyName, id: e.detail.studyId};
+                $('.content').hide();
+                $('#studyInfo').show();
+            },
+            // breadcrumb click handlers
+            showProjects: function (e) {
+                e.preventDefault();
+                $('.content').hide();
+                $('#projectList').show();
+            },
+            showProject: function (e) {
+                e.preventDefault();
+                $('.content').hide();
+                $('#projectInfo').show();
+            },
+            showStudy: function (e) {
+                e.preventDefault();
+                $('.content').hide();
+                $('#studyInfo').show();
             },
             showLogin: function() {
                 $(".bierapp-menu a[href='#logout']").hide();

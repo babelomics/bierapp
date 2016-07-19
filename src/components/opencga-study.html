@@ -1,28 +1,24 @@
 
-<dom-module id="study-info">
+<dom-module id="opencga-study">
     <template>
         <style is="custom-style" include="jso-styles"></style>
+        <style>
+            .center {
+                margin: auto;
+                text-align: justify;
+                width: 60%;
+            }
+        </style>
 
         <div>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="#projectList">Project</a>
-                </li>
-                <li>
-                    <a href="#projectInfo">{{project.name}}</a>
-                </li>
-                <li class="active">
-                    {{study.name}}
-                </li>
-            </ol>
+            <h2 class="center">{{study.name}}</h2>
 
-            <h1>{{study.name}}</h1>
 
         </div>
     </template>
     <script>
         Polymer({
-            is: 'study-info',
+            is: 'opencga-study',
             properties: {
                 project: {
                     type: Object,
@@ -36,7 +32,6 @@
 //                }
             },
             studyChanged: function (neo, old) {
-                // TODO study not passed properly. 
                 console.log("studyChanged", this.study)
             }
         });

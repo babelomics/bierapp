@@ -1,5 +1,5 @@
 
-<dom-module id="projects-list">
+<dom-module id="opencga-projects">
     <template>
         <style is="custom-style" include="jso-styles"></style>
         <style>
@@ -11,7 +11,6 @@
         </style>
 
         <div>
-
             <h2 class="center">Projects</h2>
             <br>
             <table class="table table-bordered center">
@@ -25,13 +24,13 @@
                     <template is="dom-repeat" items="{{projects}}">
                         <tr>
                             <td>
-                                <a href="#projectInfo" on-click="fireSelectProject">{{item.name}}</a>
+                                <a href="#" on-click="fireSelectProject">{{item.name}}</a>
                             </td>
                             <td>
                                 <ul class="list-unstyled">
                                     <template is="dom-repeat" items="{{item.studies}}" as="study">
                                         <li>
-                                            <a href="#studyInfo" on-click="fireSelectStudy">{{study.name}}</a>
+                                            <a href="#" on-click="fireSelectStudy" data-id="{{study.id}}">{{study.name}}</a>
                                         </li>
                                     </template>
                                 </ul>
@@ -44,7 +43,7 @@
     </template>
     <script>
         Polymer({
-            is: 'projects-list',
+            is: 'opencga-projects',
             properties: {
                 projects: {
                     type: Array,
@@ -55,7 +54,7 @@
                 this.fire('project', {project: e.target.innerHTML});
             },
             fireSelectStudy: function (e) {
-                this.fire('study', {study: e.target.innerHTML});
+                this.fire('study', {studyName: e.target.innerHTML, studyId: e.target.dataId});
             }
         });
     </script>
