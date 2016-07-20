@@ -156,8 +156,9 @@
                 <div>
                     <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
                         <template is="dom-repeat" items="{{breadcrumb.path}}">
-                            <li class$=""><a href="#" on-click="showBreadcrumb">{{item}}</a></li>
+                            <li><a href="#" on-click="showBreadcrumb">{{item}}</a></li>
                         </template>
+                        <li class="active"><a href="#"></a></li>
                         <!--<li><a href="#" on-click="showProjects">Projects</a></li>-->
                         <!--<li><a href="#" on-click="showProject">{{project}}</a></li>-->
                         <!--<template is="dom-if" if="{{study.name != ''}}">-->
@@ -329,7 +330,7 @@
                 this._checkVersion();
                 this.enableClick();
 
-                this.opencgaClientConfig = new OpenCGAClientConfig(OPENCGA_HOST, OPENCGA_VERSION, OPENCGA_COOKIE_SESSION_ID, OPENCGA_COOKIE_USER_NAME);
+                this.opencgaClientConfig = new OpenCGAClientConfig(opencga.host, opencga.version, opencga.cookies.sessionId, opencga.cookies.userName);
                 this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
 
                 this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
@@ -404,20 +405,22 @@
             disableClick: function() {
                 $(".bierapp-menu a").off('click');
             },
-            startApp: function() {
+            startApp: function () {
                 console.log(this.sessionId)
                 console.log(this.opencgaClient)
                 this.opencgaClient._config.sessionId = this.sessionId;
 
                 var _this = this;
-                this.opencgaClient.users().projects(this.userId).then(function(response) {
+                this.opencgaClient.users().projects(this.userId).then(function (response) {
                     _this.projects = response.response[0].result;
                     _this.selectProject(_this.projects[0].name);
                     _this.logged = true;
 
                     _this._checkBreadcrumbVisible();
+                }).catch(function (response) {
+                    Cookies.expire("opencga_sId");
+                    _this.logout();
                 });
-
             },
             selectProject: function(e) {
                 if (typeof e.target === "undefined") {

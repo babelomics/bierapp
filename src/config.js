@@ -10,6 +10,14 @@ OPENCGA_VERSION = "v1";
 OPENCGA_COOKIE_SESSION_ID = "opencga_sId";
 OPENCGA_COOKIE_USER_NAME = "opencga_userId";
 
+var opencga = {
+    host: "bioinfodev.hpc.cam.ac.uk/hgva",
+    version: "v1",
+    cookies: {
+        userName: "opencga_userId",
+        sessionId: "opencga_sId"
+    }
+};
 
 var application = {
     title: "BiERapp",
