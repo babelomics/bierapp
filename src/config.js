@@ -69,7 +69,7 @@ var application = {
             visibility: "public"
         }
     ],
-    settingsShow: "true",
+    showSettings: "true",
     breadcrumbVisibility: "private",
     about: [
         {"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},

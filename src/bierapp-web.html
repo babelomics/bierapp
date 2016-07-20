@@ -116,7 +116,7 @@
                                 </template>
 
                                 <!-- Setting modal window -->
-                                <template is="dom-if" if="{{config.settingsShow}}">
+                                <template is="dom-if" if="{{config.showSettings}}">
                                     <li>
                                         <a href="#" data-toggle="modal" role="button" data-placement="bottom" data-target="#myModal" title="Settings ...">
                                             <i class="fa fa-cog"></i>
@@ -151,23 +151,28 @@
             <!-- End of navigation bar -->
 
 
-            <!-- This is where main application is rendered -->
+            <!--Breadcrumb-->
             <template is="dom-if" if="{{_isBreadcrumbVisible}}">
                 <div>
                     <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
-                        <li><a href="#" on-click="showProjects">Projects</a></li>
-                        <li><a href="#" on-click="showProject">{{project}}</a></li>
-                        <template is="dom-if" if="{{study.name != ''}}">
-                            <li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>
-                            <!--Study samples-->
-                            <template is="dom-if" if="{{samples.length != 0}}">
-                                <li class="active">{{samples}}</li>
-                            </template>
+                        <template is="dom-repeat" items="{{breadcrumb.path}}">
+                            <li class$=""><a href="#" on-click="showBreadcrumb">{{item}}</a></li>
                         </template>
+                        <!--<li><a href="#" on-click="showProjects">Projects</a></li>-->
+                        <!--<li><a href="#" on-click="showProject">{{project}}</a></li>-->
+                        <!--<template is="dom-if" if="{{study.name != ''}}">-->
+                            <!--<li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>-->
+                            <!--&lt;!&ndash;Study samples&ndash;&gt;-->
+                            <!--<template is="dom-if" if="{{samples.length != 0}}">-->
+                                <!--<li class="active">{{samples}}</li>-->
+                            <!--</template>-->
+                        <!--</template>-->
                     </ol>
                 </div>
             </template>
 
+
+            <!-- This is where main application is rendered -->
             <div class="center">
                 <div class="collapse content" id="home">
                     <welcome-web></welcome-web>
@@ -291,7 +296,22 @@
                 tool: {
                     type: String,
                     value: "home"
+                },
+                breadcrumb: {
+                    type: Object,
+                    value: {
+                        path: ["Projects"],
+                        active: ""
+                    }
                 }
+            },
+            observers: [
+                'breadcrumbPathChanged(breadcrumb.path.*)'
+            ],
+            breadcrumbPathChanged: function(changeRecord) {
+                console.log('changeRecord from breadcrumbPathChanged')
+                console.log('path: ' + changeRecord.path);
+                console.log('value: ' + changeRecord.value);
             },
             isMenuItemVisible: function(item) {
                 if(item.visibility == "none") {
@@ -405,6 +425,11 @@
                 } else {
                     this.project = e.target.innerText;
                 }
+                if (this.breadcrumb.path.length > 1) {
+                    this.splice('breadcrumb.path', 1, 1, this.project)
+                } else {
+                    this.push('breadcrumb.path', this.project);
+                }
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == this.project) {
@@ -426,25 +451,50 @@
             },
             updateStudy: function(e) {
                 this.study = {name: e.detail.studyName, id: e.detail.studyId};
+                if (this.breadcrumb.path.length > 2) {
+                    this.splice('breadcrumb.path', 2, 1, this.study.name)
+                } else {
+                    this.push('breadcrumb.path', this.study.name);
+                }
                 $('.content').hide();
                 $('#studyInfo').show();
             },
             // breadcrumb click handlers
-            showProjects: function (e) {
+            showBreadcrumb: function (e) {
                 e.preventDefault();
                 $('.content').hide();
-                $('#projectList').show();
+                let project = this.project;
+                if (typeof this.study !== 'undefined') {
+                    var study = this.study.name;
+                }
+                switch (e.target.innerHTML) {
+                    case 'Projects':
+                        $('#projectList').show();
+                        break;
+                    case project:
+                        $('#projectInfo').show();
+                        break;
+                    case study:
+                        $('#studyInfo').show();
+                        break;
+                }
+                console.log('BREADCRUMB', e)
             },
-            showProject: function (e) {
-                e.preventDefault();
-                $('.content').hide();
-                $('#projectInfo').show();
-            },
-            showStudy: function (e) {
-                e.preventDefault();
-                $('.content').hide();
-                $('#studyInfo').show();
-            },
+//            showProjects: function (e) {
+//                e.preventDefault();
+//                $('.content').hide();
+//                $('#projectList').show();
+//            },
+//            showProject: function (e) {
+//                e.preventDefault();
+//                $('.content').hide();
+//                $('#projectInfo').show();
+//            },
+//            showStudy: function (e) {
+//                e.preventDefault();
+//                $('.content').hide();
+//                $('#studyInfo').show();
+//            },
             showLogin: function() {
                 $(".bierapp-menu a[href='#logout']").hide();
                 $(".bierapp-menu a[href='#login']").removeAttr("style");
