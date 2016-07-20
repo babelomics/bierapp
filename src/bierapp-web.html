@@ -152,19 +152,22 @@
 
 
             <!-- This is where main application is rendered -->
-            <div>
-                <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
-                    <li><a href="#" on-click="showProjects">Projects</a></li>
-                    <li><a href="#" on-click="showProject">{{project}}</a></li>
-                    <template is="dom-if" if="{{study.name != ''}}">
-                        <li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>
-                        <!--Study samples-->
-                        <template is="dom-if" if="{{samples.length != 0}}">
-                            <li class="active">{{samples}}</li>
+            <template is="dom-if" if="{{_isBreadcrumbVisible}}">
+                <div>
+                    <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
+                        <li><a href="#" on-click="showProjects">Projects</a></li>
+                        <li><a href="#" on-click="showProject">{{project}}</a></li>
+                        <template is="dom-if" if="{{study.name != ''}}">
+                            <li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>
+                            <!--Study samples-->
+                            <template is="dom-if" if="{{samples.length != 0}}">
+                                <li class="active">{{samples}}</li>
+                            </template>
                         </template>
-                    </template>
-                </ol>
-            </div>
+                    </ol>
+                </div>
+            </template>
+
             <div class="center">
                 <div class="collapse content" id="home">
                     <welcome-web></welcome-web>
@@ -391,7 +394,10 @@
                     _this.projects = response.response[0].result;
                     _this.selectProject(_this.projects[0].name);
                     _this.logged = true;
+
+                    _this._checkBreadcrumbVisible();
                 });
+
             },
             selectProject: function(e) {
                 if (typeof e.target === "undefined") {
@@ -470,8 +476,25 @@
                     _this.opencgaClient = undefined;
                     _this.userId = "";
                     _this.logged = false;
+
+                    _this._checkBreadcrumbVisible();
                 });
 
+            },
+            _checkBreadcrumbVisible: function() {
+                if (typeof this.config !== "undefined") {
+                    switch(this.config.breadcrumbVisibility) {
+                        case 'public':
+                            this._isBreadcrumbVisible = true;
+                            break;
+                        case 'private':
+                            this._isBreadcrumbVisible = this.logged;
+                            break;
+                        case 'none':
+                        default:
+                            this._isBreadcrumbVisible = false;
+                    }
+                }
             },
             _checkVersion: function() {
                 this.versionNav = "You are currently using ";

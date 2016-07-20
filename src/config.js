@@ -70,6 +70,7 @@ var application = {
         }
     ],
     settingsShow: "true",
+    breadcrumbVisibility: "private",
     about: [
         {"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
         {"name": "Tutorial", "url": "https://github.com/babelomics/bierapp/wiki/Tutorial", "icon": ""},
