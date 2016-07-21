@@ -102,8 +102,9 @@
         }
 
         bierapp-home {
-            height: calc(100vh - 160px);
+            height: calc(100vh - 120px);
             overflow-y: auto;
+            color: var(--text-primary-color)
         }
 
         jso-dashboard {
@@ -159,7 +160,8 @@
                 <div class="header">
                     <i class="fa fa-folder-open-o"></i> Study Browser
                 </div>
-                <jso-opencga-sample-browser enable-auto-index enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" filtered-samples="{{filteredSamples}}" on-viewvariantbrowser="handleSampleSelect" on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
+                <jso-opencga-sample-browser enable-auto-index enable-variant-browser class="container" id="sampleBrowser" projects="{{projects}}" bioformats="{{bioformats}}" samples="{{samples}}" filtered-samples="{{filteredSamples}}" on-viewvariantbrowser="handleSampleSelect"
+                on-need-refresh="handleUserNeedRefresh"></jso-opencga-sample-browser>
 
             </jso-panel>
         </div>
