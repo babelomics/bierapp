@@ -93,11 +93,8 @@
                             <!-- Controls aligned to the RIGHT: settings and about-->
                             <ul class="nav navbar-nav navbar-right">
 
-                                <template is="dom-if" if="{{logged}}">
+                                <template is="dom-if" if="{{_logged}}">
                                     <li><a href="#" role="button">Logged as '{{userId}}'</a></li>
-
-                                    <!--Project menu-->
-                                    <li><a href="#projectList" role="button">Project</a></li>
 
                                     <!--Project dropdown menu-->
                                     <li class="dropdown">
@@ -115,8 +112,19 @@
                                     <li class="divider-vertical"></li>
                                 </template>
 
+
+                                <form class="navbar-form navbar-left" role="search">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="{{config.search.placeholder}}">
+                                        <a href="#">
+                                            <span class="fa fa-search" aria-hidden="true"></span>
+                                        </a>
+                                    </div>
+                                    <!--<button type="submit" class="btn btn-default">Submit</button>-->
+                                </form>
+
                                 <!-- Setting modal window -->
-                                <template is="dom-if" if="{{config.showSettings}}">
+                                <template is="dom-if" if="{{config.settings.visibility}}">
                                     <li>
                                         <a href="#" data-toggle="modal" role="button" data-placement="bottom" data-target="#myModal" title="Settings ...">
                                             <i class="fa fa-cog"></i>
@@ -155,18 +163,19 @@
             <template is="dom-if" if="{{_isBreadcrumbVisible}}">
                 <div>
                     <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
-                        <template is="dom-repeat" items="{{breadcrumb.path}}">
+                        <li><a href="#" on-click="showBreadcrumb">{{config.breadcrumb.title}}</a></li>
+                        <template is="dom-repeat" items="{{_breadcrumb.path}}">
                             <li><a href="#" on-click="showBreadcrumb">{{item}}</a></li>
                         </template>
                         <li class="active"><a href="#"></a></li>
                         <!--<li><a href="#" on-click="showProjects">Projects</a></li>-->
                         <!--<li><a href="#" on-click="showProject">{{project}}</a></li>-->
                         <!--<template is="dom-if" if="{{study.name != ''}}">-->
-                            <!--<li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>-->
-                            <!--&lt;!&ndash;Study samples&ndash;&gt;-->
-                            <!--<template is="dom-if" if="{{samples.length != 0}}">-->
-                                <!--<li class="active">{{samples}}</li>-->
-                            <!--</template>-->
+                        <!--<li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>-->
+                        <!--&lt;!&ndash;Study samples&ndash;&gt;-->
+                        <!--<template is="dom-if" if="{{samples.length != 0}}">-->
+                        <!--<li class="active">{{samples}}</li>-->
+                        <!--</template>-->
                         <!--</template>-->
                     </ol>
                 </div>
@@ -183,11 +192,11 @@
 
             <div class="">
                 <div class="collapse content" id="browser">
-                    <variant-browser title="browser" host="{{host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
+                    <variant-browser title="browser" host="{{opencga.host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
                 </div>
 
                 <div class="collapse content" id="prioritization">
-                    <variant-browser title="prioritization" host="{{host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
+                    <variant-browser title="prioritization" host="{{opencga.host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
                 </div>
 
                 <div class="collapse content" id="genomeBrowser">
@@ -267,12 +276,11 @@
         Polymer({
             is: 'bierapp-web',
             properties: {
-                cellbaseClient: {
+                opencgaClient: {
                     type: Object
                 },
-                host: {
-                    type: String,
-                    value: "http://bioinfodev.hpc.cam.ac.uk/hgva"
+                cellbaseClient: {
+                    type: Object
                 },
                 userId: {
                     type: String,
@@ -290,7 +298,7 @@
                     type: Array,
                     value: []
                 },
-                logged: {
+                _logged: {
                     type: Boolean,
                     value: false
                 },
@@ -298,10 +306,10 @@
                     type: String,
                     value: "home"
                 },
-                breadcrumb: {
+                _breadcrumb: {
                     type: Object,
                     value: {
-                        path: ["Projects"],
+                        path: [],
                         active: ""
                     }
                 }
@@ -334,7 +342,7 @@
                     this.sessionId = sid;
                     this.startApp();
                     this.showLogout();
-                    this.logged = true;
+                    this._logged = true;
                 }
 
                 // if has exist use hash, else go to #home
@@ -351,6 +359,8 @@
                 } else {
                     $('#home').show();
                 }
+
+                this._checkBreadcrumbVisible();
             },
             listener: function (ctx) {
                 var arr = window.location.hash.split('/');
@@ -406,7 +416,7 @@
                 this.opencgaClient.users().projects(this.userId).then(function (response) {
                     _this.projects = response.response[0].result;
                     _this.selectProject(_this.projects[0].name);
-                    _this.logged = true;
+                    _this._logged = true;
 
                     _this._checkBreadcrumbVisible();
                 }).catch(function (response) {
@@ -420,10 +430,10 @@
                 } else {
                     this.project = e.target.innerText;
                 }
-                if (this.breadcrumb.path.length > 1) {
-                    this.splice('breadcrumb.path', 1, 1, this.project)
+                if (this._breadcrumb.path.length > 1) {
+                    this.splice('_breadcrumb.path', 1, 1, this.project)
                 } else {
-                    this.push('breadcrumb.path', this.project);
+                    this.push('_breadcrumb.path', this.project);
                 }
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
@@ -436,10 +446,10 @@
                 }
             },
             updateProject: function(e) {
-                if (this.breadcrumb.path.length > 1) {
-                    this.splice('breadcrumb.path', 1, 1, e.detail.project)
+                if (this._breadcrumb.path.length > 1) {
+                    this.splice('_breadcrumb.path', 1, 1, e.detail.project)
                 } else {
-                    this.push('breadcrumb.path', e.detail.project);
+                    this.push('_breadcrumb.path', e.detail.project);
                 }
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
@@ -450,14 +460,14 @@
                 $('#projectInfo').show();
             },
             updateStudy: function(e) {
-                if (this.breadcrumb.path.length == 1) {
-                    this.push('breadcrumb.path', this.project);
+                if (this._breadcrumb.path.length == 1) {
+                    this.push('_breadcrumb.path', this.project);
                 }
                 this.study = {name: e.detail.studyName, id: e.detail.studyId};
-                if (this.breadcrumb.path.length > 2) {
-                    this.splice('breadcrumb.path', 2, 1, this.study.name)
+                if (this._breadcrumb.path.length > 2) {
+                    this.splice('_breadcrumb.path', 2, 1, this.study.name)
                 } else {
-                    this.push('breadcrumb.path', this.study.name);
+                    this.push('_breadcrumb.path', this.study.name);
                 }
                 $('.content').hide();
                 $('#studyInfo').show();
@@ -473,11 +483,11 @@
                 switch (e.target.innerHTML) {
                     case 'Projects':
                         $('#projectList').show();
-                        this.splice('breadcrumb.path', 1, 2);
+                        this.splice('_breadcrumb.path', 1, 2);
                         break;
                     case project:
                         $('#projectInfo').show();
-                        this.splice('breadcrumb.path', 2, 1);
+                        this.splice('_breadcrumb.path', 2, 1);
                         break;
                     case study:
                         $('#studyInfo').show();
@@ -530,7 +540,7 @@
                     window.location.hash = 'home'; // Setting the hash value in the address bar to home after logout
                     _this.opencgaClient = undefined;
                     _this.userId = "";
-                    _this.logged = false;
+                    _this._logged = false;
 
                     _this._checkBreadcrumbVisible();
                 });
@@ -538,12 +548,12 @@
             },
             _checkBreadcrumbVisible: function() {
                 if (typeof this.config !== "undefined") {
-                    switch(this.config.breadcrumbVisibility) {
+                    switch(this.config.breadcrumb.visibility) {
                         case 'public':
                             this._isBreadcrumbVisible = true;
                             break;
                         case 'private':
-                            this._isBreadcrumbVisible = this.logged;
+                            this._isBreadcrumbVisible = this._logged;
                             break;
                         case 'none':
                         default:
