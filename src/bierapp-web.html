@@ -70,7 +70,7 @@
                             <ul class="nav navbar-nav">
 
                                 <!-- This code parse the config menu arrays a nd creates a custom menu taken into account visibility -->
-                                <template is="dom-repeat" items="{{config.menu}}" filter="isMenuItemVisible" as="menuItem">
+                                <template is="dom-repeat" items="{{config.menu}}" filter="_isMenuItemVisible" as="menuItem">
                                     <!-- If there is not submenu we just display a button -->
                                     <template is="dom-if" if="{{!menuItem.submenu}}">
                                         <li class="bierapp-menu"><a href="#{{menuItem.id}}" role="button">{{menuItem.title}}</a></li>
@@ -81,8 +81,8 @@
                                         <li class="dropdown">
                                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{menuItem.title}} <span class="caret"></span></a>
                                             <ul class="dropdown-menu">
-                                                <template is="dom-repeat" items="{{menuItem.submenu}}" filter="isMenuItemVisible" >
-                                                    <li on-click=""><a href="#{{menuItem.id}}" data-id="{{item.id}}">{{item.title}}</a></li>
+                                                <template is="dom-repeat" items="{{menuItem.submenu}}" filter="_isMenuItemVisible" >
+                                                    <li class="bierapp-menu"><a href="#{{item.id}}" data-id="{{item.id}}">{{item.title}}</a></li>
                                                 </template>
                                             </ul>
                                         </li>
@@ -314,27 +314,18 @@
                     }
                 }
             },
-            isMenuItemVisible: function(item) {
-                if(item.visibility == "none") {
-                    return false;
-                }
-                return true;
-            },
             ready: function() {
                 this.config = application;
+
                 var _this = this;
                 window.onhashchange = function () {
                     _this.listener(_this);
                 };
 
                 this._checkVersion();
+
                 this.enableClick();
 
-                this.opencgaClientConfig = new OpenCGAClientConfig(opencga.host, opencga.version, opencga.cookies.sessionId, opencga.cookies.userName);
-                this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
-
-                this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
-                this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
 
                 var sid = Cookies.get("opencga_sId");
                 if (typeof sid !== "undefined" && sid != "") {
@@ -360,9 +351,19 @@
                     $('#home').show();
                 }
 
+
+                this.init();
+            },
+            init: function() {
+                this.opencgaClientConfig = new OpenCGAClientConfig(opencga.host, opencga.version, opencga.cookies.sessionId, opencga.cookies.userName);
+                this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
+
+                this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
+                this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
+
                 this._checkBreadcrumbVisible();
             },
-            listener: function (ctx) {
+            listener: function(ctx) {
                 var arr = window.location.hash.split('/');
                 if (typeof $(arr[0])[0] !== "undefined") {
                     let isBlock = $(arr[0])[0].style.display == 'block';
@@ -404,25 +405,27 @@
                 }
                 window.location.hash = hashFrag;
             },
-            disableClick: function() {
-                $(".bierapp-menu a").off('click');
-            },
+//            disableClick: function() {
+//                $(".bierapp-menu a").off('click');
+//            },
             startApp: function () {
                 console.log(this.sessionId)
                 console.log('opencgaClient', this.opencgaClient)
                 this.opencgaClient._config.sessionId = this.sessionId;
 
                 var _this = this;
-                this.opencgaClient.users().projects(this.userId).then(function (response) {
-                    _this.projects = response.response[0].result;
-                    _this.selectProject(_this.projects[0].name);
-                    _this._logged = true;
+                this.opencgaClient.users().projects(this.userId)
+                        .then(function (response) {
+                            _this.projects = response.response[0].result;
+                            _this.selectProject(_this.projects[0].name);
+                            _this._logged = true;
 
-                    _this._checkBreadcrumbVisible();
-                }).catch(function (response) {
-                    Cookies.expire("opencga_sId");
-                    _this.logout();
-                });
+                            _this._checkBreadcrumbVisible();
+                        })
+                        .catch(function (response) {
+                            Cookies.expire("opencga_sId");
+                            _this.logout();
+                        });
             },
             selectProject: function(e) {
                 if (typeof e.target === "undefined") {
@@ -495,21 +498,6 @@
                 }
                 console.log('BREADCRUMB', e)
             },
-//            showProjects: function (e) {
-//                e.preventDefault();
-//                $('.content').hide();
-//                $('#projectList').show();
-//            },
-//            showProject: function (e) {
-//                e.preventDefault();
-//                $('.content').hide();
-//                $('#projectInfo').show();
-//            },
-//            showStudy: function (e) {
-//                e.preventDefault();
-//                $('.content').hide();
-//                $('#studyInfo').show();
-//            },
             showLogin: function() {
                 $(".bierapp-menu a[href='#logout']").hide();
                 $(".bierapp-menu a[href='#login']").removeAttr("style");
@@ -545,6 +533,17 @@
                     _this._checkBreadcrumbVisible();
                 });
 
+            },
+            _isMenuItemVisible: function(item) {
+                switch(item.visibility) {
+                    case 'public':
+                        return true;
+                    case 'private':
+                        return this._logged;
+                    case 'none':
+                    default:
+                        return false;
+                }
             },
             _checkBreadcrumbVisible: function() {
                 if (typeof this.config !== "undefined") {
