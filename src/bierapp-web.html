@@ -306,14 +306,6 @@
                     }
                 }
             },
-            observers: [
-                'breadcrumbPathChanged(breadcrumb.path.*)'
-            ],
-            breadcrumbPathChanged: function(changeRecord) {
-                console.log('changeRecord from breadcrumbPathChanged')
-                console.log('path: ' + changeRecord.path);
-                console.log('value: ' + changeRecord.value);
-            },
             isMenuItemVisible: function(item) {
                 if(item.visibility == "none") {
                     return false;
@@ -407,7 +399,7 @@
             },
             startApp: function () {
                 console.log(this.sessionId)
-                console.log(this.opencgaClient)
+                console.log('opencgaClient', this.opencgaClient)
                 this.opencgaClient._config.sessionId = this.sessionId;
 
                 var _this = this;
@@ -444,6 +436,11 @@
                 }
             },
             updateProject: function(e) {
+                if (this.breadcrumb.path.length > 1) {
+                    this.splice('breadcrumb.path', 1, 1, e.detail.project)
+                } else {
+                    this.push('breadcrumb.path', e.detail.project);
+                }
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
                         this.selectedProject = this.projects[i];
@@ -453,6 +450,9 @@
                 $('#projectInfo').show();
             },
             updateStudy: function(e) {
+                if (this.breadcrumb.path.length == 1) {
+                    this.push('breadcrumb.path', this.project);
+                }
                 this.study = {name: e.detail.studyName, id: e.detail.studyId};
                 if (this.breadcrumb.path.length > 2) {
                     this.splice('breadcrumb.path', 2, 1, this.study.name)
@@ -473,9 +473,11 @@
                 switch (e.target.innerHTML) {
                     case 'Projects':
                         $('#projectList').show();
+                        this.splice('breadcrumb.path', 1, 2);
                         break;
                     case project:
                         $('#projectInfo').show();
+                        this.splice('breadcrumb.path', 2, 1);
                         break;
                     case study:
                         $('#studyInfo').show();
