@@ -196,8 +196,18 @@
                     this.tooltipType = "error";
                     this.versionMsg = "Your browser version is deprecated. The tool will not work correctly."
                 }
+            } else if (/edge\/(\d+\.?)+/.test(nav)) {
+                var aux = /edge\/((\d+\.?)+)/.exec(nav);
+                if (aux[1].split(".")[0] < 12) {
+                    this.tooltipType = "warn";
+                    this.versionMsg = "Your browser version is outdated. The tool may not work properly."
+                } else if (aux[1].split(".")[0] < 10) {
+                    this.tooltipType = "error";
+                    this.versionMsg = "Your browser version is deprecated. The tool will not work correctly."
+                }
+                this.versionNav += aux[0];
             } else if (/safari\/(\d+\.?)+/.test(nav) && nav.indexOf("chrome") == -1) {
-                var aux = /safari\/((\d+\.?)+)/.exec(nav);
+                var aux = /version\/((\d+\.?)+)/.exec(nav);
                 if (aux[1].split(".")[0] < 8) {
                     this.tooltipType = "warn";
                     this.versionMsg = "Your browser version is outdated. The tool may not work properly."
