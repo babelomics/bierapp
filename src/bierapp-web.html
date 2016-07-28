@@ -310,14 +310,14 @@
                 tool: {
                     type: String,
                     value: "home"
-                },
-                _breadcrumb: {
-                    type: Object,
-                    value: {
-                        path: [],
-                        active: ""
-                    }
                 }
+//                _breadcrumb: {
+//                    type: Object,
+//                    value: {
+//                        path: [],
+//                        active: ""
+//                    }
+//                }
             },
             attached: function() {
                 this.renderBreadcrumb();
@@ -341,8 +341,6 @@
 //                this.tool = $(this).attr('href');
             },
             ready: function() {
-                console.log(this)
-                console.log(this.root)
                 // Copy 'application' object from config.js file
                 this.config = application;
 
@@ -403,10 +401,10 @@
                 }
 
                 // reset breadcrumb
-                this._breadcrumb = {
-                    path: [],
-                    active: ""
-                };
+//                this._breadcrumb = {
+//                    path: [],
+//                    active: ""
+//                };
 
                 // go to home page
                 window.location.hash = "";
@@ -459,10 +457,10 @@
                             _this.project = _this.projects[0].alias;
                             _this.study = _this.projects[0].studies[0];
 
-                            _this._breadcrumb = {
-                                path: [_this.project],
-                                active: _this.study.alias
-                            };
+//                            _this._breadcrumb = {
+//                                path: [_this.project],
+//                                active: _this.study.alias
+//                            };
 
                             _this._checkBreadcrumbVisible();
                         })
@@ -486,21 +484,21 @@
 //                                            this.push('studies', ctx.projects[i].studies[j]);
                                             if (ctx.projects[i].studies[j].name == arr[2] || ctx.projects[i].studies[j].alias == arr[2]) {
                                                 ctx.study = ctx.projects[i].studies[j];
+                                                break;
                                             }
-                                            break;
                                         }
                                     }
                                 }
 
-                                this._breadcrumb = {
-                                    path: [arr[1]],
-                                    active: arr[2]
-                                };
-                            } else {
-                                this._breadcrumb = {
-                                    path: [],
-                                    active: arr[1]
-                                };
+//                                this._breadcrumb = {
+//                                    path: [arr[1]],
+//                                    active: arr[2]
+//                                };
+//                            } else {
+//                                this._breadcrumb = {
+//                                    path: [],
+//                                    active: arr[1]
+//                                };
                             }
                         }
                         console.log('ctx.project', ctx.project)
@@ -521,6 +519,7 @@
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == this.project || this.projects[i].alias == this.project) {
+                        this.selectedProject = this.projects[i];
                         for (let j = 0; j < this.projects[i].studies.length; j++) {
                             this.push('studies', this.projects[i].studies[j]);
                             if (this.projects[i].studies[j].name == e.srcElement.innerHTML || this.projects[i].studies[j].alias == e.srcElement.innerHTML) {
@@ -560,29 +559,20 @@
 //                }
 //            },
             updateProject: function(e) {
-//                if (this._breadcrumb.path.length > 1) {
-//                    this.splice('_breadcrumb.path', 1, 1, e.detail.project)
-//                } else {
-//                    this.push('_breadcrumb.path', e.detail.project);
-//                }
-//                for (let i = 0; i < this.projects.length; i++) {
-//                    if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
-//                        this.selectedProject = this.projects[i];
-//                    }
-//                }
+                for (let i = 0; i < this.projects.length; i++) {
+                    if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
+                        this.selectedProject = this.projects[i];
+                    }
+                }
                 $('.content').hide();
                 $('#projectInfo').show();
             },
             updateStudy: function(e) {
-//                if (this._breadcrumb.path.length == 1) {
-//                    this.push('_breadcrumb.path', this.project);
-//                }
-//                this.study = {name: e.detail.studyName, id: e.detail.studyId};
-//                if (this._breadcrumb.path.length > 2) {
-//                    this.splice('_breadcrumb.path', 2, 1, this.study.name)
-//                } else {
-//                    this.push('_breadcrumb.path', this.study.name);
-//                }
+                for (let i = 0; i < this.selectedProject.studies.length; i++) {
+                    if (this.selectedProject.studies[i].name == e.detail.studyName || this.selectedProject.studies[i].id == e.detail.studyId) {
+                            this.study = this.selectedProject.studies[i];
+                    }
+                }
                 $('.content').hide();
                 $('#studyInfo').show();
             },
@@ -601,7 +591,7 @@
                     Polymer.dom(breadcrumbElement).innerHTML = "";
 
                     // we add the 'Projects' link
-                    let projects = this._createBreadcrumbElement(this.config.breadcrumb.title, false, this.showBreadcrumb);
+                    let projects = this._createBreadcrumbElement(this.config.breadcrumb.title, false);
                     Polymer.dom(breadcrumbElement).appendChild(projects);
 
                     if (typeof this.study === "undefined") {
@@ -610,11 +600,11 @@
                             Polymer.dom(breadcrumbElement).appendChild(project);
                         }
                     } else {
-                        let project = this._createBreadcrumbElement(this.project, false, "updateProject");
+                        let project = this._createBreadcrumbElement(this.project, false);
                         Polymer.dom(breadcrumbElement).appendChild(project);
 
                         if (this.samples.length > 0) {
-                            let study = this._createBreadcrumbElement(this.study.alias, false, "showBreadcrumb");
+                            let study = this._createBreadcrumbElement(this.study.alias, false);
                             let samples = this._createBreadcrumbElement(this.samples.join(","), true);
                             Polymer.dom(breadcrumbElement).appendChild(study);
                             Polymer.dom(breadcrumbElement).appendChild(samples);
@@ -624,16 +614,25 @@
                         }
                     }
 
+                    let _this = this;
                     $(".breadcrumb li a").on('click', function(e) {
-//                    e.preventDefault(); // stops link form loading
-//                    $('.content').hide(); // hides all content divs
-//                    $($(this).attr('href')).show(); //get the href and use it find which div to show
-                        console.log("in breadcrumb!!")
+                        e.preventDefault();
+                        $('.content').hide();
+                        switch (e.target.innerHTML) {
+                            case 'Projects':
+                                $('#projectList').show();
+                                break;
+                            case _this.project:
+                                $('#projectInfo').show();
+                                break;
+                            case _this.study.alias:
+                                $('#studyInfo').show();
+                                break;
+                        }
                     });
                 }
             },
-            _createBreadcrumbElement(name, active, onClick) {
-                console.log("_createBreadcrumbElement")
+            _createBreadcrumbElement(name, active) {
                 var li = document.createElement("li");
                 if (active == true) {
                     li.setAttribute("class", "active");
@@ -642,37 +641,10 @@
                     var a = document.createElement("a");
                     a.setAttribute("href", "#");
                     a.setAttribute("class", "");
-//                    if (typeof onClick !== "undefined") {
-//                        a.setAttribute("onClick", this.updateProject);
-//                    }
                     a.textContent = name;
                     li.appendChild(a);
                 }
-                console.log(li)
                 return li;
-            },
-            // breadcrumb click handlers
-            showBreadcrumb: function (e) {
-                e.preventDefault();
-                $('.content').hide();
-                let project = this.project;
-                if (typeof this.study !== 'undefined') {
-                    var study = this.study.name;
-                }
-                switch (e.target.innerHTML) {
-                    case 'Projects':
-                        $('#projectList').show();
-                        this.splice('_breadcrumb.path', 1, 2);
-                        break;
-                    case project:
-                        $('#projectInfo').show();
-                        this.splice('_breadcrumb.path', 2, 1);
-                        break;
-                    case study:
-                        $('#studyInfo').show();
-                        break;
-                }
-                console.log('BREADCRUMB', e)
             },
             _isMenuItemVisible: function(item) {
                 switch(item.visibility) {
