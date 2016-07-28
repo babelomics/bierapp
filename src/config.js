@@ -13,6 +13,8 @@ CELLBASE_VERSION = "v3";
 var opencga = {
     host: "bioinfodev.hpc.cam.ac.uk/hgva",
     version: "v1",
+    // user: "hgva",
+    // projects: ["hsapiens_grch37"],
     cookies: {
         userName: "opencga_userId",
         sessionId: "opencga_sId"

@@ -77,28 +77,36 @@
             },
 
             login: function() {
-                var _this = this;
-
-                if ((this.opencgaClient instanceof OpenCGAClient) === false) {
-                    this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
-                }
+//                var _this = this;
+//
+//                if ((this.opencgaClient instanceof OpenCGAClient) === false) {
+//                    this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
+//                }
 
                 let user = this.$.opencgaUser.value;
                 let pass = this.$.opencgaPassword.value;
 
-                this.opencgaClient.users().login(user, {password: pass}).then(function(response) {
-                    _this.$.opencgaUser.value = "";
-                    _this.$.opencgaPassword.value = "";
-                    _this.$.incorrect.hidden = true;
-                    _this.fire('login', {
-                        userId: user,
-                        sessionId: response.response[0].result[0].sessionId
-                    });
-                }).catch(function(response) {
-                    this.errorMessage = response.error;
-                    this.$.incorrect.hidden = false;
-                }.bind(this));
+                this.fire('login', {
+                    userId: user,
+                    password: pass
+                });
 
+                this.$.opencgaUser.value = "";
+                this.$.opencgaPassword.value = "";
+                this.$.incorrect.hidden = true;
+
+//                this.opencgaClient.users().login(user, {password: pass}).then(function(response) {
+//                    _this.$.opencgaUser.value = "";
+//                    _this.$.opencgaPassword.value = "";
+//                    _this.$.incorrect.hidden = true;
+//                    _this.fire('login', {
+//                        userId: user,
+//                        sessionId: response.response[0].result[0].sessionId
+//                    });
+//                }).catch(function(response) {
+//                    this.errorMessage = response.error;
+//                    this.$.incorrect.hidden = false;
+//                }.bind(this));
             },
 
             checkEnterKey: function(e) {

@@ -51,17 +51,17 @@
                     <div class="container-fluid">
 
                         <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header bierapp-menu">
+                        <div class="navbar-header">
                             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                                 <span class="sr-only">Toggle navigation</span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                             </button>
-                            <a href="#home" class="navbar-brand" style="padding-top: 5px">
+                            <a href="#home" class="navbar-brand" style="padding-top: 5px" on-click="changeAnalysisTool">
                                 <img src="{{config.logo}}" width="40px">
                             </a>
-                            <a class="navbar-brand" href="#home"><b>{{config.title}} {{config.version}}</b></a>
+                            <a class="navbar-brand" href="#home" on-click="changeAnalysisTool"><b>{{config.title}} {{config.version}}</b></a>
                         </div>
 
                         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -73,7 +73,7 @@
                                 <template is="dom-repeat" items="{{config.menu}}" filter="_isMenuItemVisible" as="menuItem">
                                     <!-- If there is not submenu we just display a button -->
                                     <template is="dom-if" if="{{!menuItem.submenu}}">
-                                        <li class="bierapp-menu"><a href="#{{menuItem.id}}" role="button">{{menuItem.title}}</a></li>
+                                        <li on-click="changeAnalysisTool"><a href="#{{menuItem.id}}" role="button">{{menuItem.title}}</a></li>
                                     </template>
 
                                     <!-- If there is a submney we create a dropdown menu item -->
@@ -82,7 +82,7 @@
                                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{menuItem.title}} <span class="caret"></span></a>
                                             <ul class="dropdown-menu">
                                                 <template is="dom-repeat" items="{{menuItem.submenu}}" filter="_isMenuItemVisible" >
-                                                    <li class="bierapp-menu"><a href="#{{item.id}}" data-id="{{item.id}}">{{item.title}}</a></li>
+                                                    <li on-click="changeAnalysisTool"><a href="#{{item.id}}" data-id="{{item.id}}">{{item.title}}</a></li>
                                                 </template>
                                             </ul>
                                         </li>
@@ -98,13 +98,25 @@
 
                                     <!--Project dropdown menu-->
                                     <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects <span class="caret"></span></a>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                            Projects <span class="caret"></span>
+                                        </a>
                                         <ul class="dropdown-menu">
-                                            <template is="dom-repeat" items="{{projects}}">
-                                                <li on-click="selectProject"><a href="#" data-id="{{item.id}}">{{item.name}}</a></li>
+                                            <template is="dom-repeat" items="{{projects}}" as="proj">
+                                                <li class="dropdown-submenu">
+                                                    <a href="#">{{proj.name}}</a>
+                                                    <ul class="dropdown-menu">
+                                                        <template is="dom-repeat" items="{{proj.studies}}" as="std">
+                                                            <li><a href="#" data-id="{{std.id}}" on-click="setProjectStudy">{{std.alias}}</a></li>
+                                                        </template>
+                                                    </ul>
+                                                </li>
                                             </template>
                                         </ul>
                                     </li>
+
+
+
 
                                     <li><a href="#" role="button">My Data</a></li>
 
@@ -144,12 +156,16 @@
 
                                 <!-- Login/Logout button -->
                                 <li class="bierapp-menu">
-                                    <a href="#login" data-toggle="modal" role="button" data-placement="bottom" data-target="#ModalLogin" title="Login ...">
-                                        <i class="fa fa-sign-in fa-lg"></i> Login
-                                    </a>
-                                    <a href="#logout" on-click="logout" style="display: none;">
-                                        <i class="fa fa-sign-out fa-lg"></i> Logout
-                                    </a>
+                                    <template is="dom-if" if="{{!_logged}}">
+                                        <a href="#login" data-toggle="modal" role="button" data-placement="bottom" data-target="#ModalLogin" title="Login ..." on-click="changeAnalysisTool">
+                                            <i class="fa fa-sign-in fa-lg"></i> Login
+                                        </a>
+                                    </template>
+                                    <template is="dom-if" if="{{_logged}}">
+                                        <a href="#logout" on-click="logout">
+                                            <i class="fa fa-sign-out fa-lg"></i> Logout
+                                        </a>
+                                    </template>
                                 </li>
                             </ul>
                         </div>
@@ -161,24 +177,12 @@
 
             <!--Breadcrumb-->
             <template is="dom-if" if="{{_isBreadcrumbVisible}}">
-                <div>
-                    <ol class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px">
-                        <li><a href="#" on-click="showBreadcrumb">{{config.breadcrumb.title}}</a></li>
-                        <template is="dom-repeat" items="{{_breadcrumb.path}}">
-                            <li><a href="#" on-click="showBreadcrumb">{{item}}</a></li>
-                        </template>
-                        <li class="active"><a href="#"></a></li>
-                        <!--<li><a href="#" on-click="showProjects">Projects</a></li>-->
-                        <!--<li><a href="#" on-click="showProject">{{project}}</a></li>-->
-                        <!--<template is="dom-if" if="{{study.name != ''}}">-->
-                        <!--<li class="active"><a href="#" on-click="showStudy">{{study.name}}</a></li>-->
-                        <!--&lt;!&ndash;Study samples&ndash;&gt;-->
-                        <!--<template is="dom-if" if="{{samples.length != 0}}">-->
-                        <!--<li class="active">{{samples}}</li>-->
-                        <!--</template>-->
-                        <!--</template>-->
-                    </ol>
-                </div>
+                <ol id="breadcrumb" class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px"></ol>
+                <!--<li><a href="#" on-click="showBreadcrumb">{{config.breadcrumb.title}}</a></li>-->
+                <!--<template is="dom-repeat" items="{{_breadcrumb.path}}">-->
+                <!--<li><a href="#" on-click="showBreadcrumb">{{item}}</a></li>-->
+                <!--</template>-->
+                <!--<li class="active">{{_breadcrumb.active}}</li>-->
             </template>
 
 
@@ -192,11 +196,12 @@
 
             <div class="">
                 <div class="collapse content" id="browser">
-                    <variant-browser title="browser" host="{{opencga.host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
+                    <variant-browser title="browser" host="{{opencga.host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" samples="{{samples}}"
+                                     opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
                 </div>
 
                 <div class="collapse content" id="prioritization">
-                    <variant-browser title="prioritization" host="{{opencga.host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>
+                    <!--<variant-browser title="prioritization" host="{{opencga.host}}" project="{{project}}" study="{{study}}" studies="{{studies}}" opencga-client="{{opencgaClient}}" cellbase-client="{{cellbaseClient}}"></variant-browser>-->
                 </div>
 
                 <div class="collapse content" id="genomeBrowser">
@@ -214,12 +219,6 @@
                     <opencga-study project="{{selectedProject}}" study="{{study}}"></opencga-study>
                 </div>
             </div>
-            <!--<nav class="footer navbar navbar-inverse navbar-fixed-bottom">-->
-            <!--<div class="bierapp-menu">-->
-            <!--<br> BierApp: created by the Computational Genomics Department-->
-            <!--<br> Centro de Investigación Principe Felipe, Valencia 2016-->
-            <!--</div>-->
-            <!--</nav>-->
         </div>
 
         <!-- Login modal window -->
@@ -288,11 +287,17 @@
                 },
                 project: {
                     type: String,
-                    value: ""
+                    value: "",
+                    observer: 'projectChanged'
                 },
                 study: {
                     type: Object,
                     observer: 'studyChanged'
+                },
+                samples: {
+                    type: Array,
+                    value: [],
+                    observer: 'samplesChanged'
                 },
                 studies: {
                     type: Array,
@@ -314,9 +319,34 @@
                     }
                 }
             },
+            attached: function() {
+                this.renderBreadcrumb();
+//                $(".breadcrumb li").on('click', function(e) {
+////                    e.preventDefault(); // stops link form loading
+////                    $('.content').hide(); // hides all content divs
+////                    $($(this).attr('href')).show(); //get the href and use it find which div to show
+//                    console.log("in breadcrumb!!")
+//                });
+//                console.log(".breadcrumb", $(".breadcrumb"));
+
+            },
+            changeAnalysisTool: function(e) {
+                $('.content').hide(); // hides all content divs
+                if (typeof e.srcElement.attributes.href !== "undefined") {
+                    $(e.srcElement.attributes.href.value).show(); // get the href and use it find which div to show
+                } else {
+                    $("#home").show(); // get the href and use it find which div to show
+                }
+
+//                this.tool = $(this).attr('href');
+            },
             ready: function() {
+                console.log(this)
+                console.log(this.root)
+                // Copy 'application' object from config.js file
                 this.config = application;
 
+                // We need to listen to hash fragment changes to update the display and breadcrumb
                 var _this = this;
                 window.onhashchange = function () {
                     _this.listener(_this);
@@ -324,35 +354,38 @@
 
                 this._checkVersion();
 
-                this.enableClick();
+                this.init();
 
-
-                var sid = Cookies.get("opencga_sId");
+                var sid = Cookies.get(opencga.cookies.sessionId);
                 if (typeof sid !== "undefined" && sid != "") {
-                    this.userId = Cookies.get("opencga_userId");
+                    this.userId = Cookies.get(opencga.cookies.userName);
                     this.sessionId = sid;
-                    this.startApp();
-                    this.showLogout();
+                    this.opencgaClient._config.sessionId = sid;
+
                     this._logged = true;
+                    this.getProjects();
                 }
+
+
+
+
 
                 // if has exist use hash, else go to #home
-                if (window.location.hash != "") {
-                    var arr = window.location.hash.split('/');
-                    if (arr.length > 1) {
-                        this.project = arr[1];
-                        if (arr.length > 2) {
-                            this.study = {name: arr[2]};
-                        }
-                    }
-                    $('.content').hide();
-                    $(arr[0]).show();
-                } else {
-                    $('#home').show();
-                }
+//                if (window.location.hash != "") {
+//                    var arr = window.location.hash.split('/');
+//                    if (arr.length > 1) {
+//                        this.project = arr[1];
+//                        if (arr.length > 2) {
+//                            this.study = {name: arr[2]};
+//                        }
+//                    }
+//                    $('.content').hide();
+//                    $(arr[0]).show();
+//                } else {
+//                    $('.content').hide();
+//                    $('#home').show();
+//                }
 
-
-                this.init();
             },
             init: function() {
                 this.opencgaClientConfig = new OpenCGAClientConfig(opencga.host, opencga.version, opencga.cookies.sessionId, opencga.cookies.userName);
@@ -361,119 +394,262 @@
                 this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
                 this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
 
+                if (typeof opencga.user !== "undefined" && opencga.user != "" && typeof opencga.projects !== "undefined" && opencga.projects.length > 0) {
+                    // This web site is set up for browsing public data
+                    this.project = opencga.projects[0];
+                    this._logged = false;
+                    // get the studies for each project
+                    // ...
+                }
+
+                // reset breadcrumb
+                this._breadcrumb = {
+                    path: [],
+                    active: ""
+                };
+
+                // go to home page
+                window.location.hash = "";
+                $('.content').hide();
+                $('#home').show();
+
                 this._checkBreadcrumbVisible();
+            },
+            login: function(credentials) {
+                var _this = this;
+                this.opencgaClient.users().login(credentials.detail.userId, {password: credentials.detail.password})
+                        .then(function(response) {
+                            _this.userId = credentials.detail.userId;
+                            _this.sessionId = response.response[0].result[0].sessionId;
+                            _this.opencgaClient._config.sessionId = response.response[0].result[0].sessionId;
+
+                            _this._logged = true;
+                            _this.getProjects();
+                        })
+                        .catch(function(response) {
+                            console.log("Error: ", response)
+                            _this._logged = false;
+                        });
+
+                // hide login window and return to home
+                $('#ModalLogin').modal('hide');
+                window.location.hash = "";
+                $('.content').hide();
+                $('#home').show();
+            },
+            logout: function() {
+                var _this = this;
+                this.opencgaClient.users().logout()
+                        .then(function() {
+                            _this.userId = "";
+                            _this.sessionId = "";
+                            _this.opencgaClient._config.sessionId = "";
+
+                            _this._logged = false;
+                            _this.init();
+                        });
+            },
+            getProjects: function () {
+                var _this = this;
+                this.opencgaClient.users().projects(this.userId)
+                        .then(function (response) {
+                            _this.projects = response.response[0].result;
+
+                            // seelct project and study
+                            _this.project = _this.projects[0].alias;
+                            _this.study = _this.projects[0].studies[0];
+
+                            _this._breadcrumb = {
+                                path: [_this.project],
+                                active: _this.study.alias
+                            };
+
+                            _this._checkBreadcrumbVisible();
+                        })
+                        .catch(function (response) {
+                            _this.logout();
+                        });
             },
             listener: function(ctx) {
                 var arr = window.location.hash.split('/');
                 if (typeof $(arr[0])[0] !== "undefined") {
                     let isBlock = $(arr[0])[0].style.display == 'block';
+                    // If block is not visible we display it
                     if (!isBlock) {
                         if (arr.length > 1) {
                             ctx.project = arr[1];
                             if (arr.length > 2) {
-                                ctx.study = {id: arr[2], name: arr[2]};
+//                                ctx.study = {id: arr[2], name: arr[2]};
+                                for (let i = 0; i < ctx.projects.length; i++) {
+                                    if (ctx.projects[i].name == ctx.project || ctx.projects[i].alias == ctx.project) {
+                                        for (let j = 0; j < ctx.projects[i].studies.length; j++) {
+//                                            this.push('studies', ctx.projects[i].studies[j]);
+                                            if (ctx.projects[i].studies[j].name == arr[2] || ctx.projects[i].studies[j].alias == arr[2]) {
+                                                ctx.study = ctx.projects[i].studies[j];
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                this._breadcrumb = {
+                                    path: [arr[1]],
+                                    active: arr[2]
+                                };
+                            } else {
+                                this._breadcrumb = {
+                                    path: [],
+                                    active: arr[1]
+                                };
                             }
                         }
                         console.log('ctx.project', ctx.project)
                         console.log('ctx.study', ctx.study)
                         $('.content').hide();
                         $(arr[0]).show();
+                    } else {
+//                        $('.content').hide();
+//                        $('#home').show();
                     }
-                }
-            },
-            enableClick: function() {
-                let _this = this;
-                $(".bierapp-menu a").on('click', function(e) {
-                    e.preventDefault(); // stops link form loading
-                    $('.content').hide(); // hides all content divs
-                    $($(this).attr('href')).show(); //get the href and use it find which div to show
-
-                    // Update Hash Fragment: changes the hash value in the address bar
-                    let hashFrag = $(this).attr('href') + "/" + _this.project;
-                    if (typeof _this.study !== "undefined" && typeof _this.study.name !== "undefined") {
-                        hashFrag += "/" + _this.study.name;
-                    }
-                    window.location.hash = hashFrag;
-
-                    _this.tool = $(this).attr('href');
-                });
-            },
-            studyChanged: function () {
-                let hashFrag = this.tool + "/" + this.project;
-                if (typeof this.study !== "undefined" && typeof this.study.name !== "undefined") {
-                    hashFrag += "/" + this.study.name;
-                }
-                window.location.hash = hashFrag;
-            },
-//            disableClick: function() {
-//                $(".bierapp-menu a").off('click');
-//            },
-            startApp: function () {
-                console.log(this.sessionId)
-                console.log('opencgaClient', this.opencgaClient)
-                this.opencgaClient._config.sessionId = this.sessionId;
-
-                var _this = this;
-                this.opencgaClient.users().projects(this.userId)
-                        .then(function (response) {
-                            _this.projects = response.response[0].result;
-                            _this.selectProject(_this.projects[0].name);
-                            _this._logged = true;
-
-                            _this._checkBreadcrumbVisible();
-                        })
-                        .catch(function (response) {
-                            Cookies.expire("opencga_sId");
-                            _this.logout();
-                        });
-            },
-            selectProject: function(e) {
-                if (typeof e.target === "undefined") {
-                    this.project = e;
                 } else {
-                    this.project = e.target.innerText;
+//                    $('.content').hide();
+//                    $('#home').show();
+                    console.log("listener undefined")
                 }
-                if (this._breadcrumb.path.length > 1) {
-                    this.splice('_breadcrumb.path', 1, 1, this.project)
-                } else {
-                    this.push('_breadcrumb.path', this.project);
-                }
+            },
+            setProjectStudy: function(e) {
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
-                    if (this.projects[i].name == this.project) {
+                    if (this.projects[i].name == this.project || this.projects[i].alias == this.project) {
                         for (let j = 0; j < this.projects[i].studies.length; j++) {
                             this.push('studies', this.projects[i].studies[j]);
+                            if (this.projects[i].studies[j].name == e.srcElement.innerHTML || this.projects[i].studies[j].alias == e.srcElement.innerHTML) {
+                                this.study = this.projects[i].studies[j];
+                            }
                         }
-                        this.selectedProject = this.projects[i];
                     }
                 }
             },
+            studyChanged: function () {
+                this.renderBreadcrumb();
+//                let hashFrag = this.tool + "/" + this.project;
+//                if (typeof this.study !== "undefined" && typeof this.study.name !== "undefined") {
+//                    hashFrag += "/" + this.study.alias;
+//                }
+//                window.location.hash = hashFrag;
+            },
+//            selectProject: function(e) {
+//                if (typeof e.target === "undefined") {
+//                    this.project = e;
+//                } else {
+//                    this.project = e.target.innerText;
+//                }
+//                if (this._breadcrumb.path.length > 1) {
+//                    this.splice('_breadcrumb.path', 1, 1, this.project)
+//                } else {
+//                    this.push('_breadcrumb.path', this.project);
+//                }
+//                this.studies = [];
+//                for (let i = 0; i < this.projects.length; i++) {
+//                    if (this.projects[i].name == this.project) {
+//                        for (let j = 0; j < this.projects[i].studies.length; j++) {
+//                            this.push('studies', this.projects[i].studies[j]);
+//                        }
+//                        this.selectedProject = this.projects[i];
+//                    }
+//                }
+//            },
             updateProject: function(e) {
-                if (this._breadcrumb.path.length > 1) {
-                    this.splice('_breadcrumb.path', 1, 1, e.detail.project)
-                } else {
-                    this.push('_breadcrumb.path', e.detail.project);
-                }
-                for (let i = 0; i < this.projects.length; i++) {
-                    if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
-                        this.selectedProject = this.projects[i];
-                    }
-                }
+//                if (this._breadcrumb.path.length > 1) {
+//                    this.splice('_breadcrumb.path', 1, 1, e.detail.project)
+//                } else {
+//                    this.push('_breadcrumb.path', e.detail.project);
+//                }
+//                for (let i = 0; i < this.projects.length; i++) {
+//                    if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
+//                        this.selectedProject = this.projects[i];
+//                    }
+//                }
                 $('.content').hide();
                 $('#projectInfo').show();
             },
             updateStudy: function(e) {
-                if (this._breadcrumb.path.length == 1) {
-                    this.push('_breadcrumb.path', this.project);
-                }
-                this.study = {name: e.detail.studyName, id: e.detail.studyId};
-                if (this._breadcrumb.path.length > 2) {
-                    this.splice('_breadcrumb.path', 2, 1, this.study.name)
-                } else {
-                    this.push('_breadcrumb.path', this.study.name);
-                }
+//                if (this._breadcrumb.path.length == 1) {
+//                    this.push('_breadcrumb.path', this.project);
+//                }
+//                this.study = {name: e.detail.studyName, id: e.detail.studyId};
+//                if (this._breadcrumb.path.length > 2) {
+//                    this.splice('_breadcrumb.path', 2, 1, this.study.name)
+//                } else {
+//                    this.push('_breadcrumb.path', this.study.name);
+//                }
                 $('.content').hide();
                 $('#studyInfo').show();
+            },
+            projectChanged: function() {
+                this.config = application;
+                this.renderBreadcrumb();
+            },
+            samplesChanged: function() {
+                this.renderBreadcrumb();
+            },
+            renderBreadcrumb: function() {
+                var breadcrumbElement = Polymer.dom(this.root).querySelector("#breadcrumb");
+
+                if (breadcrumbElement != null) {
+                    // we empty everything
+                    Polymer.dom(breadcrumbElement).innerHTML = "";
+
+                    // we add the 'Projects' link
+                    let projects = this._createBreadcrumbElement(this.config.breadcrumb.title, false, this.showBreadcrumb);
+                    Polymer.dom(breadcrumbElement).appendChild(projects);
+
+                    if (typeof this.study === "undefined") {
+                        if (typeof this.project !== "undefined" && this.project != null && this.project != "") {
+                            let project = this._createBreadcrumbElement(this.project, true); // render only project if exists
+                            Polymer.dom(breadcrumbElement).appendChild(project);
+                        }
+                    } else {
+                        let project = this._createBreadcrumbElement(this.project, false, "updateProject");
+                        Polymer.dom(breadcrumbElement).appendChild(project);
+
+                        if (this.samples.length > 0) {
+                            let study = this._createBreadcrumbElement(this.study.alias, false, "showBreadcrumb");
+                            let samples = this._createBreadcrumbElement(this.samples.join(","), true);
+                            Polymer.dom(breadcrumbElement).appendChild(study);
+                            Polymer.dom(breadcrumbElement).appendChild(samples);
+                        } else {
+                            let study = this._createBreadcrumbElement(this.study.alias, true);
+                            Polymer.dom(breadcrumbElement).appendChild(study);
+                        }
+                    }
+
+                    $(".breadcrumb li a").on('click', function(e) {
+//                    e.preventDefault(); // stops link form loading
+//                    $('.content').hide(); // hides all content divs
+//                    $($(this).attr('href')).show(); //get the href and use it find which div to show
+                        console.log("in breadcrumb!!")
+                    });
+                }
+            },
+            _createBreadcrumbElement(name, active, onClick) {
+                console.log("_createBreadcrumbElement")
+                var li = document.createElement("li");
+                if (active == true) {
+                    li.setAttribute("class", "active");
+                    li.textContent = name;
+                } else {
+                    var a = document.createElement("a");
+                    a.setAttribute("href", "#");
+                    a.setAttribute("class", "");
+//                    if (typeof onClick !== "undefined") {
+//                        a.setAttribute("onClick", this.updateProject);
+//                    }
+                    a.textContent = name;
+                    li.appendChild(a);
+                }
+                console.log(li)
+                return li;
             },
             // breadcrumb click handlers
             showBreadcrumb: function (e) {
@@ -497,42 +673,6 @@
                         break;
                 }
                 console.log('BREADCRUMB', e)
-            },
-            showLogin: function() {
-                $(".bierapp-menu a[href='#logout']").hide();
-                $(".bierapp-menu a[href='#login']").removeAttr("style");
-            },
-            showLogout: function() {
-                $(".bierapp-menu a[href='#login']").hide();
-                $(".bierapp-menu a[href='#logout']").removeAttr("style");
-            },
-            login: function(e) {
-                this.enableClick();
-                //                $(".bierapp-menu a[href='#home']").trigger("click");
-                this.showLogout();
-                $('#home').show();
-                window.location.hash = 'home'; // Setting the hash value in the address bar to home after login
-
-                this.userId = e.detail.userId;
-                this.sessionId = e.detail.sessionId;
-
-                this.startApp();
-            },
-            logout: function() {
-                var _this = this;
-                this.opencgaClient.users().logout().then(function() {
-                    _this.showLogin();
-                    //                    $(".bierapp-menu a[href='#login']").trigger("click");
-                    $('#home').show();
-                    //                    _this.disableClick();
-                    window.location.hash = 'home'; // Setting the hash value in the address bar to home after logout
-                    _this.opencgaClient = undefined;
-                    _this.userId = "";
-                    _this._logged = false;
-
-                    _this._checkBreadcrumbVisible();
-                });
-
             },
             _isMenuItemVisible: function(item) {
                 switch(item.visibility) {
