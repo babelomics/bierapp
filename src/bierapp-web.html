@@ -363,27 +363,6 @@
                     this._logged = true;
                     this.getProjects();
                 }
-
-
-
-
-
-                // if has exist use hash, else go to #home
-//                if (window.location.hash != "") {
-//                    var arr = window.location.hash.split('/');
-//                    if (arr.length > 1) {
-//                        this.project = arr[1];
-//                        if (arr.length > 2) {
-//                            this.study = {name: arr[2]};
-//                        }
-//                    }
-//                    $('.content').hide();
-//                    $(arr[0]).show();
-//                } else {
-//                    $('.content').hide();
-//                    $('#home').show();
-//                }
-
             },
             init: function() {
                 this.opencgaClientConfig = new OpenCGAClientConfig(opencga.host, opencga.version, opencga.cookies.sessionId, opencga.cookies.userName);
@@ -399,12 +378,6 @@
                     // get the studies for each project
                     // ...
                 }
-
-                // reset breadcrumb
-//                this._breadcrumb = {
-//                    path: [],
-//                    active: ""
-//                };
 
                 // go to home page
                 window.location.hash = "";
@@ -468,52 +441,86 @@
                             _this.logout();
                         });
             },
+            renderHashFragments: function() {
+                let hashFrag = this.tool + "/";
+                if (typeof this.project != "undefined" && this.project != "") {
+                    hashFrag += "/" + this.project;
+                    if (typeof this.study != "undefined" && this.study.alias != "") {
+                        hashFrag += "/" + this.study.alias;
+                    }
+                }
+                console.log("3")
+                window.location.hash = hashFrag;
+            },
             listener: function(ctx) {
                 var arr = window.location.hash.split('/');
-                if (typeof $(arr[0])[0] !== "undefined") {
-                    let isBlock = $(arr[0])[0].style.display == 'block';
-                    // If block is not visible we display it
-                    if (!isBlock) {
-                        if (arr.length > 1) {
-                            ctx.project = arr[1];
-                            if (arr.length > 2) {
+                let [hashTool, hashProject, hashSstudy, hashSamples] = window.location.hash.split('/');
+
+                console.log("1")
+                // Stopping the recursive call
+                if (hashTool != this.tool || hashProject != this.project || hashSstudy != this.study.alias) {
+                    console.log("1.1")
+                    if (arr.length > 1) {
+                        ctx.project = hashProject;
+                        if (arr.length > 2) {
 //                                ctx.study = {id: arr[2], name: arr[2]};
-                                for (let i = 0; i < ctx.projects.length; i++) {
-                                    if (ctx.projects[i].name == ctx.project || ctx.projects[i].alias == ctx.project) {
-                                        for (let j = 0; j < ctx.projects[i].studies.length; j++) {
+                            for (let i = 0; i < ctx.projects.length; i++) {
+                                if (ctx.projects[i].name == ctx.project || ctx.projects[i].alias == ctx.project) {
+                                    for (let j = 0; j < ctx.projects[i].studies.length; j++) {
 //                                            this.push('studies', ctx.projects[i].studies[j]);
-                                            if (ctx.projects[i].studies[j].name == arr[2] || ctx.projects[i].studies[j].alias == arr[2]) {
-                                                ctx.study = ctx.projects[i].studies[j];
-                                                break;
-                                            }
+                                        if (ctx.projects[i].studies[j].name == arr[2] || ctx.projects[i].studies[j].alias == arr[2]) {
+                                            ctx.study = ctx.projects[i].studies[j];
+                                            break;
                                         }
                                     }
                                 }
-
-//                                this._breadcrumb = {
-//                                    path: [arr[1]],
-//                                    active: arr[2]
-//                                };
-//                            } else {
-//                                this._breadcrumb = {
-//                                    path: [],
-//                                    active: arr[1]
-//                                };
                             }
                         }
-                        console.log('ctx.project', ctx.project)
-                        console.log('ctx.study', ctx.study)
-                        $('.content').hide();
-                        $(arr[0]).show();
-                    } else {
-//                        $('.content').hide();
-//                        $('#home').show();
                     }
-                } else {
-//                    $('.content').hide();
-//                    $('#home').show();
-                    console.log("listener undefined")
+
+                    this.tool = hashTool;
+
+                    console.log('ctx.project', ctx.project)
+                    console.log('ctx.study', ctx.study)
+                    $('.content').hide();
+                    $(arr[0]).show();
                 }
+
+
+//                if (typeof $(arr[0])[0] !== "undefined") {
+//                    let isBlock = $(arr[0])[0].style.display == 'block';
+//                    // If block is not visible we display it
+//                    if (!isBlock) {
+//                        if (arr.length > 1) {
+//                            ctx.project = arr[1];
+//                            if (arr.length > 2) {
+////                                ctx.study = {id: arr[2], name: arr[2]};
+//                                for (let i = 0; i < ctx.projects.length; i++) {
+//                                    if (ctx.projects[i].name == ctx.project || ctx.projects[i].alias == ctx.project) {
+//                                        for (let j = 0; j < ctx.projects[i].studies.length; j++) {
+////                                            this.push('studies', ctx.projects[i].studies[j]);
+//                                            if (ctx.projects[i].studies[j].name == arr[2] || ctx.projects[i].studies[j].alias == arr[2]) {
+//                                                ctx.study = ctx.projects[i].studies[j];
+//                                                break;
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        console.log('ctx.project', ctx.project)
+//                        console.log('ctx.study', ctx.study)
+//                        $('.content').hide();
+//                        $(arr[0]).show();
+//                    } else {
+////                        $('.content').hide();
+////                        $('#home').show();
+//                    }
+//                } else {
+////                    $('.content').hide();
+////                    $('#home').show();
+//                    console.log("listener undefined")
+//                }
             },
             setProjectStudy: function(e) {
                 this.studies = [];
@@ -530,6 +537,8 @@
                 }
             },
             studyChanged: function () {
+                console.log("2")
+                this.renderHashFragments();
                 this.renderBreadcrumb();
 //                let hashFrag = this.tool + "/" + this.project;
 //                if (typeof this.study !== "undefined" && typeof this.study.name !== "undefined") {
@@ -577,7 +586,8 @@
                 $('#studyInfo').show();
             },
             projectChanged: function() {
-                this.config = application;
+//                this.config = application;
+                this.renderHashFragments();
                 this.renderBreadcrumb();
             },
             samplesChanged: function() {
