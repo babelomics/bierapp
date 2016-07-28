@@ -442,28 +442,24 @@
                         });
             },
             renderHashFragments: function() {
-                let hashFrag = this.tool + "/";
+                let hashFrag = this.tool;
                 if (typeof this.project != "undefined" && this.project != "") {
                     hashFrag += "/" + this.project;
                     if (typeof this.study != "undefined" && this.study.alias != "") {
                         hashFrag += "/" + this.study.alias;
                     }
                 }
-                console.log("3")
                 window.location.hash = hashFrag;
             },
             listener: function(ctx) {
                 var arr = window.location.hash.split('/');
-                let [hashTool, hashProject, hashSstudy, hashSamples] = window.location.hash.split('/');
+                let [hashTool, hashProject, hashStudy, hashSamples] = window.location.hash.split('/');
 
-                console.log("1")
                 // Stopping the recursive call
-                if (hashTool != this.tool || hashProject != this.project || hashSstudy != this.study.alias) {
-                    console.log("1.1")
+                if (hashTool != this.tool || hashProject != this.project || hashStudy != this.study.alias) {
                     if (arr.length > 1) {
                         ctx.project = hashProject;
                         if (arr.length > 2) {
-//                                ctx.study = {id: arr[2], name: arr[2]};
                             for (let i = 0; i < ctx.projects.length; i++) {
                                 if (ctx.projects[i].name == ctx.project || ctx.projects[i].alias == ctx.project) {
                                     for (let j = 0; j < ctx.projects[i].studies.length; j++) {
@@ -537,7 +533,6 @@
                 }
             },
             studyChanged: function () {
-                console.log("2")
                 this.renderHashFragments();
                 this.renderBreadcrumb();
 //                let hashFrag = this.tool + "/" + this.project;
@@ -586,7 +581,6 @@
                 $('#studyInfo').show();
             },
             projectChanged: function() {
-//                this.config = application;
                 this.renderHashFragments();
                 this.renderBreadcrumb();
             },
@@ -629,7 +623,7 @@
                         e.preventDefault();
                         $('.content').hide();
                         switch (e.target.innerHTML) {
-                            case 'Projects':
+                            case _this.config.breadcrumb.title:
                                 $('#projectList').show();
                                 break;
                             case _this.project:

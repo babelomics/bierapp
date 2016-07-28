@@ -1,14 +1,10 @@
 // CELLBASE_HOST = "http://bioinfo.hpc.cam.ac.uk/cellbase";
 // CELLBASE_VERSION = "v3";
 
-// CELLBASE_HOST = "http://bioinfoint.hpc.cam.ac.uk/cellbase";
-CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase";
-CELLBASE_VERSION = "v3";
-
-// OPENCGA_HOST = "bioinfodev.hpc.cam.ac.uk/hgva";
-// OPENCGA_VERSION = "v1";
-// OPENCGA_COOKIE_SESSION_ID = "opencga_sId";
-// OPENCGA_COOKIE_USER_NAME = "opencga_userId";
+var cellbase = {
+    host: "http://bioinfodev.hpc.cam.ac.uk/cellbase",
+    version: "v3"
+};
 
 var opencga = {
     host: "bioinfodev.hpc.cam.ac.uk/hgva",
