@@ -5,14 +5,16 @@
 CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase";
 CELLBASE_VERSION = "v3";
 
-OPENCGA_HOST = "bioinfodev.hpc.cam.ac.uk/hgva";
-OPENCGA_VERSION = "v1";
-OPENCGA_COOKIE_SESSION_ID = "opencga_sId";
-OPENCGA_COOKIE_USER_NAME = "opencga_userId";
+// OPENCGA_HOST = "bioinfodev.hpc.cam.ac.uk/hgva";
+// OPENCGA_VERSION = "v1";
+// OPENCGA_COOKIE_SESSION_ID = "opencga_sId";
+// OPENCGA_COOKIE_USER_NAME = "opencga_userId";
 
 var opencga = {
     host: "bioinfodev.hpc.cam.ac.uk/hgva",
     version: "v1",
+    // user: "hgva",
+    // projects: ["hsapiens_grch37"],
     cookies: {
         userName: "opencga_userId",
         sessionId: "opencga_sId"
@@ -21,8 +23,8 @@ var opencga = {
 
 var application = {
     title: "BiERapp",
-    logo: "images/bier-text.svg",
     version: "v2.0.0",
+    logo: "images/bier-text.svg",
     menu: [
         {
             id: "browser",
@@ -42,7 +44,7 @@ var application = {
                 {
                     id: "diagnose:sample",
                     title: "Sample",
-                    visibility: "none"
+                    visibility: "public"
                 },
                 {
                     id: "diagnose:family",
@@ -56,8 +58,8 @@ var application = {
             visibility: "public"
         },
         {
-            id: "tools",
-            title: "Tools",
+            id: "analysis",
+            title: "Analysis",
             visibility: "public",
             submenu: [
                 {
@@ -66,26 +68,47 @@ var application = {
                     visibility: "public"
                 },
                 {
-                    id: "exporter",
-                    title: "Exporter",
+                    id: "burden",
+                    title: "Burden Test",
                     visibility: "public"
                 }]
         },
         {
-            id: "genomeBrowser",
-            title: "Genome Browser",
-            visibility: "public"
+            id: "tools",
+            title: "Tools",
+            visibility: "public",
+            submenu: [
+                {
+                    id: "genomeBrowser",
+                    title: "Genome Browser",
+                    visibility: "public"
+                },
+                {
+                    id: "exporter",
+                    title: "Exporter",
+                    visibility: "public"
+                }
+            ]
         }
     ],
-    showSettings: "true",
-    breadcrumbVisibility: "private",
+    search: {
+        placeholder: "eg. BRCA2",
+        visibility: "public"
+    },
+    settings: {
+        visibility: "public"
+    },
     about: [
         {"name": "Documentation",  "url": "https://github.com/babelomics/bierapp/wiki", "icon": "fa fa-book"},
         {"name": "Tutorial", "url": "https://github.com/babelomics/bierapp/wiki/Tutorial", "icon": ""},
         {"name": "Source code", "url": "https://github.com/babelomics/bierapp", "icon": "fa fa-github"},
         {"name": "Contact",  "url": "", "icon": "fa fa-envelope"},
         {"name": "FAQ",  "url": "", "icon": ""}
-    ]
+    ],
+    breadcrumb: {
+        title: "Projects",
+        visibility: "public"
+    }
 };
 
 
