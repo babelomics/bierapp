@@ -52,6 +52,7 @@
                 }
             },
             fireSelectStudy: function (e) {
+                e.preventDefault();
                 this.fire('study', {studyName: e.target.innerHTML, studyId: e.target.dataId});
             }
         });

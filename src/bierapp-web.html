@@ -155,7 +155,7 @@
                                 </li>
 
                                 <!-- Login/Logout button -->
-                                <li class="bierapp-menu">
+                                <li>
                                     <template is="dom-if" if="{{!_logged}}">
                                         <a href="#login" data-toggle="modal" role="button" data-placement="bottom" data-target="#ModalLogin" title="Login ..." on-click="changeAnalysisTool">
                                             <i class="fa fa-sign-in fa-lg"></i> Login
@@ -178,11 +178,6 @@
             <!--Breadcrumb-->
             <template is="dom-if" if="{{_isBreadcrumbVisible}}">
                 <ol id="breadcrumb" class="breadcrumb" style="margin-bottom: 1px;padding-left: 40px"></ol>
-                <!--<li><a href="#" on-click="showBreadcrumb">{{config.breadcrumb.title}}</a></li>-->
-                <!--<template is="dom-repeat" items="{{_breadcrumb.path}}">-->
-                <!--<li><a href="#" on-click="showBreadcrumb">{{item}}</a></li>-->
-                <!--</template>-->
-                <!--<li class="active">{{_breadcrumb.active}}</li>-->
             </template>
 
 
@@ -309,28 +304,14 @@
                 },
                 tool: {
                     type: String,
-                    value: "home"
+                    value: "home",
                 }
-//                _breadcrumb: {
-//                    type: Object,
-//                    value: {
-//                        path: [],
-//                        active: ""
-//                    }
-//                }
             },
             attached: function() {
                 this.renderBreadcrumb();
-//                $(".breadcrumb li").on('click', function(e) {
-////                    e.preventDefault(); // stops link form loading
-////                    $('.content').hide(); // hides all content divs
-////                    $($(this).attr('href')).show(); //get the href and use it find which div to show
-//                    console.log("in breadcrumb!!")
-//                });
-//                console.log(".breadcrumb", $(".breadcrumb"));
-
             },
             changeAnalysisTool: function(e) {
+                e.preventDefault(); // prevents the hash change to "#" and allows to manipulate the hash fragment as needed
                 $('.content').hide(); // hides all content divs
                 if (typeof e.srcElement.attributes.href !== "undefined") {
                     $(e.srcElement.attributes.href.value).show(); // get the href and use it find which div to show
@@ -338,7 +319,7 @@
                     $("#home").show(); // get the href and use it find which div to show
                 }
 
-//                this.tool = $(this).attr('href');
+                this.renderHashFragments();
             },
             ready: function() {
                 // Copy 'application' object from config.js file
@@ -370,7 +351,6 @@
 
                 this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
                 this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
-
                 if (typeof opencga.user !== "undefined" && opencga.user != "" && typeof opencga.projects !== "undefined" && opencga.projects.length > 0) {
                     // This web site is set up for browsing public data
                     this.project = opencga.projects[0];
@@ -380,9 +360,9 @@
                 }
 
                 // go to home page
-                window.location.hash = "";
                 $('.content').hide();
-                $('#home').show();
+                window.location.hash = "home";
+//                $('#home').show();
 
                 this._checkBreadcrumbVisible();
             },
@@ -404,9 +384,9 @@
 
                 // hide login window and return to home
                 $('#ModalLogin').modal('hide');
-                window.location.hash = "";
                 $('.content').hide();
-                $('#home').show();
+                window.location.hash = "home";
+//                $('#home').show();
             },
             logout: function() {
                 var _this = this;
@@ -426,14 +406,10 @@
                         .then(function (response) {
                             _this.projects = response.response[0].result;
 
-                            // seelct project and study
+                            // select project and study
                             _this.project = _this.projects[0].alias;
                             _this.study = _this.projects[0].studies[0];
-
-//                            _this._breadcrumb = {
-//                                path: [_this.project],
-//                                active: _this.study.alias
-//                            };
+                            _this.selectedProject = _this.projects[0];
 
                             _this._checkBreadcrumbVisible();
                         })
@@ -519,6 +495,7 @@
 //                }
             },
             setProjectStudy: function(e) {
+                e.preventDefault(); // prevents the hash change to "#" and allows to manipulate the hash fragment as needed
                 this.studies = [];
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == this.project || this.projects[i].alias == this.project) {
@@ -574,7 +551,7 @@
             updateStudy: function(e) {
                 for (let i = 0; i < this.selectedProject.studies.length; i++) {
                     if (this.selectedProject.studies[i].name == e.detail.studyName || this.selectedProject.studies[i].id == e.detail.studyId) {
-                            this.study = this.selectedProject.studies[i];
+                        this.study = this.selectedProject.studies[i];
                     }
                 }
                 $('.content').hide();

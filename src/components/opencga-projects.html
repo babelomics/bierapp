@@ -51,9 +51,11 @@
                 }
             },
             fireSelectProject: function (e) {
+                e.preventDefault();
                 this.fire('project', {project: e.target.innerHTML});
             },
             fireSelectStudy: function (e) {
+                e.preventDefault();
                 this.fire('study', {studyName: e.target.innerHTML, studyId: e.target.dataId});
             }
         });
