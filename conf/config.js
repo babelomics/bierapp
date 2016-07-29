@@ -1,7 +1,7 @@
-// CELLBASE_HOST = "http://bioinfo.hpc.cam.ac.uk/cellbase";
-// CELLBASE_VERSION = "v3";
-CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0";
-CELLBASE_VERSION = "v4";
+CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase";
+CELLBASE_VERSION = "v3";
+// CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0";
+// CELLBASE_VERSION = "v4";
 OPENCGA_HOST = "http://test.babelomics.org/opencga-0.7-dev";
 //OPENCGA_HOST = "http://bioinfoint.hpc.cam.ac.uk/opencga/rest";
 BIERAPP_VERSION = "1.5.0";
