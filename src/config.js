@@ -2,8 +2,8 @@
 // CELLBASE_VERSION = "v3";
 
 var cellbase = {
-    host: "http://bioinfodev.hpc.cam.ac.uk/cellbase",
-    version: "v3"
+    hosts: ["http://bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"],
+    version: "v4"
 };
 
 var opencga = {

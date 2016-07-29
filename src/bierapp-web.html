@@ -18,13 +18,14 @@
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="../lib/jsorolla/src/lib/opencga/variant/variant-browser.html">
 
+<link rel="import" href="jso-styles.html">
+
 <link rel="import" href="components/opencga-projects.html">
 <link rel="import" href="components/opencga-project.html">
 <link rel="import" href="components/opencga-study.html">
-
 <link rel="import" href="components/opencga-login.html">
+
 <link rel="import" href="welcome.html">
-<link rel="import" href="jso-styles.html">
 
 <dom-module id="bierapp-web">
 
@@ -37,11 +38,6 @@
                 width: 60%;
                 font-size: 18px;
                 color: #797979;
-            }
-
-            .footer {
-                text-align: center;
-                color: #9d9d9d;
             }
         </style>
 
@@ -283,61 +279,49 @@
                 project: {
                     type: String,
                     value: "",
-                    observer: 'projectChanged'
+                    observer: 'projectStudySampleChanged'
                 },
                 study: {
                     type: Object,
-                    observer: 'studyChanged'
+                    observer: 'projectStudySampleChanged'
                 },
                 samples: {
                     type: Array,
                     value: [],
-                    observer: 'samplesChanged'
+                    observer: 'projectStudySampleChanged'
                 },
                 studies: {
                     type: Array,
                     value: []
                 },
+                tool: {
+                    type: String,
+                    value: "",
+                },
                 _logged: {
                     type: Boolean,
                     value: false
-                },
-                tool: {
-                    type: String,
-                    value: "home",
                 }
-            },
-            attached: function() {
-                this.renderBreadcrumb();
-            },
-            changeAnalysisTool: function(e) {
-                e.preventDefault(); // prevents the hash change to "#" and allows to manipulate the hash fragment as needed
-                $('.content').hide(); // hides all content divs
-                if (typeof e.srcElement.attributes.href !== "undefined") {
-                    $(e.srcElement.attributes.href.value).show(); // get the href and use it find which div to show
-                } else {
-                    $("#home").show(); // get the href and use it find which div to show
-                }
-
-                this.renderHashFragments();
             },
             ready: function() {
                 // Copy 'application' object from config.js file
                 this.config = application;
+                this.config.cellbase = cellbase;
+                this.config.opencga = opencga;
 
                 // We need to listen to hash fragment changes to update the display and breadcrumb
                 var _this = this;
                 window.onhashchange = function () {
-                    _this.listener(_this);
+                    _this.hashFragmentListener(_this);
                 };
 
                 this._checkVersion();
 
                 this.init();
 
-                var sid = Cookies.get(opencga.cookies.sessionId);
+                var sid = Cookies.get(this.config.opencga.cookies.sessionId);
                 if (typeof sid !== "undefined" && sid != "") {
-                    this.userId = Cookies.get(opencga.cookies.userName);
+                    this.userId = Cookies.get(this.config.opencga.cookies.userName);
                     this.sessionId = sid;
                     this.opencgaClient._config.sessionId = sid;
 
@@ -345,18 +329,28 @@
                     this.getProjects();
                 }
             },
+            attached: function() {
+                this.renderBreadcrumb();
+            },
             init: function() {
-                this.opencgaClientConfig = new OpenCGAClientConfig(opencga.host, opencga.version, opencga.cookies.sessionId, opencga.cookies.userName);
+                this.opencgaClientConfig = new OpenCGAClientConfig(this.config.opencga.host,
+                        this.config.opencga.version, this.config.opencga.cookies.sessionId, this.config.opencga.cookies.userName);
                 this.opencgaClient = new OpenCGAClient(this.opencgaClientConfig);
 
-                this.cellBaseClientConfig = new CellBaseClientConfig(hosts = ["bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0"], version = "v4");
+                this.cellBaseClientConfig = new CellBaseClientConfig(hosts = this.config.cellbase.hosts, version = this.config.cellbase.version);
                 this.cellbaseClient = new CellBaseClient(this.cellBaseClientConfig);
-                if (typeof opencga.user !== "undefined" && opencga.user != "" && typeof opencga.projects !== "undefined" && opencga.projects.length > 0) {
+
+                if (typeof this.config.opencga.user !== "undefined" && this.config.opencga.user != ""
+                        && typeof this.config.opencga.projects !== "undefined" && this.config.opencga.projects.length > 0) {
                     // This web site is set up for browsing public data
                     this.project = opencga.projects[0];
                     this._logged = false;
                     // get the studies for each project
                     // ...
+                } else {
+                    this.project = "";
+                    this.study = {};
+                    this.samples = [];
                 }
 
                 // go to home page
@@ -385,8 +379,8 @@
                 // hide login window and return to home
                 $('#ModalLogin').modal('hide');
                 $('.content').hide();
-                window.location.hash = "home";
-//                $('#home').show();
+                $('#home').show();
+//                window.location.hash = "home";
             },
             logout: function() {
                 var _this = this;
@@ -399,6 +393,19 @@
                             _this._logged = false;
                             _this.init();
                         });
+            },
+            changeAnalysisTool: function(e) {
+                e.preventDefault(); // prevents the hash change to "#" and allows to manipulate the hash fragment as needed
+                $('.content').hide(); // hides all content divs
+                if (typeof e.srcElement.attributes.href !== "undefined") {
+                    $(e.srcElement.attributes.href.value).show(); // get the href and use it find which div to show
+                    this.tool = e.srcElement.attributes.href.value;
+                } else {
+                    this.tool = "home";
+                    $("#home").show(); // get the href and use it find which div to show
+                }
+
+                this.renderHashFragments();
             },
             getProjects: function () {
                 var _this = this;
@@ -427,7 +434,7 @@
                 }
                 window.location.hash = hashFrag;
             },
-            listener: function(ctx) {
+            hashFragmentListener: function(ctx) {
                 var arr = window.location.hash.split('/');
                 let [hashTool, hashProject, hashStudy, hashSamples] = window.location.hash.split('/');
 
@@ -457,42 +464,6 @@
                     $('.content').hide();
                     $(arr[0]).show();
                 }
-
-
-//                if (typeof $(arr[0])[0] !== "undefined") {
-//                    let isBlock = $(arr[0])[0].style.display == 'block';
-//                    // If block is not visible we display it
-//                    if (!isBlock) {
-//                        if (arr.length > 1) {
-//                            ctx.project = arr[1];
-//                            if (arr.length > 2) {
-////                                ctx.study = {id: arr[2], name: arr[2]};
-//                                for (let i = 0; i < ctx.projects.length; i++) {
-//                                    if (ctx.projects[i].name == ctx.project || ctx.projects[i].alias == ctx.project) {
-//                                        for (let j = 0; j < ctx.projects[i].studies.length; j++) {
-////                                            this.push('studies', ctx.projects[i].studies[j]);
-//                                            if (ctx.projects[i].studies[j].name == arr[2] || ctx.projects[i].studies[j].alias == arr[2]) {
-//                                                ctx.study = ctx.projects[i].studies[j];
-//                                                break;
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        console.log('ctx.project', ctx.project)
-//                        console.log('ctx.study', ctx.study)
-//                        $('.content').hide();
-//                        $(arr[0]).show();
-//                    } else {
-////                        $('.content').hide();
-////                        $('#home').show();
-//                    }
-//                } else {
-////                    $('.content').hide();
-////                    $('#home').show();
-//                    console.log("listener undefined")
-//                }
             },
             setProjectStudy: function(e) {
                 e.preventDefault(); // prevents the hash change to "#" and allows to manipulate the hash fragment as needed
@@ -509,36 +480,6 @@
                     }
                 }
             },
-            studyChanged: function () {
-                this.renderHashFragments();
-                this.renderBreadcrumb();
-//                let hashFrag = this.tool + "/" + this.project;
-//                if (typeof this.study !== "undefined" && typeof this.study.name !== "undefined") {
-//                    hashFrag += "/" + this.study.alias;
-//                }
-//                window.location.hash = hashFrag;
-            },
-//            selectProject: function(e) {
-//                if (typeof e.target === "undefined") {
-//                    this.project = e;
-//                } else {
-//                    this.project = e.target.innerText;
-//                }
-//                if (this._breadcrumb.path.length > 1) {
-//                    this.splice('_breadcrumb.path', 1, 1, this.project)
-//                } else {
-//                    this.push('_breadcrumb.path', this.project);
-//                }
-//                this.studies = [];
-//                for (let i = 0; i < this.projects.length; i++) {
-//                    if (this.projects[i].name == this.project) {
-//                        for (let j = 0; j < this.projects[i].studies.length; j++) {
-//                            this.push('studies', this.projects[i].studies[j]);
-//                        }
-//                        this.selectedProject = this.projects[i];
-//                    }
-//                }
-//            },
             updateProject: function(e) {
                 for (let i = 0; i < this.projects.length; i++) {
                     if (this.projects[i].name == e.detail.project) { // getting the selected project from projects array
@@ -557,11 +498,8 @@
                 $('.content').hide();
                 $('#studyInfo').show();
             },
-            projectChanged: function() {
+            projectStudySampleChanged: function() {
                 this.renderHashFragments();
-                this.renderBreadcrumb();
-            },
-            samplesChanged: function() {
                 this.renderBreadcrumb();
             },
             renderBreadcrumb: function() {
@@ -575,7 +513,8 @@
                     let projects = this._createBreadcrumbElement(this.config.breadcrumb.title, false);
                     Polymer.dom(breadcrumbElement).appendChild(projects);
 
-                    if (typeof this.study === "undefined") {
+                    // We first check if one study is selected, for this study must be defined and have at least one key
+                    if (typeof this.study === "undefined" || Object.keys(this.study).length == 0) {
                         if (typeof this.project !== "undefined" && this.project != null && this.project != "") {
                             let project = this._createBreadcrumbElement(this.project, true); // render only project if exists
                             Polymer.dom(breadcrumbElement).appendChild(project);
@@ -584,7 +523,7 @@
                         let project = this._createBreadcrumbElement(this.project, false);
                         Polymer.dom(breadcrumbElement).appendChild(project);
 
-                        if (this.samples.length > 0) {
+                        if (typeof this.samples !== "undefined" && this.samples.length > 0) {
                             let study = this._createBreadcrumbElement(this.study.alias, false);
                             let samples = this._createBreadcrumbElement(this.samples.join(","), true);
                             Polymer.dom(breadcrumbElement).appendChild(study);
