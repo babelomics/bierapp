@@ -1,5 +1,5 @@
-CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase";
-CELLBASE_VERSION = "v3";
+// CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase";
+// CELLBASE_VERSION = "v3";
 // CELLBASE_HOST = "http://bioinfodev.hpc.cam.ac.uk/cellbase-dev-v4.0";
 // CELLBASE_VERSION = "v4";
 OPENCGA_HOST = "http://test.babelomics.org/opencga-0.7-dev";
