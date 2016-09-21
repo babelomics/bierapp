@@ -12,6 +12,7 @@ BIERAPP_VERSION = "1.5.0";
 STUDY_NAME = "WorkSpace";
 CELLBASE_HOST_OLD = "http://ws-beta.bioinfo.cipf.es/cellbase-staging/rest";
 
+VCF_VALIDATOR=true;
 
 var POPULAR_SPECIES = ["Homo sapiens", "Mus musculus", "Danio rerio", "Drosophila melanogaster", "Saccharomyces cerevisiae", "Plasmodium falciparum", "Arabidopsis thaliana", "Citrus Clementina"];
 
