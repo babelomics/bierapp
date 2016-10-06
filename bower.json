@@ -1,6 +1,6 @@
 {
   "name": "bierapp-web",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "homepage": "https://github.com/babelomics/bierapp",
   "authors": [
     "frasator",
@@ -33,6 +33,7 @@
     "iron-menu-behavior": "PolymerElements/iron-menu-behavior#~1.0.1",
     "file-saver.js": "~1.20150507.2",
     "jsorolla": "https://github.com/opencb/jsorolla.git#develop",
+    "stevia-elements": "https://github.com/babelomics/stevia-elements.git#master",
     "paper-slider": "^1.0.11"
   }
 }
