@@ -19,15 +19,19 @@ BierApp is versioned following the rules from [Semantic versioning](http://semve
 We recommend to contact BierApp developers by writing to OpenCB mailing list babelomics@cipf.es. The main developers and maintainers are:
 * Joaquin Dopazo (jdopazo@cipf.es) (_Founder and Project Leader_)
 * Ignacio Medina (im411@cam.ac.uk)
-* Roberto Alonso (ralonso@cipf.es)
+* Mercedes Medina (mmedina@cipf.es)
 * Alejandro Aleman (aaleman@cipf.es)
 * Francisco Salavert (fsalavert@cipf.es)
+
+Former contributors
+* Roberto Alonso
+
 
 ##### Contributing
 BierApp is an open-source and collaborative project. We appreciate any help and feeback from users, you can contribute in many different ways such as simple bug reporting and feature request. Dependending on your skills you are more than welcome to develop client tools, new features or even fixing bugs.
 
 
-# How to build 
+# How to build
 BierApp is developed in HTML5, therefore it is mainly developed in JavaScript and makes a heavy usage of HTML and CSS. It uses [Bower](http://bower.io/) and [Grunt](http://gruntjs.com/) as building tools. BierApp also requires of [OpenCB JSorolla](https://github.com/opencb/jsorolla) to be built, this is a JavaScript library developed for several OpenCB web-based projects, this can be found as Git submodule in BierApp.
 
 Stable releases are merged and tagged at **_master_** branch, you are encourage to use latest stable release for production. Current active development is carried out at **_develop_** branch, only building is guaranteed and bugs are expected, use this branch for development or for testing new functionalities. The only source code dependency of BierApp from OpenCB is JSorolla. BierApp **_master_** branch depends on stable branches in JSorolla, while **_develop_** branch of BierApp depends on JSorolla **_develop_**.
