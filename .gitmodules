@@ -1,3 +1,0 @@
-[submodule "bierapp-web/lib/jsorolla"]
-	path = bierapp-web/lib/jsorolla
-	url = https://github.com/opencb/jsorolla.git
