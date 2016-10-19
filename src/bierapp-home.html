@@ -81,6 +81,22 @@
             text-transform: uppercase;
             text-align: center;
         }
+
+        .tutorialBut {
+            text-align: center;
+            background-color: var(--dark-button-color);
+            color: var(--light-primary-color);
+            font-weight: 400;
+            height: auto;
+            margin: 20px;
+            padding: 20px 30px;
+            font-size: 20px;
+            border-radius: 5px;
+        }
+
+        .tutorialBut:hover {
+            background-color: var(--accent-color);
+        }
     </style>
     <template>
         <div class="main">
@@ -101,6 +117,11 @@
                     <!--GENE EXPRESSION, GENOME VARIATION AND FUNCTIONAL PROFILING ANALYSIS SUITE-->
                     <!--</div>-->
                     <br>
+                    <div class="stv-btn stv-btn-shdw tutorialBut">
+                        <a href="https://github.com/babelomics/bierapp/wiki/tutorial" target="_blank">
+                            <i class="fa fa-compass"></i> &nbsp; Getting Started
+                        </a>
+                    </div>
 
                     <!--<div class="megabutton" on-click="annonymousLogin">-->
                     <!--&lt;!&ndash;<font-awesome icon="hand-o-left"></font-awesome>&ndash;&gt;-->
@@ -142,7 +163,7 @@
             <div class="title2">Note:</div>
             <div class="paragraph2">
                 <span>{{versionNav}}</span>
-                <jso-tooltip type="{{tooltipType}}">{{versionMsg}}</jso-tooltip>
+                <stv-tooltip type="{{tooltipType}}">{{versionMsg}}</stv-tooltip>
                 <br>BierApp web application makes an intensive use of the HTML5 standard and other cutting-edge web technologies such as Web Components, so only modern web browsers are fully supported, these include Chrome 36+, Firefox 32+, IE 10+, Safari
                 7+ and Opera 24+.
             </div>

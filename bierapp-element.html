@@ -1,10 +1,25 @@
 <script src="bower_components/jsorolla/src/lib/utils.js"></script>
+<script src="bower_components/stevia-elements/src/utils/utils.js"></script>
 <script src="bower_components/jsorolla/src/lib/opencga-manager.js"></script>
 <script src="bower_components/jsorolla/src/lib/cellbase-manager.js"></script>
 
 <link rel="import" href="bower_components/polymer/polymer.html">
 <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <!-- <link rel="import" href="bower_components/paper-slider/paper-slider.html"> -->
+
+<link rel="import" href="bower_components/stevia-elements/src/stv-dialog/stv-dialog.html">
+<link rel="import" href="bower_components/stevia-elements/src/table/stv-table.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-panel.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-form-box.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-select.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-select-box.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-tooltip.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-wizard.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-progress-bar.html">
+<link rel="import" href="bower_components/stevia-elements/src/stv-import-file.html">
+<link rel="import" href="bower_components/stevia-elements/src/validator/stv-validator.html">
+<link rel="import" href="bower_components/stevia-elements/src/dropdown/stv-dropdown.html">
+<script src="bower_components/stevia-elements/src/validator/bed-validator.js"></script>
 
 <link rel="import" href="bower_components/jsorolla/src/lib/components/jso-application-behavior.html">
 <link rel="import" href="bower_components/jsorolla/src/lib/components/opencga/jso-opencga-manager-behavior.html">
@@ -141,6 +156,13 @@
             top: 0;
             width: 600px;
         }
+        #dropmenu {
+            position: fixed !important;
+            right: 10px !important;
+            top: 50px !important;
+            width: 200px;
+            left: calc(100vw - 210px) !important;
+        }
     </style>
     <template>
         <div class="content" menu-option="home">
@@ -190,18 +212,26 @@
                     <span class="option-text">Study Browser</span>
                 </div>
             </div>
-
-            <jso-help-menu class="helpmenu" selectedOption="{{selectedOption}}">
-                <a href="https://github.com/babelomics/bierapp/wiki" target="_blank">
-                    <i class="fa fa-book"></i> &nbsp; Documentation
-                </a>
-                <a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank">
-                    <i class="fa fa-compass"></i> &nbsp; Tutorial
-                </a>
-                <a href="https://github.com/babelomics/bierapp/" target="_blank">
-                    <i class="fa fa-github"></i> &nbsp; Source code
-                </a>
-            </jso-help-menu>
+            <stv-dropdown dark class="helpmenu" selected-option="{{selectedOption}}">
+                <div data-button><i class="fa fa-question-circle"></i></div>
+                <ul data-menu id="dropmenu">
+                    <li>
+                      <a href="https://github.com/babelomics/bierapp/wiki" target="_blank">
+                          <i class="fa fa-book"></i> &nbsp; Documentation
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://github.com/babelomics/bierapp/wiki/Tutorial" target="_blank">
+                          <i class="fa fa-compass"></i> &nbsp; Tutorial
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://github.com/babelomics/bierapp/" target="_blank">
+                          <i class="fa fa-github"></i> &nbsp; Source code
+                      </a>
+                    </li>
+                </ul>
+            </stv-dropdown>
         </jso-opencga-header>
 
         <jso-opencga-footer menu-option="home,loging,singup,profile,remember">
