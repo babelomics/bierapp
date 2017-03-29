@@ -23,13 +23,13 @@ BierApp is versioned following the rules from [Semantic versioning](http://semve
 We recommend to contact BierApp developers by writing to OpenCB mailing list babelomics@cipf.es. The main developers and maintainers are:
 * Joaquin Dopazo (jdopazo@cipf.es) (_Founder and Project Leader_)
 * Ignacio Medina (im411@cam.ac.uk)
-* Mercedes Medina (mmedina@cipf.es)
-* Alejandro Aleman (aaleman@cipf.es)
+* Susi Gallego (agallego@cipf.es)
 * Francisco Salavert (fsalavert@cipf.es)
 
 Former contributors
 * Roberto Alonso
-
+* Mercedes Medina
+* Alejandro Aleman 
 
 ##### Contributing
 BierApp is an open-source and collaborative project. We appreciate any help and feeback from users, you can contribute in many different ways such as simple bug reporting and feature request. Dependending on your skills you are more than welcome to develop client tools, new features or even fixing bugs.
